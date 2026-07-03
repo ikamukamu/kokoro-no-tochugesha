@@ -694,6 +694,26 @@
                             <p class="text-[10px] text-teal-800 leading-normal mt-0.5">データは完全な個室空間に隔離されています。お守りは最大10枚まで保管可能。</p>
                         </div>
                     </div>
+                    <div class="mt-2.5 bg-[#FCFAF6] border border-dashed border-teal-300/80 text-teal-950 text-xs p-2.5 rounded-lg">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <div class="flex gap-2 items-start min-w-0">
+                                <i class="fa-solid fa-ticket text-teal-600 text-sm shrink-0 mt-0.5"></i>
+                                <div class="min-w-0">
+                                    <span class="font-black text-pdNavy block text-[11px] leading-tight">きろくのお守り</span>
+                                    <p class="text-[9.5px] leading-relaxed font-bold text-teal-800 mt-0.5">大切な記録は、ときどき保存しておくと安心です。</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:flex gap-1.5 shrink-0">
+                                <button id="btn-export-backup" class="bg-white hover:bg-teal-50 text-teal-800 font-black py-1.5 px-2.5 rounded-md border border-teal-500 text-[9.5px] cursor-pointer shadow-[1px_1px_0_#0f766e] flex items-center justify-center gap-1 whitespace-nowrap">
+                                    <i class="fa-solid fa-box-archive"></i> きろくを保存する
+                                </button>
+                                <button id="btn-import-backup" class="bg-white hover:bg-rose-50 text-pdNavy font-black py-1.5 px-2.5 rounded-md border border-pdNavy text-[9.5px] cursor-pointer shadow-[1px_1px_0_#0a1128] flex items-center justify-center gap-1 whitespace-nowrap">
+                                    <i class="fa-solid fa-envelope-open-text"></i> 保存したきろくを読み込む
+                                </button>
+                            </div>
+                        </div>
+                        <input id="backup-import-input" type="file" accept="application/json,.json" class="hidden">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1129,11 +1149,141 @@
 
         // --- 4. 運行ロジック (UI、タイマー、AI、シンギングボウル、環境音) ---
         const storage = {
-            getItem(key) { try { return localStorage.getItem(key); } catch(e) { return window[`__fallback_storage_${key}`] || ""; } },
-            setItem(key, value) { try { localStorage.setItem(key, value); } catch(e) { window[`__fallback_storage_${key}`] = value; } },
-            removeItem(key) { try { localStorage.removeItem(key); } catch(e) { delete window[`__fallback_storage_${key}`]; } }
+            getItem(key) { try { return localStorage.getItem(key); } catch(e) { return window["__fallback_storage_" + key] || ""; } },
+            setItem(key, value) { try { localStorage.setItem(key, value); } catch(e) { window["__fallback_storage_" + key] = value; } },
+            removeItem(key) { try { localStorage.removeItem(key); } catch(e) { delete window["__fallback_storage_" + key]; } }
         };
 
+        const KOKORO_BACKUP_KEYS = [
+            'kokoro_gemini_api_key',
+            'kokoro_gemini_model',
+            'kokoro_local_cbt_records',
+            'kokoro_local_talk_records',
+            'kokoro_local_threegoods_records'
+        ];
+        const KOKORO_RECORD_KEYS = [
+            'kokoro_local_cbt_records',
+            'kokoro_local_talk_records',
+            'kokoro_local_threegoods_records'
+        ];
+
+        function parseBackupRecordList(value, key) {
+            if (value === undefined || value === null || value === "") return [];
+            const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+            if (!Array.isArray(parsed)) throw new Error(key + " の記録形式が正しくありません。");
+            return parsed;
+        }
+
+        function getBackupFileName() {
+            const d = new Date(), pad = n => String(n).padStart(2, '0');
+            return "kokoro-backup-" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + "-" + pad(d.getHours()) + pad(d.getMinutes()) + ".json";
+        }
+
+        function exportKokoroBackup() {
+            const shouldSave = confirm("現在の記録と設定をファイルに保存します。自分用に大切に保管してください。APIキーを設定している場合は、その情報も含まれます。");
+            if (!shouldSave) return;
+            try {
+                const storageData = {};
+                KOKORO_BACKUP_KEYS.forEach(key => {
+                    const raw = storage.getItem(key);
+                    storageData[key] = KOKORO_RECORD_KEYS.includes(key) ? parseBackupRecordList(raw, key) : (raw || "");
+                });
+                const payload = {
+                    app: 'kokoro-no-tochugesha',
+                    version: 1,
+                    exportedAt: new Date().toISOString(),
+                    storage: storageData
+                };
+                const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = getBackupFileName();
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                showToast("きろくのお守りを保存しました。", "success");
+            } catch (e) {
+                showToast("きろくの保存に失敗しました: " + e.message, "error");
+            }
+        }
+
+        function validateBackupPayload(payload) {
+            if (!payload || typeof payload !== 'object') throw new Error("バックアップJSONの形式が正しくありません。");
+            if (!payload.storage || typeof payload.storage !== 'object') throw new Error("storage項目が見つかりません。");
+            const validated = { records: {}, apiKey: "", model: "" };
+            KOKORO_RECORD_KEYS.forEach(key => {
+                validated.records[key] = parseBackupRecordList(payload.storage[key], key);
+            });
+            if (payload.storage.kokoro_gemini_api_key !== undefined && payload.storage.kokoro_gemini_api_key !== null) {
+                if (typeof payload.storage.kokoro_gemini_api_key !== 'string') throw new Error("APIキーの形式が正しくありません。");
+                validated.apiKey = payload.storage.kokoro_gemini_api_key;
+            }
+            if (payload.storage.kokoro_gemini_model !== undefined && payload.storage.kokoro_gemini_model !== null) {
+                if (typeof payload.storage.kokoro_gemini_model !== 'string') throw new Error("モデル設定の形式が正しくありません。");
+                validated.model = payload.storage.kokoro_gemini_model;
+            }
+            return validated;
+        }
+
+        async function importKokoroBackupFile(event) {
+            const input = event?.target;
+            const file = input?.files?.[0];
+            if (!file) return;
+            try {
+                const text = await file.text();
+                let payload;
+                try { payload = JSON.parse(text); }
+                catch (e) { throw new Error("JSONファイルを読み込めませんでした。ファイルが壊れている可能性があります。"); }
+
+                const validated = validateBackupPayload(payload);
+                let importedCount = 0, skippedCount = 0;
+                KOKORO_RECORD_KEYS.forEach(key => {
+                    const existing = getLocalData(key);
+                    const existingIds = new Set(existing.map(item => item?.id).filter(Boolean));
+                    const additions = [];
+                    validated.records[key].forEach(item => {
+                        if (!item || typeof item !== 'object' || !item.id) { skippedCount++; return; }
+                        if (existingIds.has(item.id)) { skippedCount++; return; }
+                        existingIds.add(item.id);
+                        additions.push(item);
+                    });
+                    if (additions.length > 0) {
+                        localStorage.setItem(key, JSON.stringify([...existing, ...additions]));
+                        importedCount += additions.length;
+                    }
+                });
+
+                if (validated.apiKey || validated.model) {
+                    const shouldRestoreApi = confirm("保存したきろくの中に、AI接続の設定も含まれています。必要であれば一緒に読み込みますか？");
+                    if (shouldRestoreApi) {
+                        if (validated.apiKey) {
+                            storage.setItem('kokoro_gemini_api_key', validated.apiKey);
+                            savedApiKey = validated.apiKey;
+                        }
+                        if (validated.model) {
+                            storage.setItem('kokoro_gemini_model', validated.model);
+                            savedModel = validated.model;
+                        }
+                    }
+                }
+
+                renderAllSavedData();
+                updateApiBtnStyle();
+                showToast("保存したきろくを読み込みました: " + importedCount + "件追加、" + skippedCount + "件スキップしました。", "success");
+            } catch (e) {
+                showToast("保存したきろくを読み込めませんでした: " + e.message, "error");
+            } finally {
+                if (input) input.value = "";
+            }
+        }
+
+        function openKokoroBackupImportPicker() {
+            const shouldRead = confirm("保存したきろくを読み込みます。今ある記録は残したまま、重なっていない記録だけを追加します。");
+            if (!shouldRead) return;
+            document.getElementById('backup-import-input')?.click();
+        }
         const apiKey = "";
         let savedApiKey = storage.getItem('kokoro_gemini_api_key') || ""; 
         let savedModel = storage.getItem('kokoro_gemini_model') || "gemini-2.5-flash-preview-09-2025"; 
@@ -2535,6 +2685,11 @@ bind('btn-breath-478', 'click', () => {
             bind('cat-boundaries', 'click', () => filterDialogue('boundaries'));
             bind('cat-mindful', 'click', () => filterDialogue('mindful'));
             bind('cat-action', 'click', () => filterDialogue('action'));
+
+            // データバックアップ
+            bind('btn-export-backup', 'click', exportKokoroBackup);
+            bind('btn-import-backup', 'click', openKokoroBackupImportPicker);
+            bind('backup-import-input', 'change', importKokoroBackupFile);
 
             // 削除モーダル
             bind('btn-delete-cancel', 'click', closeDeleteModal);
