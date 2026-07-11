@@ -382,6 +382,7 @@
                             <label class="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5 hover:bg-gray-50 cursor-pointer text-xs"><input type="radio" name="state" value="👥 他人の目（嫌われてるかも犬）" class="accent-pdPink"><span>👥 他人の目（嫌われてるかも犬）</span></label>
                             <label class="flex items-center gap-3 border border-gray-200 rounded-xl p-2.5 hover:bg-gray-50 cursor-pointer text-xs"><input type="radio" name="state" value="🔋 意欲低下・おっくう・体が動かない" class="accent-pdPink"><span>🔋 意欲低下・おっくう・体が動かない</span></label>
                         </div>
+                        <button id="btn-open-my-coping" class="w-full mt-3 bg-white hover:bg-gray-50 text-pdNavy font-bold py-2.5 px-4 rounded-xl border-2 border-pdBlack text-xs cursor-pointer shadow-[2px_2px_0_#000]">＋ マイコーピング</button>
                         <button id="btn-coping" class="w-full mt-3 bg-pdPink hover:bg-pdPink/95 text-white font-bold py-3 px-4 rounded-xl border-2 border-pdBlack text-xs cursor-pointer shadow-[3px_3px_0_#000]">✨ 処方する</button>
                     </div>
                     <div id="coping-result-anchor" class="border-2 border-pdBlack bg-gray-50 rounded-xl p-4 relative flex flex-col justify-between min-h-[200px] scroll-mt-24 box-border">
@@ -738,6 +739,51 @@
         </section>
 
     </main>
+
+    <!-- マイコーピング管理モーダル -->
+    <div id="my-coping-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[39000]">
+        <div class="bg-white border-4 border-pdBlack max-w-lg w-full rounded-2xl p-5 shadow-[4px_4px_0_#000] max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b pb-2 mb-4">
+                <h3 class="font-black text-sm text-pdNavy">マイコーピング</h3>
+                <button id="btn-close-my-coping" class="text-gray-500 hover:text-black p-1" aria-label="閉じる"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="my-coping-list-view">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <p id="my-coping-state-label" class="text-[11px] font-bold text-gray-600"></p>
+                    <button id="btn-add-my-coping" class="bg-pdPink text-white border border-black rounded-lg px-3 py-1.5 text-[11px] font-bold">＋ 追加</button>
+                </div>
+                <div id="my-coping-list" class="space-y-2"></div>
+            </div>
+            <div id="my-coping-form-view" class="hidden space-y-3">
+                <h4 id="my-coping-form-title" class="font-black text-xs text-pdNavy">新規追加</h4>
+                <label class="block text-[11px] font-bold">状態タグ
+                    <select id="my-coping-state" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs"></select>
+                </label>
+                <label class="block text-[11px] font-bold">タイトル（最大30文字）
+                    <input id="my-coping-title" maxlength="30" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs" type="text">
+                </label>
+                <label class="block text-[11px] font-bold">詳細メモ（最大200文字）
+                    <textarea id="my-coping-detail" maxlength="200" rows="4" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs"></textarea>
+                </label>
+                <div class="flex gap-2 pt-2">
+                    <button id="btn-cancel-my-coping-form" class="flex-1 bg-gray-100 border-2 border-black rounded-lg py-2 text-xs font-bold">キャンセル</button>
+                    <button id="btn-save-my-coping" class="flex-1 bg-pdPink text-white border-2 border-black rounded-lg py-2 text-xs font-bold">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- マイコーピング削除確認モーダル -->
+    <div id="my-coping-delete-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[40000]">
+        <div class="bg-white border-4 border-pdBlack max-w-sm w-full rounded-2xl p-5 shadow-[4px_4px_0_#000] text-center space-y-4">
+            <h4 id="my-coping-delete-message" class="font-black text-xs text-pdNavy"></h4>
+            <p class="text-[10px] text-gray-500">削除した内容は取り消せません。</p>
+            <div class="flex gap-2">
+                <button id="btn-confirm-my-coping-delete" class="flex-1 bg-rose-600 text-white border-2 border-black rounded-lg py-2 text-xs font-bold">削除する</button>
+                <button id="btn-cancel-my-coping-delete" class="flex-1 bg-white border-2 border-black rounded-lg py-2 text-xs font-bold">キャンセル</button>
+            </div>
+        </div>
+    </div>
 
     <!-- 🗑️ シュレッダーモーダル -->
     <div id="delete-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[40000]">
@@ -1159,12 +1205,14 @@
             'kokoro_gemini_model',
             'kokoro_local_cbt_records',
             'kokoro_local_talk_records',
-            'kokoro_local_threegoods_records'
+            'kokoro_local_threegoods_records',
+            'kokoro_local_my_coping_records'
         ];
         const KOKORO_RECORD_KEYS = [
             'kokoro_local_cbt_records',
             'kokoro_local_talk_records',
-            'kokoro_local_threegoods_records'
+            'kokoro_local_threegoods_records',
+            'kokoro_local_my_coping_records'
         ];
 
         function parseBackupRecordList(value, key) {
@@ -1723,6 +1771,151 @@ const BREATH_PATTERNS = {
         }
 
         // --- 5. コーピングノート ---
+        const MY_COPING_STORAGE_KEY = 'kokoro_local_my_coping_records';
+        let editingMyCopingId = null, pendingMyCopingDeleteId = null;
+        // モーダル内で現在表示している状態タグ。メイン画面のラジオボタンとは独立して保持し、
+        // 編集で状態タグを変更した直後も、変更後の状態タグの一覧を表示し続けられるようにする。
+        let myCopingViewState = null;
+
+        function escapeMyCopingHtml(value) {
+            const el = document.createElement('div');
+            el.textContent = String(value ?? '');
+            return el.innerHTML;
+        }
+
+        function getSelectedCopingState() {
+            return document.querySelector('input[name="state"]:checked')?.value || Object.keys(copingSkillsDatabase)[0];
+        }
+
+        function getMyCopingRecords(stateTag = null) {
+            const records = getLocalData(MY_COPING_STORAGE_KEY);
+            return (stateTag ? records.filter(item => item.stateTag === stateTag) : records)
+                .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        }
+
+        function openMyCopingModal() {
+            myCopingViewState = getSelectedCopingState();
+            closeMyCopingForm();
+            renderMyCopingList();
+            document.getElementById('my-coping-modal')?.classList.remove('hidden');
+        }
+
+        function closeMyCopingModal() {
+            closeMyCopingForm();
+            myCopingViewState = null;
+            document.getElementById('my-coping-modal')?.classList.add('hidden');
+        }
+
+        function renderMyCopingList() {
+            const stateTag = myCopingViewState || getSelectedCopingState();
+            const list = document.getElementById('my-coping-list');
+            document.getElementById('my-coping-state-label').textContent = stateTag;
+            const records = getMyCopingRecords(stateTag);
+            list.innerHTML = records.length ? records.map(item => `
+                <div class="border-2 border-gray-200 rounded-xl p-3">
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="min-w-0"><span class="inline-block bg-pdPink text-white rounded px-1.5 py-0.5 text-[8px] font-black mr-1">マイ</span><span class="text-xs font-bold break-words">${escapeMyCopingHtml(item.title)}</span></div>
+                        <div class="flex shrink-0 gap-1">
+                            <button type="button" onclick="editMyCoping('${item.id}')" class="p-1.5 text-pdNavy" aria-label="編集"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" onclick="requestMyCopingDelete('${item.id}')" class="p-1.5 text-rose-600" aria-label="削除"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    ${item.detail ? `<p class="mt-1 text-[10px] text-gray-600 whitespace-pre-wrap break-words">${escapeMyCopingHtml(item.detail)}</p>` : ''}
+                </div>`).join('') : '<p class="text-[10px] text-gray-400 text-center italic py-5">この状態のマイコーピングはありません。</p>';
+        }
+
+        function populateMyCopingStateOptions(selectedState) {
+            const select = document.getElementById('my-coping-state');
+            select.innerHTML = Object.keys(copingSkillsDatabase).map(key => `<option>${escapeMyCopingHtml(key)}</option>`).join('');
+            select.value = selectedState;
+        }
+
+        function openMyCopingForm(id = null) {
+            let target = null;
+            if (id) {
+                target = getMyCopingRecords().find(item => item.id === id);
+                if (!target) { showToast('編集するマイコーピングが見つかりませんでした。', 'error'); closeMyCopingForm(); return; }
+            }
+            editingMyCopingId = id;
+            populateMyCopingStateOptions(target?.stateTag || myCopingViewState || getSelectedCopingState());
+            document.getElementById('my-coping-title').value = target?.title || '';
+            document.getElementById('my-coping-detail').value = target?.detail || '';
+            document.getElementById('my-coping-form-title').textContent = id ? '編集' : '新規追加';
+            document.getElementById('my-coping-list-view').classList.add('hidden');
+            document.getElementById('my-coping-form-view').classList.remove('hidden');
+            document.getElementById('my-coping-title').focus();
+        }
+
+        function closeMyCopingForm() {
+            editingMyCopingId = null;
+            document.getElementById('my-coping-form-view')?.classList.add('hidden');
+            document.getElementById('my-coping-list-view')?.classList.remove('hidden');
+        }
+
+        function saveMyCoping() {
+            const title = document.getElementById('my-coping-title').value.trim();
+            const detail = document.getElementById('my-coping-detail').value.trim();
+            const stateTag = document.getElementById('my-coping-state').value;
+            if (!title) { showToast('タイトルを入力してください。', 'error'); return; }
+            const now = new Date().toISOString();
+            let record, previousRecord = null;
+            if (editingMyCopingId) {
+                const existing = getMyCopingRecords().find(item => item.id === editingMyCopingId);
+                if (!existing) { showToast('編集するマイコーピングが見つかりませんでした。', 'error'); closeMyCopingForm(); renderMyCopingList(); return; }
+                previousRecord = existing;
+                record = { ...existing, stateTag, title, detail, updatedAt: now };
+                deleteLocalData(MY_COPING_STORAGE_KEY, existing.id);
+            } else {
+                record = { id: 'my_coping_' + crypto.randomUUID(), stateTag, title, detail, createdAt: now, updatedAt: now };
+            }
+            if (!saveLocalData(MY_COPING_STORAGE_KEY, record)) {
+                if (previousRecord) saveLocalData(MY_COPING_STORAGE_KEY, previousRecord);
+                showToast('マイコーピングを保存できませんでした。', 'error');
+                return;
+            }
+            // 状態タグを変更して保存した場合、表示中の一覧フィルタも変更後の状態タグに合わせる。
+            // これをしないと、保存直後にメイン画面で選んでいた状態の一覧からは消えて見えてしまい、
+            // データが失われたかのように見えてしまうため。
+            const movedToOtherState = record.stateTag !== (myCopingViewState || getSelectedCopingState());
+            myCopingViewState = record.stateTag;
+            closeMyCopingForm(); renderMyCopingList();
+            showToast(
+                movedToOtherState
+                    ? `マイコーピングを保存しました。「${record.stateTag}」の一覧に表示されています。`
+                    : 'マイコーピングを保存しました。',
+                'success'
+            );
+        }
+
+        function requestMyCopingDelete(id) {
+            const target = getMyCopingRecords().find(item => item.id === id);
+            if (!target) { showToast('削除するマイコーピングが見つかりませんでした。', 'error'); return; }
+            pendingMyCopingDeleteId = id;
+            document.getElementById('my-coping-delete-message').textContent = `「${target.title}」を削除します。よろしいですか？`;
+            document.getElementById('my-coping-delete-modal').classList.remove('hidden');
+            document.getElementById('btn-cancel-my-coping-delete').focus();
+        }
+
+        function closeMyCopingDeleteModal() {
+            pendingMyCopingDeleteId = null;
+            document.getElementById('my-coping-delete-modal')?.classList.add('hidden');
+        }
+
+        function confirmMyCopingDelete() {
+            if (!pendingMyCopingDeleteId) return;
+            const deletingId = pendingMyCopingDeleteId;
+            deleteLocalData(MY_COPING_STORAGE_KEY, deletingId);
+            if (getMyCopingRecords().some(item => item.id === deletingId)) {
+                showToast('マイコーピングを削除できませんでした。', 'error');
+                return;
+            }
+            closeMyCopingDeleteModal(); closeMyCopingForm(); renderMyCopingList();
+            showToast('マイコーピングを削除しました。', 'success');
+        }
+
+        window.editMyCoping = openMyCopingForm;
+        window.requestMyCopingDelete = requestMyCopingDelete;
+
         async function runCoping(isAnotherAction = false) {
             const stateText = document.querySelector('input[name="state"]:checked')?.value || "⚡ 動悸・緊張・心臓バクバク";
             const placeholderEl = document.getElementById('coping-output-placeholder'), outputEl = document.getElementById('coping-output'), loaderEl = document.getElementById('coping-loader'), btn = document.getElementById('btn-coping'), anotherBox = document.getElementById('coping-another-box');
@@ -1731,8 +1924,16 @@ const BREATH_PATTERNS = {
             if (!isAnotherAction) { placeholderEl.classList.add('hidden'); outputEl.classList.add('hidden'); anotherBox.classList.add('hidden'); lastCopingSkills = []; }
             btn.disabled = true;
 
-            const pool = copingSkillsDatabase[stateText] || copingSkillsDatabase["⚡ 動悸・緊張・心臓バクバク"];
-const availablePool = pool.filter(skill => !lastCopingSkills.includes(skill)), selectedSkills = (availablePool.length < 2 ? [...pool] : availablePool).slice(0, 3);
+            const standardPool = copingSkillsDatabase[stateText] || copingSkillsDatabase[Object.keys(copingSkillsDatabase)[0]];
+            const myPool = getMyCopingRecords(stateText).map(item => item.detail ? `「${item.title}：${item.detail}」` : `「${item.title}」`);
+            const pool = [...standardPool, ...myPool];
+            const availablePool = pool.filter(skill => !lastCopingSkills.includes(skill));
+            const candidatePool = availablePool.length < 3 ? [...pool] : [...availablePool];
+            for (let i = candidatePool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [candidatePool[i], candidatePool[j]] = [candidatePool[j], candidatePool[i]];
+            }
+            const selectedSkills = candidatePool.slice(0, 3);
             lastCopingSkills.push(...selectedSkills);
 
             try {
@@ -2644,6 +2845,13 @@ bind('btn-breath-478', 'click', () => {
             // コーピング
             bind('btn-coping', 'click', () => runCoping(false));
             bind('btn-coping-another', 'click', () => runCoping(true));
+            bind('btn-open-my-coping', 'click', openMyCopingModal);
+            bind('btn-close-my-coping', 'click', closeMyCopingModal);
+            bind('btn-add-my-coping', 'click', () => openMyCopingForm());
+            bind('btn-cancel-my-coping-form', 'click', closeMyCopingForm);
+            bind('btn-save-my-coping', 'click', saveMyCoping);
+            bind('btn-cancel-my-coping-delete', 'click', closeMyCopingDeleteModal);
+            bind('btn-confirm-my-coping-delete', 'click', confirmMyCopingDelete);
 
             // セルフトーク
             ['stationmaster', 'gal', 'philosopher', 'priest', 'master', 'cat'].forEach(c => {
