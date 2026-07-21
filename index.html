@@ -28,12 +28,12 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #E91E63; border-radius: 4px; }
         
         @keyframes runTrain {
-            0% { transform: translate(-280px, 45px) scale(0.65) rotate(-3deg); opacity: 0; }
-            8% { opacity: 1; }
-            92% { opacity: 1; }
-            100% { transform: translate(110vw, -35px) scale(0.7) rotate(-3deg); opacity: 0; }
+            0% { transform: translate(-340px, 38px) scale(0.38) rotate(-7deg); opacity: 0; }
+            12% { opacity: 0.9; }
+            88% { opacity: 0.85; }
+            100% { transform: translate(110vw, -54px) scale(0.42) rotate(-7deg); opacity: 0; }
         }
-        .train-animation { animation: runTrain 30s linear infinite; }
+        .train-animation { animation: runTrain 72s linear infinite; }
 
         @keyframes twinkleFast { 0%, 100% { opacity: 0.15; transform: scale(0.8); } 50% { opacity: 0.9; transform: scale(1.1); } }
         @keyframes twinkleSlow { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.75; } }
@@ -183,6 +183,163 @@
     font-weight: 900;
     box-shadow: 0 0 8px rgba(0,255,102,.4);
 }
+
+        .nr-station-scene {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .nr-station-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center top;
+            z-index: 1;
+        }
+        .stationmaster-penguin {
+            position: absolute;
+            left: 50%;
+            bottom: 42px;
+            width: clamp(62px, 12vw, 108px);
+            padding: 0;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 18;
+            transform: translateX(-50%);
+            transition: left 2.8s ease-in-out, transform 0.25s ease, opacity 0.2s ease;
+        }
+        .stationmaster-penguin img {
+            display: block;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 7px 9px rgba(0, 0, 0, 0.38));
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .stationmaster-penguin.is-looking-left img,
+        .stationmaster-penguin.is-walking-left img { transform: scaleX(-1); }
+        .stationmaster-penguin.is-reacting { transform: translateX(-50%) scale(1.04); }
+        .stationmaster-penguin.is-breathing img { animation: penguinHomeBreathe 2.8s ease-in-out infinite; }
+        .stationmaster-penguin.is-bowing img { animation: penguinHomeBow 0.9s ease-in-out; }
+        .stationmaster-penguin.is-waving img { animation: penguinHomeWave 0.9s ease-in-out; }
+        .stationmaster-penguin.is-paused { opacity: 0.92; }
+
+        @keyframes penguinHomeBreathe {
+            0%, 100% { transform: scale(1); }
+            45% { transform: scale(1.045); }
+        }
+        @keyframes penguinHomeBow {
+            0%, 100% { transform: rotate(0deg); }
+            45% { transform: rotate(4deg); }
+        }
+        @keyframes penguinHomeWave {
+            0%, 100% { transform: rotate(0deg); }
+            35% { transform: rotate(-2deg); }
+            70% { transform: rotate(2deg); }
+        }
+
+        .nr-home-header {
+            --nr-home-ratio: 2.35 / 1;
+            --penguin-walk-min: 39;
+            --penguin-walk-max: 61;
+            width: 100%;
+            aspect-ratio: var(--nr-home-ratio);
+            min-height: 0 !important;
+            padding: 0 !important;
+            isolation: isolate;
+        }
+        .nr-home-ticket-nav {
+            position: absolute !important;
+            left: 50%;
+            top: clamp(66px, 18%, 112px);
+            bottom: auto;
+            transform: translateX(-50%);
+            z-index: 42 !important;
+            width: min(52vw, 420px) !important;
+            max-width: min(52vw, 420px) !important;
+            gap: clamp(0.18rem, 0.45vw, 0.32rem) !important;
+        }
+        .nr-home-ticket-nav .nav-btn {
+            height: clamp(30px, 4vw, 40px) !important;
+            min-height: clamp(30px, 4vw, 40px) !important;
+            border-width: 1.5px;
+            box-shadow: 1px 1px 0 #000;
+            padding: 0.18rem 0.22rem !important;
+        }
+        .nr-home-ticket-nav .nav-btn span {
+            font-size: clamp(4.5px, 0.48vw, 6px) !important;
+            line-height: 1 !important;
+        }
+        .nr-home-ticket-nav .nav-btn span:nth-child(2) {
+            font-size: clamp(6.8px, 0.72vw, 8.2px) !important;
+        }
+        .nr-home-header .train-animation {
+            top: clamp(18px, 6%, 42px) !important;
+            bottom: auto !important;
+            width: min(37.8vw, 319px) !important;
+            height: auto !important;
+            opacity: 0.88;
+            z-index: 3;
+        }
+        .nr-home-legacy-moon {
+            display: none !important;
+        }
+        .nr-home-legacy-train {
+            z-index: 3 !important;
+        }
+        .stationmaster-penguin {
+            bottom: 1%;
+            width: clamp(82px, 10.5vw, 116px);
+            z-index: 44;
+        }
+
+        @media (max-width: 640px) {
+            .nr-home-header {
+                --penguin-walk-min: 43;
+                --penguin-walk-max: 57;
+                padding: 0 !important;
+                min-height: 0 !important;
+                aspect-ratio: var(--nr-home-ratio);
+            }
+            .nr-home-ticket-nav {
+                top: 19%;
+                width: min(58vw, 230px) !important;
+                max-width: min(58vw, 230px) !important;
+                gap: 0.16rem !important;
+            }
+            .nr-home-ticket-nav .nav-btn {
+                height: 22px !important;
+                min-height: 22px !important;
+                padding: 0.08rem 0.12rem !important;
+            }
+            .nr-home-ticket-nav .nav-btn span {
+                font-size: 4px !important;
+            }
+            .nr-home-ticket-nav .nav-btn span:nth-child(2) {
+                font-size: 5.8px !important;
+            }
+            .nr-home-header .train-animation {
+                top: 5% !important;
+                width: 157px !important;
+                opacity: 0.86;
+            }
+            .stationmaster-penguin { width: clamp(42px, 11vw, 54px); bottom: 1.5%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .stationmaster-penguin,
+            .stationmaster-penguin img {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
     </style>
     <!-- Cloudflare Web Analytics -->
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -192,11 +349,27 @@
 <body class="bg-paperBeige text-gray-800 min-h-screen flex flex-col font-sans select-none">
 
     <!-- Header Navigation (美しきミッドナイトインディゴの夜空、極小星空、うさぎ跳ねる月、りんご付駅名標) -->
-    <header class="bg-gradient-to-b from-[#0a1128] via-[#16225f] to-[#0c1236] text-white py-3 px-3 shadow-md border-b-4 border-pdBlack relative z-50 overflow-hidden shrink-0 min-h-[155px] md:min-h-[175px]">
+    <header class="nr-home-header bg-gradient-to-b from-[#0a1128] via-[#16225f] to-[#0c1236] text-white py-3 px-3 shadow-md border-b-4 border-pdBlack relative z-50 overflow-hidden shrink-0 min-h-[280px] md:min-h-[320px]">
         <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden" id="starry-sky-bg"></div>
 
+        <div class="absolute top-2 left-3 flex items-center gap-1.5 z-50">
+            <button id="btn-help-modal-open" class="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-pink-400/30 flex items-center gap-1 cursor-pointer shadow-md">
+                <i class="fa-solid fa-compass text-yellow-200"></i><span>ご案内</span>
+            </button>
+            <button id="btn-api-modal-open" class="bg-white/10 text-white/80 text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-white/10 flex items-center gap-1 cursor-pointer">
+                <i id="api-status-icon" class="fa-solid fa-key text-yellow-300"></i><span id="api-btn-text">API設定</span>
+            </button>
+        </div>
+
+        <div id="nr-station-home-scene" class="nr-station-scene" aria-label="NR赤坂Stの小さなホーム">
+            <img class="nr-station-bg" src="assets/images/station/station_scene.png" alt="" onerror="this.hidden=true;">
+        </div>
+        <button id="stationmaster-penguin-home" class="stationmaster-penguin" type="button" aria-label="駅長ペンギンにあいさつする">
+            <img id="stationmaster-penguin-img" src="assets/images/penguin/common/penguin_front_01.png" alt="駅長ペンギン">
+        </button>
+
         <!-- 🌙 月とうさぎ -->
-        <div class="absolute top-2.5 right-2 md:right-4 w-12 h-12 pointer-events-none z-10 opacity-90">
+        <div class="nr-home-legacy-moon absolute top-2.5 right-2 md:right-4 w-12 h-12 pointer-events-none z-10 opacity-90">
             <svg viewBox="0 0 100 100" class="w-full h-full">
                 <circle cx="50" cy="50" r="38" fill="#FCD34D" filter="drop-shadow(0px 0px 8px rgba(251,191,36,0.8))"/>
                 <g class="rabbit-hop-animation" style="transform-origin: center bottom;">
@@ -209,7 +382,7 @@
         </div>
 
         <!-- 🚂 【右向きSL銀河鉄道】 -->
-        <div class="absolute inset-0 pointer-events-none z-10">
+        <div class="nr-home-legacy-train absolute inset-0 pointer-events-none z-10">
             <svg class="train-animation absolute bottom-4 left-0 w-64 h-12" viewBox="0 0 250 40" style="filter: drop-shadow(0px 0px 4px rgba(251,191,36,0.35));">
                 <circle cx="184" cy="8" r="2.5" class="star-fast" fill="#ffffff" opacity="0.45"/>
                 <circle cx="192" cy="6" r="3.5" class="star-slow" fill="#ffffff" opacity="0.35"/>
@@ -245,38 +418,8 @@
                 <circle cx="216" cy="32" r="5" fill="#000000" stroke="#FBBF24" stroke-width="0.75"/>
             </svg>
         </div>
-
-        <div class="absolute top-2 left-3 flex items-center gap-1.5 z-30">
-            <button id="btn-help-modal-open" class="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-pink-400/30 flex items-center gap-1 cursor-pointer shadow-md">
-                <i class="fa-solid fa-compass text-yellow-200"></i><span>ご案内</span>
-            </button>
-            <button id="btn-api-modal-open" class="bg-white/10 text-white/80 text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-white/10 flex items-center gap-1 cursor-pointer">
-                <i id="api-status-icon" class="fa-solid fa-key text-yellow-300"></i><span id="api-btn-text">API設定</span>
-            </button>
-        </div>
-
-        <!-- 🚉 駅名標看板 -->
-        <div class="relative z-20 flex flex-col items-center justify-center mt-3 mb-2">
-            <div class="mb-1 text-center select-none relative flex items-center justify-center" id="header-apple-container" style="min-height: 60px; min-width: 60px;">
-                <div id="header-apple-ring" class="absolute rounded-full border-2 border-gray-300/30" style="width: 38px; height: 38px;"></div>
-                <i id="header-apple" class="fa-solid fa-apple-whole text-rose-500 text-lg drop-shadow-[0_0_4px_rgba(233,30,99,0.6)] block relative z-10"></i>
-            </div>
-            
-            <div class="bg-white border-4 border-pdBlack text-gray-900 rounded-md py-2 px-4 shadow-[4px_4px_0_#000] flex flex-col justify-between items-center min-w-[250px] md:min-w-[290px]">
-                <div class="w-full text-center">
-                    <h1 class="font-serif font-black text-sm md:text-base tracking-wider text-pdNavy leading-none">ココロの途中下車</h1>
-                    <div class="w-3/4 h-[3.5px] bg-pdPink mx-auto mt-1.5 mb-2 rounded-full shadow-sm"></div>
-                    <div class="flex items-center justify-between text-[9px] md:text-[10px] font-black font-mono tracking-tight text-gray-700">
-                        <span>← 焦り</span>
-                        <span class="text-xs md:text-sm font-sans font-bold bg-gray-150 px-1.5 rounded">NR赤坂st.</span>
-                        <span>還る →</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- 🎫 6連切符ナビ -->
-        <nav class="grid grid-cols-3 md:grid-cols-6 gap-1.5 md:gap-2 justify-center z-10 w-full max-w-[580px] px-1 mx-auto box-border">
+        <nav class="nr-home-ticket-nav relative grid grid-cols-3 md:grid-cols-6 gap-1.5 md:gap-2 justify-center z-30 w-full max-w-[580px] px-1 mx-auto box-border">
             <button id="nav-coping" class="nav-btn ticket-shinkansen active py-1 px-1 rounded font-bold flex flex-col justify-between text-left h-[46px] md:h-[68px] shadow-[1px_1px_0_#000]">
                 <span class="text-[5px] md:text-[7px] font-mono leading-none">ＮＲ乗車券</span>
                 <span class="text-[8.5px] md:text-[10px] font-black self-center">コーピング</span>
@@ -1370,6 +1513,297 @@ const BREATH_PATTERNS = {
         const MODELS_TO_TRY = ["gemini-2.5-flash-preview-09-2025", "gemini-2.5-flash"];
         let lastCopingSkills = [];
 
+        const STATION_HOME_TAB = 'coping';
+        const STATION_PENGUIN_MANIFEST = {
+            common: ['assets/images/penguin/common/penguin_front_01.png'],
+            walk: [
+                'assets/images/penguin/walk/penguin_walk_right_01.png',
+                'assets/images/penguin/walk/penguin_walk_right_02.png',
+                'assets/images/penguin/walk/penguin_walk_right_03.png',
+                'assets/images/penguin/walk/penguin_walk_right_04.png',
+                'assets/images/penguin/walk/penguin_walk_right_05.png'
+            ],
+            look: [
+                'assets/images/penguin/look/penguin_look_left_01.png',
+                'assets/images/penguin/look/penguin_look_left_02.png',
+                'assets/images/penguin/look/penguin_look_left_03.png'
+            ],
+            bow: [
+                'assets/images/penguin/bow/penguin_bow_01.png',
+                'assets/images/penguin/bow/penguin_bow_02.png',
+                'assets/images/penguin/bow/penguin_bow_03.png'
+            ],
+            breathe: [
+                'assets/images/penguin/breathe/penguin_breathe_01.png',
+                'assets/images/penguin/breathe/penguin_breathe_02.png',
+                'assets/images/penguin/breathe/penguin_breathe_03.png'
+            ],
+            wave: [
+                'assets/images/penguin/wave/penguin_wave_01.png',
+                'assets/images/penguin/wave/penguin_wave_02.png',
+                'assets/images/penguin/wave/penguin_wave_03.png',
+                'assets/images/penguin/wave/penguin_wave_04.png',
+                'assets/images/penguin/wave/penguin_wave_05.png',
+                'assets/images/penguin/wave/penguin_wave_06.png'
+            ]
+        };
+        const STATION_PENGUIN_ACTIONS = [
+            { name: 'idle', weight: 35 },
+            { name: 'walk', weight: 30 },
+            { name: 'look', weight: 20 },
+            { name: 'breathe', weight: 10 },
+            { name: 'bow', weight: 5 }
+        ];
+        const stationPenguinMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const stationPenguinState = {
+            active: false,
+            state: 'paused',
+            lastAction: null,
+            actionTimer: null,
+            frameTimer: null,
+            walkTimer: null,
+            cycleId: 0,
+            position: 50,
+            reducedMotion: stationPenguinMotion.matches
+        };
+
+
+        function getStationPenguinElements() {
+            return {
+                button: document.getElementById('stationmaster-penguin-home'),
+                image: document.getElementById('stationmaster-penguin-img')
+            };
+        }
+
+        function clearStationPenguinTimers() {
+            clearTimeout(stationPenguinState.actionTimer);
+            clearTimeout(stationPenguinState.frameTimer);
+            clearInterval(stationPenguinState.walkTimer);
+            stationPenguinState.actionTimer = null;
+            stationPenguinState.frameTimer = null;
+            stationPenguinState.walkTimer = null;
+            stationPenguinState.cycleId++;
+        }
+
+        function resetStationPenguinClasses() {
+            const { button } = getStationPenguinElements();
+            if (!button) return;
+            button.classList.remove('is-looking-left', 'is-walking-left', 'is-reacting', 'is-breathing', 'is-bowing', 'is-waving', 'is-paused');
+        }
+
+        function setStationPenguinFrame(src, className = '') {
+            const { button, image } = getStationPenguinElements();
+            if (!button || !image) return;
+            image.src = src || STATION_PENGUIN_MANIFEST.common[0];
+            resetStationPenguinClasses();
+            if (className) button.classList.add(className);
+        }
+
+        function canStationPenguinMove() {
+            return stationPenguinState.active && !document.hidden && !stationPenguinState.reducedMotion;
+        }
+
+        function stationPenguinIdle(scheduleNext = true) {
+            clearStationPenguinTimers();
+            stationPenguinState.state = canStationPenguinMove() ? 'idle' : 'paused';
+            setStationPenguinFrame(STATION_PENGUIN_MANIFEST.common[0]);
+            if (!canStationPenguinMove()) {
+                getStationPenguinElements().button?.classList.add('is-paused');
+                return;
+            }
+            if (scheduleNext) {
+                const delay = 1400 + Math.floor(Math.random() * 1800);
+                stationPenguinState.actionTimer = setTimeout(runNextStationPenguinAction, delay);
+            }
+        }
+
+        function pickStationPenguinAction() {
+            const candidates = STATION_PENGUIN_ACTIONS.filter(action => action.name !== stationPenguinState.lastAction);
+            const total = candidates.reduce((sum, action) => sum + action.weight, 0);
+            let roll = Math.random() * total;
+            for (const action of candidates) {
+                roll -= action.weight;
+                if (roll <= 0) return action.name;
+            }
+            return candidates[0]?.name || 'idle';
+        }
+
+        function getStationPenguinWalkBounds() {
+            const scene = document.getElementById('nr-station-home-scene');
+            const source = scene?.closest('.nr-home-header') || scene || document.documentElement;
+            const styles = getComputedStyle(source);
+            const min = Number.parseFloat(styles.getPropertyValue('--penguin-walk-min')) || 35;
+            const max = Number.parseFloat(styles.getPropertyValue('--penguin-walk-max')) || 65;
+            return { min, max };
+        }
+
+        function playStationPenguinFrames(frames, intervalMs, className, done) {
+            clearTimeout(stationPenguinState.frameTimer);
+            const cycle = stationPenguinState.cycleId;
+            let frameIndex = 0;
+            const tick = () => {
+                if (cycle !== stationPenguinState.cycleId || !canStationPenguinMove()) return;
+                setStationPenguinFrame(frames[frameIndex], className);
+                frameIndex++;
+                if (frameIndex >= frames.length) {
+                    stationPenguinState.frameTimer = setTimeout(() => done?.(), intervalMs);
+                    return;
+                }
+                stationPenguinState.frameTimer = setTimeout(tick, intervalMs);
+            };
+            tick();
+        }
+
+        function playStationPenguinFramesWithDurations(frames, durations, className, done) {
+            clearTimeout(stationPenguinState.frameTimer);
+            const cycle = stationPenguinState.cycleId;
+            let frameIndex = 0;
+            const tick = () => {
+                if (cycle !== stationPenguinState.cycleId || !canStationPenguinMove()) return;
+                setStationPenguinFrame(frames[frameIndex], className);
+                const delay = durations[frameIndex] ?? durations[durations.length - 1] ?? 160;
+                frameIndex++;
+                if (frameIndex >= frames.length) {
+                    stationPenguinState.frameTimer = setTimeout(() => done?.(), delay);
+                    return;
+                }
+                stationPenguinState.frameTimer = setTimeout(tick, delay);
+            };
+            tick();
+        }
+
+        function runStationPenguinWalk() {
+            stationPenguinState.state = 'walk';
+            stationPenguinState.lastAction = 'walk';
+            const { min, max } = getStationPenguinWalkBounds();
+            let target = min + Math.random() * (max - min);
+            if (Math.abs(target - stationPenguinState.position) < 8) {
+                target = target < 50 ? max : min;
+            }
+            const className = target < stationPenguinState.position ? 'is-walking-left' : '';
+            const { button } = getStationPenguinElements();
+            if (button) button.style.left = target + '%';
+            let frameIndex = 0;
+            stationPenguinState.walkTimer = setInterval(() => {
+                if (!canStationPenguinMove()) return;
+                setStationPenguinFrame(STATION_PENGUIN_MANIFEST.walk[frameIndex], className);
+                frameIndex = (frameIndex + 1) % STATION_PENGUIN_MANIFEST.walk.length;
+            }, 170);
+            stationPenguinState.actionTimer = setTimeout(() => {
+                stationPenguinState.position = target;
+                stationPenguinIdle(true);
+            }, 2900);
+        }
+
+        function runStationPenguinLook() {
+            stationPenguinState.state = 'look';
+            stationPenguinState.lastAction = 'look';
+            const className = Math.random() < 0.5 ? 'is-looking-left' : '';
+            const frames = [
+                STATION_PENGUIN_MANIFEST.common[0],
+                ...STATION_PENGUIN_MANIFEST.look,
+                ...STATION_PENGUIN_MANIFEST.look.slice().reverse(),
+                STATION_PENGUIN_MANIFEST.common[0]
+            ];
+            playStationPenguinFrames(frames, 360, className, () => stationPenguinIdle(true));
+        }
+
+        function runStationPenguinBreathe() {
+            stationPenguinState.state = 'breathe';
+            stationPenguinState.lastAction = 'breathe';
+            const frames = [
+                STATION_PENGUIN_MANIFEST.common[0],
+                ...STATION_PENGUIN_MANIFEST.breathe,
+                ...STATION_PENGUIN_MANIFEST.breathe.slice().reverse(),
+                STATION_PENGUIN_MANIFEST.common[0]
+            ];
+            playStationPenguinFrames(frames, 520, 'is-breathing', () => stationPenguinIdle(true));
+        }
+
+        function runStationPenguinBow() {
+            stationPenguinState.state = 'bow';
+            stationPenguinState.lastAction = 'bow';
+            const frames = [
+                STATION_PENGUIN_MANIFEST.common[0],
+                ...STATION_PENGUIN_MANIFEST.bow,
+                ...STATION_PENGUIN_MANIFEST.bow.slice().reverse(),
+                STATION_PENGUIN_MANIFEST.common[0]
+            ];
+            playStationPenguinFrames(frames, 260, 'is-bowing', () => stationPenguinIdle(true));
+        }
+
+        function runStationPenguinGreeting() {
+            const frames = [
+                STATION_PENGUIN_MANIFEST.wave[0],
+                STATION_PENGUIN_MANIFEST.wave[1],
+                STATION_PENGUIN_MANIFEST.wave[2],
+                STATION_PENGUIN_MANIFEST.wave[3],
+                STATION_PENGUIN_MANIFEST.wave[4],
+                STATION_PENGUIN_MANIFEST.wave[5],
+                STATION_PENGUIN_MANIFEST.wave[2],
+                STATION_PENGUIN_MANIFEST.wave[0],
+                STATION_PENGUIN_MANIFEST.common[0]
+            ];
+            const durations = [180, 180, 210, 210, 210, 825, 210, 180, 80];
+            playStationPenguinFramesWithDurations(frames, durations, 'is-waving', () => stationPenguinIdle(true));
+        }
+
+        function runNextStationPenguinAction() {
+            if (!canStationPenguinMove()) {
+                stationPenguinIdle(false);
+                return;
+            }
+            clearStationPenguinTimers();
+            const action = pickStationPenguinAction();
+            if (action === 'walk') runStationPenguinWalk();
+            else if (action === 'look') runStationPenguinLook();
+            else if (action === 'breathe') runStationPenguinBreathe();
+            else if (action === 'bow') runStationPenguinBow();
+            else {
+                stationPenguinState.lastAction = 'idle';
+                stationPenguinIdle(true);
+            }
+        }
+
+        function reactStationPenguin() {
+            const { button } = getStationPenguinElements();
+            if (!button || !stationPenguinState.active || stationPenguinState.state === 'react') return;
+            clearStationPenguinTimers();
+            stationPenguinState.state = 'react';
+            stationPenguinState.lastAction = 'react';
+            if (!stationPenguinState.reducedMotion) {
+                runStationPenguinGreeting();
+                return;
+            }
+            setStationPenguinFrame(STATION_PENGUIN_MANIFEST.common[0]);
+            button.classList.add('is-reacting');
+            stationPenguinState.actionTimer = setTimeout(() => {
+                button.classList.remove('is-reacting');
+                stationPenguinIdle(true);
+            }, 450);
+        }
+
+        function updateStationPenguinForTab(tabId) {
+            stationPenguinState.active = tabId === STATION_HOME_TAB;
+            if (stationPenguinState.active) stationPenguinIdle(true);
+            else stationPenguinIdle(false);
+        }
+
+        function initStationPenguinHome() {
+            setStationPenguinFrame(STATION_PENGUIN_MANIFEST.common[0]);
+            bind('stationmaster-penguin-home', 'click', reactStationPenguin);
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stationPenguinIdle(false);
+                else if (stationPenguinState.active) stationPenguinIdle(true);
+            });
+            const onMotionChange = event => {
+                stationPenguinState.reducedMotion = event.matches;
+                stationPenguinIdle(!event.matches && stationPenguinState.active);
+            };
+            if (stationPenguinMotion.addEventListener) stationPenguinMotion.addEventListener('change', onMotionChange);
+            else if (stationPenguinMotion.addListener) stationPenguinMotion.addListener(onMotionChange);
+        }
+
         function showToast(message, type = 'info') {
             const toast = document.getElementById('custom-toast');
             const msgEl = document.getElementById('toast-message');
@@ -1410,6 +1844,7 @@ const BREATH_PATTERNS = {
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             if (tabId === 'cbt') setTimeout(updateCbtMeters, 30);
             if (tabId === 'archive') renderAllSavedData();
+            updateStationPenguinForTab(tabId);
         }
 
         function toggleMindfulnessTimer() {
@@ -2919,6 +3354,7 @@ bind('btn-breath-478', 'click', () => {
 
         const initApp = async () => {
             bindAllStaticUIElements();
+            initStationPenguinHome();
             initStarrySky();
             updateApiBtnStyle();
             initDailyWord();
