@@ -1514,7 +1514,6 @@ const BREATH_PATTERNS = {
         const MODELS_TO_TRY = ["gemini-2.5-flash-preview-09-2025", "gemini-2.5-flash"];
         let lastCopingSkills = [];
 
-        const STATION_HOME_TAB = 'coping';
         const STATION_PENGUIN_MANIFEST = {
             common: ['assets/images/penguin/common/penguin_front_01.png'],
             walk: [
@@ -1819,10 +1818,10 @@ const BREATH_PATTERNS = {
             setTimeout(() => { stationPenguinState.suppressNextClick = false; }, 700);
         }
 
-        function updateStationPenguinForTab(tabId) {
-            stationPenguinState.active = tabId === STATION_HOME_TAB;
-            if (stationPenguinState.active) stationPenguinIdle(true);
-            else stationPenguinIdle(false);
+        function updateStationPenguinForTab() {
+            if (stationPenguinState.active) return;
+            stationPenguinState.active = true;
+            stationPenguinIdle(true);
         }
 
         function initStationPenguinHome() {
