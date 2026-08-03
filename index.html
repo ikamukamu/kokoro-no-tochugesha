@@ -351,7 +351,7 @@
 
     <!-- Header Navigation (美しきミッドナイトインディゴの夜空、極小星空、うさぎ跳ねる月、りんご付駅名標) -->
     <header class="nr-home-header bg-gradient-to-b from-[#0a1128] via-[#16225f] to-[#0c1236] text-white py-3 px-3 shadow-md border-b-4 border-pdBlack relative z-50 overflow-hidden shrink-0 min-h-[280px] md:min-h-[320px]">
-        <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden" id="starry-sky-bg"></div>
+        <div class="absolute inset-0 pointer-events-none z-[3] overflow-hidden" id="starry-sky-bg"></div>
 
         <div class="absolute top-2 left-3 flex items-center gap-1.5 z-50">
             <button id="btn-help-modal-open" class="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-pink-400/30 flex items-center gap-1 cursor-pointer shadow-md">
@@ -486,10 +486,10 @@
                 </div>
                 
                 <div class="grid grid-cols-5 gap-1 pt-1" id="bgm-selector-group">
-                    <button id="btn-scene-waves" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🌊 海</button>
+                    <button id="btn-scene-cave" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🪨 洞窟</button>
                     <button id="btn-scene-brook" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🏞️ 川</button>
                     <button id="btn-scene-fire" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🔥 焚火</button>
-                    <button id="btn-scene-rain" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🌧️ 雨</button>
+                    <button id="btn-scene-suikinkutsu" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">💧 水琴窟</button>
                     <button id="btn-scene-auto" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] active cursor-pointer">🎲 自動</button>
                 </div>
                 
@@ -1509,7 +1509,21 @@ const BREATH_PATTERNS = {
         ]
     }
 };
-        let audioCtx = null, envSource = null, crackleTimer = null, secondaryRainTimer = null, waveGain = null, waveInterval = null, isMuted = false;
+        const AMBIENCE_AUDIO_FILES = {
+            cave: 'assets/audio/ambience/cave.mp3',
+            brook: 'assets/audio/ambience/brook.mp3',
+            fire: 'assets/audio/ambience/fire.mp3',
+            suikinkutsu: 'assets/audio/ambience/suikinkutsu.mp3'
+        };
+        const AMBIENCE_VOLUMES = {
+            cave: 0.02,
+            brook: 0.008,
+            fire: 0.02,
+            suikinkutsu: 0.02
+        };
+        const SINGING_BOWL_VOLUME = 0.2;
+        const SINGING_BOWL_AUDIO_FILE = 'assets/audio/sfx/singing_bowl.mp3';
+        let audioCtx = null, ambienceAudio = null, ambienceMediaSource = null, singingBowlAudio = null, waveGain = null, isMuted = false;
 
         const MODELS_TO_TRY = ["gemini-2.5-flash-preview-09-2025", "gemini-2.5-flash"];
         let lastCopingSkills = [];
@@ -1897,7 +1911,7 @@ const BREATH_PATTERNS = {
                 
                 document.getElementById('header-apple')?.classList.add('animate-pulse');
 
-                currentPlayingScene = selectedAmbienceScene === "auto" ? ["waves", "brook", "fire", "rain"][Math.floor(Math.random() * 4)] : selectedAmbienceScene;
+                currentPlayingScene = selectedAmbienceScene === "auto" ? ["cave", "brook", "fire", "suikinkutsu"][Math.floor(Math.random() * 4)] : selectedAmbienceScene;
                 playStationMelody();
                 updateLedTextForScene(currentPlayingScene);
                 setTimeout(() => { if (mindfulnessState === "running") startNaturalAmbienceForScene(currentPlayingScene); }, 1200);
@@ -1961,34 +1975,15 @@ const BREATH_PATTERNS = {
         }
 
         function playSingingBowlSound() {
-            initAudioContext();
-            if (!audioCtx || isMuted) return;
-
-            const now = audioCtx.currentTime;
-            const tones = [
-                { freq: 140.0, gain: 0.35, detune: 0 },
-                { freq: 140.4, gain: 0.3, detune: 2 },
-                { freq: 280.0, gain: 0.15, detune: -1 },
-                { freq: 420.0, gain: 0.08, detune: 3 },
-                { freq: 560.0, gain: 0.04, detune: 1 }
-            ];
-
-            tones.forEach(t => {
-                try {
-                    const osc = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(t.freq, now);
-                    osc.detune.setValueAtTime(t.detune, now);
-                    gainNode.gain.setValueAtTime(0, now);
-                    gainNode.gain.linearRampToValueAtTime(t.gain, now + 0.08); 
-                    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 12.0); 
-                    osc.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    osc.start(now);
-                    osc.stop(now + 13.0);
-                } catch (e) {}
-            });
+            if (isMuted) return;
+            if (!singingBowlAudio) {
+                singingBowlAudio = new Audio(SINGING_BOWL_AUDIO_FILE);
+                singingBowlAudio.preload = 'auto';
+                singingBowlAudio.volume = SINGING_BOWL_VOLUME;
+            }
+            singingBowlAudio.pause();
+            singingBowlAudio.currentTime = 0;
+            singingBowlAudio.play().catch(e => console.warn("Singing bowl playback failed", e));
         }
 
         function finishMindfulnessTimer() {
@@ -2023,7 +2018,7 @@ const BREATH_PATTERNS = {
         function updateLedTextForScene(scene) {
             const scrollText = document.getElementById('led-scroll-text');
             if (!scrollText) return;
-            const names = { waves: "さざなみ", brook: "せせらぎ", fire: "焚き火", rain: "静かな雨" };
+            const names = { cave: "洞窟", brook: "せせらぎ", fire: "焚き火", suikinkutsu: "水琴窟" };
             scrollText.innerHTML = `🍀 安眠特急運行中。BGM:🔊【${names[scene]}】。呼吸表示板に合わせて深呼吸してください...`;
         }
 
@@ -2141,83 +2136,30 @@ const BREATH_PATTERNS = {
             }
         }
 
-        function createNoiseBuffer(ctx) {
-            const bufferSize = ctx.sampleRate * 2, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate), data = buffer.getChannelData(0);
-            let lastOut = 0.0;
-            for (let i = 0; i < bufferSize; i++) {
-                const white = Math.random() * 2 - 1;
-                data[i] = (lastOut * 0.92 + white * 0.08); lastOut = data[i];
-            }
-            return buffer;
-        }
-
         function startNaturalAmbienceForScene(scene) {
-            initAudioContext(); if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            waveGain = audioCtx.createGain(); waveGain.gain.setValueAtTime(isMuted ? 0 : 0.02, now); waveGain.connect(audioCtx.destination);
-
-            try {
-                const buffer = createNoiseBuffer(audioCtx), noiseNode = audioCtx.createBufferSource();
-                noiseNode.buffer = buffer; noiseNode.loop = true;
-                const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass';
-
-                if (scene === "waves") {
-                    filter.frequency.setValueAtTime(350, now); noiseNode.connect(filter); filter.connect(waveGain); noiseNode.start(now); envSource = noiseNode;
-                    let cycle = 0;
-                    waveInterval = setInterval(() => {
-                        if (!audioCtx) return;
-                        const waveAmp = (Math.sin(cycle) + 1) / 2;
-                        if (waveGain && !isMuted) waveGain.gain.setValueAtTime(0.01 + waveAmp * 0.02, audioCtx.currentTime);
-                        cycle += 0.08;
-                    }, 100);
-                } else if (scene === "brook") {
-                    filter.frequency.setValueAtTime(800, now); noiseNode.connect(filter); filter.connect(waveGain); noiseNode.start(now); envSource = noiseNode;
-                } else if (scene === "fire") {
-                    filter.frequency.setValueAtTime(130, now); 
-                    filter.Q.setValueAtTime(1.2, now);
-                    noiseNode.connect(filter); 
-                    filter.connect(waveGain); 
-                    noiseNode.start(now); 
-                    envSource = noiseNode;
-
-                    let crackleActive = true;
-                    const playCrackle = () => {
-                        if (!crackleActive || !audioCtx || isMuted || mindfulnessState !== "running" || (selectedAmbienceScene !== "fire" && selectedAmbienceScene !== "auto")) return;
-                        try {
-                            const cTime = audioCtx.currentTime;
-                            const crackOsc = audioCtx.createOscillator();
-                            const crackGain = audioCtx.createGain();
-                            const crackFilter = audioCtx.createBiquadFilter();
-                            crackOsc.type = 'triangle';
-                            crackOsc.frequency.setValueAtTime(1800 + Math.random() * 2500, cTime);
-                            crackGain.gain.setValueAtTime(0, cTime);
-                            crackGain.gain.linearRampToValueAtTime(0.09 + Math.random() * 0.15, cTime + 0.0005);
-                            crackGain.gain.exponentialRampToValueAtTime(0.0001, cTime + 0.008 + Math.random() * 0.028);
-                            crackFilter.type = 'bandpass';
-                            crackFilter.frequency.setValueAtTime(2800 + Math.random() * 1500, cTime);
-                            crackFilter.Q.setValueAtTime(2.5, cTime);
-                            crackOsc.connect(crackFilter);
-                            crackFilter.connect(crackGain);
-                            if (waveGain) crackGain.connect(waveGain);
-                            else crackGain.connect(audioCtx.destination);
-                            crackOsc.start(cTime);
-                            crackOsc.stop(cTime + 0.06);
-                        } catch (e) {}
-                        const nextDelay = 35 + Math.random() * 445;
-                        crackleTimer = setTimeout(playCrackle, nextDelay);
-                    };
-                    playCrackle();
-                } else if (scene === "rain") {
-                    filter.frequency.setValueAtTime(1200, now); filter.type = 'bandpass'; noiseNode.connect(filter); filter.connect(waveGain); noiseNode.start(now); envSource = noiseNode;
-                }
-            } catch(e) { console.warn("Ambience creation failed", e); }
+            initAudioContext();
+            const audioFile = AMBIENCE_AUDIO_FILES[scene];
+            if (!audioCtx || !audioFile) return;
+            if (!ambienceAudio) {
+                ambienceAudio = new Audio();
+                ambienceAudio.loop = true;
+                ambienceAudio.preload = 'auto';
+                ambienceMediaSource = audioCtx.createMediaElementSource(ambienceAudio);
+                waveGain = audioCtx.createGain();
+                ambienceMediaSource.connect(waveGain);
+                waveGain.connect(audioCtx.destination);
+            }
+            ambienceAudio.pause();
+            ambienceAudio.src = audioFile;
+            ambienceAudio.currentTime = 0;
+            waveGain.gain.setValueAtTime(isMuted ? 0 : AMBIENCE_VOLUMES[scene], audioCtx.currentTime);
+            ambienceAudio.play().catch(e => console.warn("Ambience playback failed", e));
         }
 
         function stopNaturalAmbience() {
-            if (waveInterval) clearInterval(waveInterval);
-            if (crackleTimer) clearTimeout(crackleTimer);
-            if (secondaryRainTimer) clearTimeout(secondaryRainTimer);
-            if (envSource) { try { envSource.stop(); } catch(e){} }
+            if (!ambienceAudio) return;
+            ambienceAudio.pause();
+            ambienceAudio.currentTime = 0;
         }
 
         function toggleMuteState() {
@@ -2225,7 +2167,7 @@ const BREATH_PATTERNS = {
             const btn = document.getElementById('btn-sound-toggle');
             if (!btn) return;
             if (isMuted) { btn.textContent = "消音中"; if (waveGain && audioCtx) waveGain.gain.setValueAtTime(0, audioCtx.currentTime); }
-            else { btn.textContent = "音量ON"; if (waveGain && audioCtx) waveGain.gain.setValueAtTime(0.02, audioCtx.currentTime); }
+            else { btn.textContent = "音量ON"; if (waveGain && audioCtx) waveGain.gain.setValueAtTime(AMBIENCE_VOLUMES[currentPlayingScene], audioCtx.currentTime); }
         }
 
         function updateMindfulTimerDisplay() {
@@ -2240,7 +2182,7 @@ const BREATH_PATTERNS = {
             document.getElementById(`btn-scene-${sceneId}`)?.classList.add('active');
             if (mindfulnessState === "running") {
                 stopNaturalAmbience();
-                currentPlayingScene = sceneId === 'auto' ? ["waves", "brook", "fire", "rain"][Math.floor(Math.random() * 4)] : sceneId;
+                currentPlayingScene = sceneId === 'auto' ? ["cave", "brook", "fire", "suikinkutsu"][Math.floor(Math.random() * 4)] : sceneId;
                 updateLedTextForScene(currentPlayingScene);
                 setTimeout(() => { if (mindfulnessState === "running") startNaturalAmbienceForScene(currentPlayingScene); }, 400);
             }
@@ -3315,7 +3257,7 @@ bind('btn-breath-478', 'click', () => {
 });
 
             // 環境音切り替え
-            ['waves', 'brook', 'fire', 'rain', 'auto'].forEach(sceneId => {
+            ['cave', 'brook', 'fire', 'suikinkutsu', 'auto'].forEach(sceneId => {
                 bind(`btn-scene-${sceneId}`, 'click', () => {
                     document.querySelectorAll('.scene-selector-btn').forEach(s => s.classList.remove('active'));
                     document.getElementById(`btn-scene-${sceneId}`)?.classList.add('active');
