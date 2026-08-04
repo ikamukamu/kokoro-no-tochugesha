@@ -191,6 +191,16 @@
             pointer-events: none;
             z-index: 2;
         }
+        #starry-sky-bg {
+            clip-path: polygon(
+                0% 0%,
+                0% 40%,
+                68% 40%,
+                68% 20%,
+                100% 20%,
+                100% 0%
+            );
+        }
         .nr-station-bg {
             position: absolute;
             inset: 0;
@@ -351,8 +361,6 @@
 
     <!-- Header Navigation (美しきミッドナイトインディゴの夜空、極小星空、うさぎ跳ねる月、りんご付駅名標) -->
     <header class="nr-home-header bg-gradient-to-b from-[#0a1128] via-[#16225f] to-[#0c1236] text-white py-3 px-3 shadow-md border-b-4 border-pdBlack relative z-50 overflow-hidden shrink-0 min-h-[280px] md:min-h-[320px]">
-        <div class="absolute inset-0 pointer-events-none z-[3] overflow-hidden" id="starry-sky-bg"></div>
-
         <div class="absolute top-2 left-3 flex items-center gap-1.5 z-50">
             <button id="btn-help-modal-open" class="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-pink-400/30 flex items-center gap-1 cursor-pointer shadow-md">
                 <i class="fa-solid fa-compass text-yellow-200"></i><span>ご案内</span>
@@ -364,6 +372,7 @@
 
         <div id="nr-station-home-scene" class="nr-station-scene" aria-label="NR赤坂Stの小さなホーム">
             <img class="nr-station-bg" src="assets/images/station/station_scene.png" alt="" onerror="this.hidden=true;">
+            <div class="absolute inset-0 pointer-events-none z-[3] overflow-hidden" id="starry-sky-bg"></div>
         </div>
         <button id="stationmaster-penguin-home" class="stationmaster-penguin" type="button" aria-label="駅長ペンギンにあいさつする">
             <img id="stationmaster-penguin-img" src="assets/images/penguin/common/penguin_front_01.png" alt="駅長ペンギン">
