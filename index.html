@@ -184,6 +184,56 @@
     box-shadow: 0 0 8px rgba(0,255,102,.4);
 }
 
+        .mindfulness-departure-trigger:focus-visible {
+            outline: 2px solid #ff2d73;
+            outline-offset: 3px;
+        }
+
+        .breathing-modal-panel {
+            --breath-bg: #fffdf7;
+            --breath-fg: #171717;
+            --breath-muted: #5f5a50;
+            background: var(--breath-bg);
+            color: var(--breath-fg);
+        }
+        .breathing-modal-panel.is-dark {
+            --breath-bg: #090b10;
+            --breath-fg: #f8f4e8;
+            --breath-muted: #b7b1a4;
+        }
+        .breathing-muted { color: var(--breath-muted); }
+        .breathing-apple-wrap { width: min(64vw, 270px); aspect-ratio: 1; }
+        .breathing-apple {
+            color: #c5cbd4;
+            font-size: clamp(106px, 28vw, 132px);
+            transform-origin: center;
+            transition-property: transform;
+            transition-timing-function: linear;
+            -webkit-text-stroke: 1px rgba(31, 41, 55, .42);
+            filter: drop-shadow(0 8px 10px rgba(0,0,0,.32));
+        }
+        .breathing-progress {
+            overflow: visible;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+        .breathing-progress circle {
+            fill: none;
+            stroke-width: 10;
+        }
+        .breathing-progress-bg { stroke: color-mix(in srgb, #f72572 20%, transparent); }
+        .breathing-progress-value {
+            stroke: #f72572;
+            stroke-linecap: round;
+            stroke-dasharray: 678.58;
+            stroke-dashoffset: 678.58;
+        }
+        .breathing-duration-btn:disabled { cursor: default; opacity: .48; }
+        .breathing-duration-btn.is-selected { background: #f72572; color: white; border-color: #f72572; }
+        @media (prefers-reduced-motion: reduce) {
+            .breathing-apple { transition-duration: .25s !important; }
+        }
+
         .nr-station-scene {
             position: absolute;
             inset: 0;
@@ -463,57 +513,12 @@
         </nav>
     </header>
 
-    <!-- 🧘‍♀️ ホーム発車標 -->
-    <section class="max-w-4xl mx-auto w-full px-4 pt-3">
-        <div class="bg-[#181818] border-2 sm:border-4 border-neutral-700 rounded-xl p-2 shadow-[3px_3px_0_#000] flex flex-col gap-1 font-mono">
-            <div class="border-b border-neutral-800 pb-1 flex justify-between items-center text-[8px] sm:text-[10px] font-bold text-neutral-400">
-                <span><i class="fa-solid fa-clock text-[#FF9900] animate-pulse"></i> ［マインドフルネス呼吸特急］</span>
-                <span id="active-line-display" class="bg-[#2a2a2a] px-1 rounded text-[#00FF66]">自動運行</span>
-            </div>
-            <div class="bg-[#0c0c0c] p-2 rounded-lg space-y-1.5 text-xs">
-                <div class="flex items-center justify-between gap-1 flex-wrap">
-                    <div class="flex items-center gap-1 text-[#00FF66] font-bold">
-                        <span>[先発] 10:18 瞑想行</span>
-                        <div class="text-[#FF3300] font-bold text-sm bg-black px-1.5 py-0.5 rounded" id="mindful-timer-display">03:00</div>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button id="btn-mindful-start" class="bg-[#FF9900] hover:bg-[#e08600] text-black font-black text-[10px] py-1 px-3 rounded cursor-pointer animate-pulse">▶︎乗車</button>
-			<div class="flex gap-1 bg-[#111] p-1 rounded border border-neutral-700">
-    <button id="btn-breath-478"
-        class="breath-line active">
-        🚄 快速 4・7・8呼吸線
-    </button>
-
-    <button id="btn-breath-box"
-        class="breath-line">
-        🚃 各停 4・4・4・4呼吸線
-    </button>
-</div>
-                        <button id="btn-sound-toggle" class="bg-neutral-850 text-neutral-300 font-bold text-[9px] py-1 px-2 rounded cursor-pointer">音量ON</button>
-                        <button id="btn-mindful-reset" class="bg-neutral-900 text-gray-300 text-[9px] py-1 px-2 rounded cursor-pointer">リセット</button>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-5 gap-1 pt-1" id="bgm-selector-group">
-                    <button id="btn-scene-cave" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🪨 洞窟</button>
-                    <button id="btn-scene-brook" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🏞️ 川</button>
-                    <button id="btn-scene-fire" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">🔥 焚火</button>
-                    <button id="btn-scene-suikinkutsu" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] cursor-pointer">💧 水琴窟</button>
-                    <button id="btn-scene-auto" class="scene-selector-btn py-1 text-[9px] rounded border border-neutral-700 text-neutral-300 bg-[#121212] active cursor-pointer">🎲 自動</button>
-                </div>
-                
-                <div class="flex justify-between items-center text-[9px] text-[#FF9900] pt-1">
-                    <div class="flex items-center gap-1 shrink-0">
-                        <div class="w-5 h-5 rounded-full relative bg-teal-950 flex items-center justify-center" id="breath-guide-container" style="transition: transform 4s linear;">
-                            <div class="absolute inset-0 rounded-full bg-teal-500/15" id="breath-guide-wave"></div>
-                            <i class="fa-solid fa-leaf text-[#00FF66] text-[8px]"></i>
-                        </div>
-                        <span id="breath-guide-text" class="text-[#00FF66] font-bold ml-1">扉閉</span>
-                        <span id="breath-timer-count" class="text-[#00FF66] bg-[#1a1a1a] px-1 rounded ml-1 font-bold">0s</span>
-                    </div>
-                    <div class="flex-grow text-right overflow-hidden"><span class="led-scroll" id="led-scroll-text">📿 肩の荷物や焦りを白線の内側まで下げてご乗車ください...</span></div>
-                </div>
-            </div>
+    <section class="max-w-4xl mx-auto w-full px-4 pt-3" aria-label="発車標">
+        <div class="rounded-xl border-2 border-neutral-700 bg-[#181818] p-2 font-mono shadow-[3px_3px_0_#000] sm:border-4">
+            <button id="mindfulness-departure-trigger" type="button" class="mindfulness-departure-trigger flex w-full items-center justify-between rounded-md border-2 border-[#f72572] px-2 py-2 text-left text-[11px] font-bold text-neutral-200 transition-colors hover:bg-[#f72572]/10 sm:text-xs" aria-label="マインドフルネス呼吸を開く">
+                <span><i class="fa-solid fa-clock mr-1.5 text-[#ff2d73]"></i>［マインドフルネス呼吸］</span>
+                <span class="text-[10px] text-[#f72572]">タップして開始 <i class="fa-solid fa-chevron-right"></i></span>
+            </button>
         </div>
     </section>
 
@@ -1088,6 +1093,78 @@
     </div>
 
     <!-- トースト -->
+    <div id="breathing-modal" class="hidden fixed inset-0 z-[60000] bg-black/70 p-3 sm:p-5 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="breathing-modal-title">
+        <div id="breathing-modal-panel" class="breathing-modal-panel relative w-full max-w-lg max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-3xl border-4 border-black shadow-[7px_7px_0_#000] px-4 py-5 sm:p-6">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <h2 id="breathing-modal-title" class="text-xl font-black">マインドフルネス瞑想</h2>
+                    <p class="breathing-muted text-xs font-bold">4秒吸う・7秒止める・8秒吐く</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="btn-breath-theme" type="button" class="w-9 h-9 rounded-full border-2 border-current flex items-center justify-center" aria-label="背景を黒に切り替える"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                    <button id="btn-breath-close" type="button" class="w-9 h-9 rounded-full border-2 border-current flex items-center justify-center text-xl" aria-label="呼吸を終了する">×</button>
+                </div>
+            </div>
+
+            <div id="breathing-session-view" class="flex flex-col items-center pt-3">
+                <div class="mb-1 flex w-full items-center justify-center gap-1.5" id="breathing-duration-selector" aria-label="セッション時間">
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="30">30秒</button>
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="60">1分</button>
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="120">2分</button>
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="180">3分</button>
+                </div>
+                <div id="mindful-timer-display" class="font-mono text-2xl font-black tracking-[.18em] breathing-muted">03:00</div>
+                <div class="breathing-apple-wrap relative my-1">
+                    <svg class="breathing-progress absolute inset-0 w-full h-full" viewBox="0 0 240 240" aria-hidden="true">
+                        <circle class="breathing-progress-bg" cx="120" cy="120" r="108"></circle>
+                        <circle id="breathing-progress-value" class="breathing-progress-value" cx="120" cy="120" r="108"></circle>
+                    </svg>
+                    <div class="absolute inset-7 flex items-center justify-center">
+                        <i id="breathing-apple" class="breathing-apple fa-solid fa-apple-whole" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div id="breath-guide-text" class="min-h-[2.25rem] text-3xl font-black"></div>
+                <div id="breath-timer-count" class="mt-1 font-mono text-3xl font-black breathing-muted">—</div>
+                <div class="mt-4 flex items-center gap-3">
+                    <button id="btn-mindful-start" type="button" class="rounded-full border-2 border-black bg-[#f72572] px-7 py-2.5 text-sm font-black text-white shadow-[3px_3px_0_#000]">スタート</button>
+                    <button id="btn-breath-pause" type="button" class="hidden rounded-full border-2 border-black bg-[#f72572] px-5 py-2.5 text-sm font-black text-white shadow-[3px_3px_0_#000]" aria-label="呼吸を一時停止する">|| 一時停止</button>
+                    <button id="btn-mindful-reset" type="button" class="rounded-full border-2 border-current px-5 py-2.5 text-sm font-black">リセット</button>
+                </div>
+
+                <div class="mt-5 w-full border-t-2 border-current/15 pt-4">
+                    <div id="bgm-selector-group" class="grid grid-cols-5 gap-1">
+                        <button id="btn-scene-cave" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 洞窟"><i class="fa-solid fa-mountain"></i><span class="block">洞窟</span></button>
+                        <button id="btn-scene-brook" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 せせらぎ"><i class="fa-solid fa-water"></i><span class="block">せせらぎ</span></button>
+                        <button id="btn-scene-fire" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 焚火"><i class="fa-solid fa-fire-flame-curved"></i><span class="block">焚火</span></button>
+                        <button id="btn-scene-suikinkutsu" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 水琴窟"><i class="fa-solid fa-droplet"></i><span class="block">水琴窟</span></button>
+                        <button id="btn-scene-auto" class="scene-selector-btn active rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 自動"><i class="fa-solid fa-shuffle"></i><span class="block">自動</span></button>
+                    </div>
+                    <div class="mt-3 flex items-center gap-3">
+                        <button id="btn-sound-toggle" type="button" class="w-9 h-9 shrink-0 rounded-full border border-current/30" aria-label="環境音を消音する"><i class="fa-solid fa-volume-high"></i></button>
+                        <input id="breath-volume" class="w-full accent-[#ef315d]" type="range" min="0" max="100" value="100" aria-label="環境音の音量">
+                    </div>
+                </div>
+            </div>
+
+            <div id="breathing-complete-view" class="hidden min-h-[390px] flex-col items-center justify-center text-center">
+                <i class="fa-solid fa-apple-whole text-7xl text-[#ef315d] mb-6"></i>
+                <h3 class="text-2xl font-black">お疲れさまでした</h3>
+                <p class="breathing-muted mt-2 text-xs">ゆっくりと、いつもの時間へ戻りましょう。</p>
+                <button id="btn-breath-complete-close" type="button" class="mt-8 rounded-full border-2 border-black bg-[#ff9f0a] px-7 py-2.5 text-sm font-black text-black shadow-[3px_3px_0_#000]">ホームへ戻る</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="breathing-exit-confirm" class="hidden fixed inset-0 z-[61000] bg-black/70 p-4 items-center justify-center" role="alertdialog" aria-modal="true" aria-labelledby="breathing-exit-title">
+        <div class="w-full max-w-sm rounded-2xl border-4 border-black bg-[#fffaf0] p-6 text-center text-black shadow-[6px_6px_0_#000]">
+            <h3 id="breathing-exit-title" class="text-lg font-black">終了しますか？</h3>
+            <div class="mt-6 flex justify-center gap-3">
+                <button id="btn-breath-continue" type="button" class="rounded-full border-2 border-black bg-white px-5 py-2 text-sm font-black">つづける</button>
+                <button id="btn-breath-end" type="button" class="rounded-full border-2 border-black bg-[#ef315d] px-5 py-2 text-sm font-black text-white">終わる</button>
+            </div>
+        </div>
+    </div>
+
     <div id="custom-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[99999] bg-[#020512] text-white px-4 py-2.5 rounded-xl border border-black shadow-[4px_4px_0_#000] text-[11px] font-bold flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4">
         <i id="toast-icon" class="fa-solid fa-circle-info text-pdPink"></i><span id="toast-message"></span>
     </div>
@@ -1496,28 +1573,15 @@
         // 🧘‍♀️ タイマー & BGM
         let mindfulnessTimerInterval = null, mindfulnessTimeRemaining = 180, mindfulnessState = "idle";
         let breathCycleTimer = null, breathStep = 0, selectedAmbienceScene = "auto", currentPlayingScene = "";
-	let selectedBreathingMode = "breathe478";
+        let breathPhaseSecondsLeft = 0, breathVolumeMultiplier = 1;
+        let activeBreathPhases = null, breathingModalReturnFocus = null, sessionDurationSeconds = 180;
 
-const BREATH_PATTERNS = {
-    box: {
-        label: "□ ボックス",
-        steps: [
-            { text: "吸う", sec: 4, scale: 1.5, color: "bg-red-400/20", apple: "#ef4444", ring: "#f97316" },
-            { text: "止める", sec: 4, scale: 1.5, color: "bg-amber-400/20", apple: "#f43f5e", ring: "#f59e0b" },
-            { text: "吐く", sec: 4, scale: 0.85, color: "bg-teal-400/20", apple: "#be123c", ring: "#0d9488" },
-            { text: "止める", sec: 4, scale: 0.85, color: "bg-slate-400/20", apple: "#9f1239", ring: "#475569" }
-        ]
-    },
-
-    breathe478: {
-        label: "4・7・8",
-        steps: [
-            { text: "吸う", sec: 4, scale: 1.5, color: "bg-red-400/20", apple: "#ef4444", ring: "#f97316" },
-            { text: "止める", sec: 7, scale: 1.5, color: "bg-amber-400/20", apple: "#f59e0b", ring: "#fbbf24" },
-            { text: "吐く", sec: 8, scale: 0.75, color: "bg-teal-400/20", apple: "#0d9488", ring: "#14b8a6" }
-        ]
-    }
-};
+        // ISS-041から別の配列を渡せるよう、呼吸処理はこの配列の形だけに依存させる。
+        const DEFAULT_BREATH_PHASES = [
+            { text: "息を吸って", sec: 4, scale: 1.15 },
+            { text: "息を止めて", sec: 7, scale: 1.15 },
+            { text: "息を吐いて", sec: 8, scale: 0.72 }
+        ];
         const AMBIENCE_AUDIO_FILES = {
             cave: 'assets/audio/ambience/cave.mp3',
             brook: 'assets/audio/ambience/brook.mp3',
@@ -1911,51 +1975,134 @@ const BREATH_PATTERNS = {
             updateStationPenguinForTab(tabId);
         }
 
-        function toggleMindfulnessTimer() {
-            initAudioContext();
-            if (mindfulnessState === "idle" || mindfulnessState === "paused") {
-                mindfulnessState = "running";
-                const startBtn = document.getElementById('btn-mindful-start');
-                if (startBtn) startBtn.textContent = "一時停止";
-                
-                document.getElementById('header-apple')?.classList.add('animate-pulse');
+        function setBreathRingProgress(progress) {
+            const ring = document.getElementById('breathing-progress-value');
+            if (!ring) return;
+            const normalized = Math.max(0, Math.min(1, progress));
+            ring.style.strokeDashoffset = `${678.58 * (1 - normalized)}`;
+        }
 
-                currentPlayingScene = selectedAmbienceScene === "auto" ? ["cave", "brook", "fire", "suikinkutsu"][Math.floor(Math.random() * 4)] : selectedAmbienceScene;
-                playStationMelody();
-                updateLedTextForScene(currentPlayingScene);
-                setTimeout(() => { if (mindfulnessState === "running") startNaturalAmbienceForScene(currentPlayingScene); }, 1200);
-                mindfulnessTimerInterval = setInterval(() => {
-                    mindfulnessTimeRemaining--;
-                    updateMindfulTimerDisplay();
-                    if (mindfulnessTimeRemaining <= 0) finishMindfulnessTimer();
-                }, 1000);
-                startBreathCycle();
-            } else {
-                pauseMindfulnessTimer();
+        function setSessionDuration(seconds) {
+            if (mindfulnessState !== 'idle') return;
+            sessionDurationSeconds = Number(seconds) || 180;
+            mindfulnessTimeRemaining = sessionDurationSeconds;
+            document.querySelectorAll('.breathing-duration-btn').forEach(button => {
+                button.classList.toggle('is-selected', Number(button.dataset.seconds) === sessionDurationSeconds);
+            });
+            updateMindfulTimerDisplay();
+        }
+
+        function setDurationControlsDisabled(disabled) {
+            document.querySelectorAll('.breathing-duration-btn').forEach(button => { button.disabled = disabled; });
+        }
+
+        function openBreathingModal() {
+            const modal = document.getElementById('breathing-modal');
+            if (!modal) return;
+            breathingModalReturnFocus = document.activeElement;
+            resetMindfulnessTimer();
+            document.getElementById('breathing-complete-view')?.classList.add('hidden');
+            document.getElementById('breathing-complete-view')?.classList.remove('flex');
+            document.getElementById('breathing-session-view')?.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('btn-mindful-start')?.focus();
+        }
+
+        function closeBreathingModal() {
+            resetMindfulnessTimer();
+            document.getElementById('breathing-exit-confirm')?.classList.add('hidden');
+            document.getElementById('breathing-exit-confirm')?.classList.remove('flex');
+            const modal = document.getElementById('breathing-modal');
+            modal?.classList.add('hidden');
+            modal?.classList.remove('flex');
+            document.body.style.overflow = '';
+            breathingModalReturnFocus?.focus?.();
+        }
+
+        function requestBreathingExit() {
+            if (mindfulnessState !== 'running' && mindfulnessTimeRemaining === sessionDurationSeconds) {
+                closeBreathingModal();
+                return;
             }
+            const confirmModal = document.getElementById('breathing-exit-confirm');
+            confirmModal?.classList.remove('hidden');
+            confirmModal?.classList.add('flex');
+            document.getElementById('btn-breath-continue')?.focus();
+        }
+
+        function continueBreathingSession() {
+            const confirmModal = document.getElementById('breathing-exit-confirm');
+            confirmModal?.classList.add('hidden');
+            confirmModal?.classList.remove('flex');
+            document.getElementById('btn-breath-close')?.focus();
+        }
+
+        function toggleMindfulnessTimer() {
+            if (mindfulnessState === 'running') {
+                pauseMindfulnessTimer();
+                return;
+            }
+            if (mindfulnessState === 'paused') {
+                resumeMindfulnessTimer();
+                return;
+            }
+            initAudioContext();
+            mindfulnessState = "running";
+            document.getElementById('btn-mindful-start')?.classList.add('hidden');
+            setDurationControlsDisabled(true);
+            updateBreathPauseButton(false);
+            currentPlayingScene = selectedAmbienceScene === "auto" ? ["cave", "brook", "fire", "suikinkutsu"][Math.floor(Math.random() * 4)] : selectedAmbienceScene;
+            playStationMelody();
+            setTimeout(() => { if (mindfulnessState === "running") startNaturalAmbienceForScene(currentPlayingScene); }, 1200);
+            startMindfulnessCountdown();
+            startBreathCycle(DEFAULT_BREATH_PHASES);
+        }
+
+        function startMindfulnessCountdown() {
+            clearInterval(mindfulnessTimerInterval);
+            mindfulnessTimerInterval = setInterval(() => {
+                mindfulnessTimeRemaining--;
+                updateMindfulTimerDisplay();
+                if (mindfulnessTimeRemaining <= 0) finishMindfulnessTimer();
+            }, 1000);
         }
 
         function pauseMindfulnessTimer() {
-            mindfulnessState = "paused";
-            const startBtn = document.getElementById('btn-mindful-start');
-            if (startBtn) startBtn.textContent = "再開";
-            
-            const apple = document.getElementById('header-apple');
-            const ring = document.getElementById('header-apple-ring');
-            if (apple) {
-                apple.style.transform = "scale(1.0)";
-                apple.style.color = "#E91E63";
-                apple.classList.remove('animate-pulse');
-            }
-            if (ring) ring.style.transform = "scale(1.0)";
-            const container = document.getElementById('breath-guide-container');
-            if (container) container.style.transform = "scale(1.0)";
-
-            stopNaturalAmbience();
+            mindfulnessState = 'paused';
             clearInterval(mindfulnessTimerInterval);
             clearInterval(breathCycleTimer);
-            document.getElementById('led-scroll-text').textContent = "⚠️ 運行一時休止中";
-            resetBreathGuideAnimation();
+            stopNaturalAmbience();
+            const apple = document.getElementById('breathing-apple');
+            const ring = document.getElementById('breathing-progress-value');
+            if (apple) {
+                const currentTransform = getComputedStyle(apple).transform;
+                apple.style.transition = 'none';
+                apple.style.transform = currentTransform;
+            }
+            if (ring) {
+                const currentOffset = getComputedStyle(ring).strokeDashoffset;
+                ring.style.transition = 'none';
+                ring.style.strokeDashoffset = currentOffset;
+            }
+            updateBreathPauseButton(true);
+        }
+
+        function resumeMindfulnessTimer() {
+            mindfulnessState = 'running';
+            startMindfulnessCountdown();
+            resumeBreathPhase();
+            startNaturalAmbienceForScene(currentPlayingScene);
+            updateBreathPauseButton(false);
+        }
+
+        function updateBreathPauseButton(paused) {
+            const button = document.getElementById('btn-breath-pause');
+            if (!button) return;
+            button.classList.remove('hidden');
+            button.textContent = paused ? '▶ 再生' : '|| 一時停止';
+            button.setAttribute('aria-label', paused ? '呼吸を再開する' : '呼吸を一時停止する');
         }
 
         function resetMindfulnessTimer() {
@@ -1963,23 +2110,16 @@ const BREATH_PATTERNS = {
             clearInterval(breathCycleTimer);
             stopNaturalAmbience();
             mindfulnessState = "idle";
-            mindfulnessTimeRemaining = 180;
+            mindfulnessTimeRemaining = sessionDurationSeconds;
+            activeBreathPhases = null;
+            setDurationControlsDisabled(false);
             updateMindfulTimerDisplay();
             const startBtn = document.getElementById('btn-mindful-start');
-            if (startBtn) startBtn.textContent = "▶︎乗車";
-            
-            const apple = document.getElementById('header-apple');
-            const ring = document.getElementById('header-apple-ring');
-            if (apple) {
-                apple.style.transform = "scale(1.0)";
-                apple.style.color = "#E91E63";
-                apple.classList.remove('animate-pulse');
+            if (startBtn) {
+                startBtn.textContent = "スタート";
+                startBtn.classList.remove('hidden');
             }
-            if (ring) ring.style.transform = "scale(1.0)";
-            const container = document.getElementById('breath-guide-container');
-            if (container) container.style.transform = "scale(1.0)";
-
-            document.getElementById('led-scroll-text').textContent = "📿 タイマーをリセットしました。";
+            document.getElementById('btn-breath-pause')?.classList.add('hidden');
             resetBreathGuideAnimation();
         }
 
@@ -1999,108 +2139,93 @@ const BREATH_PATTERNS = {
             clearInterval(mindfulnessTimerInterval);
             clearInterval(breathCycleTimer);
             stopNaturalAmbience();
-            document.getElementById('led-scroll-text').textContent = "📿 終点「今ここ駅」に到着。";
-            
             playSingingBowlSound();
-
-            showToast("🧘 終点に到着しました。ゆっくり目を開けてください。", "success");
             mindfulnessState = "idle";
-            mindfulnessTimeRemaining = 180;
+            mindfulnessTimeRemaining = 0;
             updateMindfulTimerDisplay();
-            const startBtn = document.getElementById('btn-mindful-start');
-            if (startBtn) startBtn.textContent = "▶︎乗車";
-            
-            const apple = document.getElementById('header-apple');
-            const ring = document.getElementById('header-apple-ring');
-            if (apple) {
-                apple.style.transform = "scale(1.0)";
-                apple.style.color = "#E91E63";
-                apple.classList.remove('animate-pulse');
-            }
-            if (ring) ring.style.transform = "scale(1.0)";
-            const container = document.getElementById('breath-guide-container');
-            if (container) container.style.transform = "scale(1.0)";
-
             resetBreathGuideAnimation();
+            showBreathingCompletion();
         }
 
-        function updateLedTextForScene(scene) {
-            const scrollText = document.getElementById('led-scroll-text');
-            if (!scrollText) return;
-            const names = { cave: "洞窟", brook: "せせらぎ", fire: "焚き火", suikinkutsu: "水琴窟" };
-            scrollText.innerHTML = `🍀 安眠特急運行中。BGM:🔊【${names[scene]}】。呼吸表示板に合わせて深呼吸してください...`;
+        function showBreathingCompletion() {
+            // ISS-042でスタンプ演出に差し替える完了フック。
+            document.getElementById('breathing-session-view')?.classList.add('hidden');
+            const complete = document.getElementById('breathing-complete-view');
+            complete?.classList.remove('hidden');
+            complete?.classList.add('flex');
+            document.getElementById('btn-breath-complete-close')?.focus();
         }
 
-        function startBreathCycle() {
-
-    const wave = document.getElementById('breath-guide-wave');
-    const txt = document.getElementById('breath-guide-text');
-    const countEl = document.getElementById('breath-timer-count');
-    const apple = document.getElementById('header-apple');
-    const ring = document.getElementById('header-apple-ring');
-    const container = document.getElementById('breath-guide-container');
-
-    if (!wave || !txt || !countEl) return;
-
-    const pattern = BREATH_PATTERNS[selectedBreathingMode];
-
-    breathStep = 0;
-    let secondsLeft = pattern.steps[0].sec;
-
-    const updateGuide = () => {
-
-        const step = pattern.steps[breathStep];
-
-        txt.textContent = `${step.text}(${step.sec}s)`;
-
-        wave.className =
-            `absolute inset-0 rounded-full ${step.color}`;
-
-        if (apple) {
-            apple.style.transform = `scale(${step.scale})`;
-            apple.style.color = step.apple;
+        function startBreathCycle(phases = DEFAULT_BREATH_PHASES) {
+            if (!Array.isArray(phases) || !phases.length) return;
+            activeBreathPhases = phases;
+            breathStep = 0;
+            applyBreathPhase();
+            startBreathCountdown();
         }
 
-        if (ring) {
-            ring.style.transform =
-                step.scale > 1 ? "scale(1.25)" : "scale(1.0)";
-            ring.style.borderColor = step.ring;
+        function startBreathCountdown() {
+            clearInterval(breathCycleTimer);
+            breathCycleTimer = setInterval(() => {
+                breathPhaseSecondsLeft--;
+                const countEl = document.getElementById('breath-timer-count');
+                if (countEl) countEl.textContent = `${Math.max(0, breathPhaseSecondsLeft)}`;
+                if (breathPhaseSecondsLeft <= 0) {
+                    breathStep = (breathStep + 1) % activeBreathPhases.length;
+                    applyBreathPhase();
+                }
+            }, 1000);
         }
 
-        if (container) {
-            container.style.transform =
-                `scale(${step.scale})`;
-            container.style.transition =
-                `transform ${step.sec}s linear`;
+        function resumeBreathPhase() {
+            const step = activeBreathPhases?.[breathStep];
+            if (!step) return;
+            const apple = document.getElementById('breathing-apple');
+            const ring = document.getElementById('breathing-progress-value');
+            if (apple) {
+                apple.style.transition = `transform ${breathPhaseSecondsLeft}s linear`;
+                apple.style.transform = `scale(${step.scale})`;
+            }
+            if (ring) {
+                ring.style.transition = `stroke-dashoffset ${breathPhaseSecondsLeft}s linear`;
+                ring.style.strokeDashoffset = '0';
+            }
+            startBreathCountdown();
         }
 
-        secondsLeft = step.sec;
-        countEl.textContent = `${secondsLeft}s`;
-    };
-
-    updateGuide();
-
-    breathCycleTimer = setInterval(() => {
-
-        secondsLeft--;
-
-        countEl.textContent = `${secondsLeft}s`;
-
-        if (secondsLeft <= 0) {
-            breathStep =
-                (breathStep + 1) % pattern.steps.length;
-
-            updateGuide();
+        function applyBreathPhase() {
+            const step = activeBreathPhases?.[breathStep];
+            if (!step) return;
+            const txt = document.getElementById('breath-guide-text');
+            const countEl = document.getElementById('breath-timer-count');
+            const apple = document.getElementById('breathing-apple');
+            const ring = document.getElementById('breathing-progress-value');
+            breathPhaseSecondsLeft = step.sec;
+            if (txt) txt.textContent = step.text;
+            if (countEl) countEl.textContent = `${step.sec}`;
+            if (apple) {
+                apple.style.transition = `transform ${step.sec}s linear`;
+                apple.style.transform = `scale(${step.scale})`;
+            }
+            if (ring) {
+                ring.style.transition = 'none';
+                setBreathRingProgress(0);
+                void ring.getBoundingClientRect();
+                ring.style.transition = `stroke-dashoffset ${step.sec}s linear`;
+                ring.style.strokeDashoffset = '0';
+            }
         }
-
-    }, 1000);
-}
 
         function resetBreathGuideAnimation() {
-            const wave = document.getElementById('breath-guide-wave'), txt = document.getElementById('breath-guide-text'), countEl = document.getElementById('breath-timer-count');
-            if (wave) wave.className = "absolute inset-0 rounded-full bg-teal-50/10";
-            if (txt) txt.textContent = "扉閉";
-            if (countEl) countEl.textContent = "0s";
+            const txt = document.getElementById('breath-guide-text');
+            const countEl = document.getElementById('breath-timer-count');
+            const apple = document.getElementById('breathing-apple');
+            const ring = document.getElementById('breathing-progress-value');
+            if (txt) txt.textContent = "";
+            if (countEl) countEl.textContent = "—";
+            if (apple) { apple.style.transition = 'transform .3s linear'; apple.style.transform = 'scale(1)'; }
+            if (ring) ring.style.transition = 'none';
+            setBreathRingProgress(0);
             breathStep = 0;
         }
 
@@ -2161,7 +2286,7 @@ const BREATH_PATTERNS = {
             ambienceAudio.pause();
             ambienceAudio.src = audioFile;
             ambienceAudio.currentTime = 0;
-            waveGain.gain.setValueAtTime(isMuted ? 0 : AMBIENCE_VOLUMES[scene], audioCtx.currentTime);
+            waveGain.gain.setValueAtTime(isMuted ? 0 : AMBIENCE_VOLUMES[scene] * breathVolumeMultiplier, audioCtx.currentTime);
             ambienceAudio.play().catch(e => console.warn("Ambience playback failed", e));
         }
 
@@ -2175,8 +2300,21 @@ const BREATH_PATTERNS = {
             isMuted = !isMuted;
             const btn = document.getElementById('btn-sound-toggle');
             if (!btn) return;
-            if (isMuted) { btn.textContent = "消音中"; if (waveGain && audioCtx) waveGain.gain.setValueAtTime(0, audioCtx.currentTime); }
-            else { btn.textContent = "音量ON"; if (waveGain && audioCtx) waveGain.gain.setValueAtTime(AMBIENCE_VOLUMES[currentPlayingScene], audioCtx.currentTime); }
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+            btn.setAttribute('aria-label', isMuted ? '環境音を再生する' : '環境音を消音する');
+            if (isMuted) {
+                if (waveGain && audioCtx) waveGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            } else if (waveGain && audioCtx) {
+                waveGain.gain.setValueAtTime((AMBIENCE_VOLUMES[currentPlayingScene] || 0) * breathVolumeMultiplier, audioCtx.currentTime);
+            }
+        }
+
+        function setBreathVolume(value) {
+            breathVolumeMultiplier = Math.max(0, Math.min(1, Number(value) / 100));
+            if (waveGain && audioCtx && !isMuted) {
+                waveGain.gain.setValueAtTime((AMBIENCE_VOLUMES[currentPlayingScene] || 0) * breathVolumeMultiplier, audioCtx.currentTime);
+            }
         }
 
         function updateMindfulTimerDisplay() {
@@ -2192,9 +2330,15 @@ const BREATH_PATTERNS = {
             if (mindfulnessState === "running") {
                 stopNaturalAmbience();
                 currentPlayingScene = sceneId === 'auto' ? ["cave", "brook", "fire", "suikinkutsu"][Math.floor(Math.random() * 4)] : sceneId;
-                updateLedTextForScene(currentPlayingScene);
                 setTimeout(() => { if (mindfulnessState === "running") startNaturalAmbienceForScene(currentPlayingScene); }, 400);
             }
+        }
+
+        function toggleBreathingTheme() {
+            const panel = document.getElementById('breathing-modal-panel');
+            const button = document.getElementById('btn-breath-theme');
+            const dark = panel?.classList.toggle('is-dark');
+            button?.setAttribute('aria-label', dark ? '背景を白に切り替える' : '背景を黒に切り替える');
         }
 
         // --- 5. コーピングノート ---
@@ -3230,40 +3374,20 @@ const BREATH_PATTERNS = {
             bind('btn-clear-key', 'click', clearApiKey);
 
             // マインドフルネス・呼吸タイマー
+            bind('mindfulness-departure-trigger', 'click', openBreathingModal);
             bind('btn-mindful-start', 'click', toggleMindfulnessTimer);
-            bind('btn-sound-toggle', 'click', toggleMuteState);
+            bind('btn-breath-pause', 'click', toggleMindfulnessTimer);
             bind('btn-mindful-reset', 'click', resetMindfulnessTimer);
-            bind('btn-breath-box', 'click', () => {
-
-    selectedBreathingMode = "box";
-
-    document.getElementById('btn-breath-box')
-        ?.classList.add('active');
-
-    document.getElementById('btn-breath-478')
-        ?.classList.remove('active');
-
-    if (mindfulnessState === "running") {
-        clearInterval(breathCycleTimer);
-        startBreathCycle();
-    }
-});
-
-bind('btn-breath-478', 'click', () => {
-
-    selectedBreathingMode = "breathe478";
-
-    document.getElementById('btn-breath-478')
-        ?.classList.add('active');
-
-    document.getElementById('btn-breath-box')
-        ?.classList.remove('active');
-
-    if (mindfulnessState === "running") {
-        clearInterval(breathCycleTimer);
-        startBreathCycle();
-    }
-});
+            bind('btn-sound-toggle', 'click', toggleMuteState);
+            bind('btn-breath-close', 'click', requestBreathingExit);
+            bind('btn-breath-continue', 'click', continueBreathingSession);
+            bind('btn-breath-end', 'click', closeBreathingModal);
+            bind('btn-breath-complete-close', 'click', closeBreathingModal);
+            bind('btn-breath-theme', 'click', toggleBreathingTheme);
+            document.getElementById('breath-volume')?.addEventListener('input', event => setBreathVolume(event.target.value));
+            document.querySelectorAll('.breathing-duration-btn').forEach(button => {
+                button.addEventListener('click', () => setSessionDuration(button.dataset.seconds));
+            });
 
             // 環境音切り替え
             ['cave', 'brook', 'fire', 'suikinkutsu', 'auto'].forEach(sceneId => {
@@ -3353,6 +3477,7 @@ bind('btn-breath-478', 'click', () => {
         const initApp = async () => {
             bindAllStaticUIElements();
             initStationPenguinHome();
+            setSessionDuration(sessionDurationSeconds);
             initStarrySky();
             updateApiBtnStyle();
             initDailyWord();
