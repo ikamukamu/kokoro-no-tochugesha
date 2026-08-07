@@ -261,10 +261,20 @@
             object-position: center top;
             z-index: 1;
         }
+        .nr-station-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            aspect-ratio: 2 / 1;
+            pointer-events: none;
+            z-index: 44;
+        }
         .stationmaster-penguin {
             position: absolute;
             left: 50%;
-            bottom: 42px;
+            top: 82%;
+            bottom: auto;
             width: clamp(62px, 12vw, 108px);
             padding: 0;
             border: 0;
@@ -273,7 +283,7 @@
             pointer-events: auto;
             touch-action: manipulation;
             z-index: 18;
-            transform: translateX(-50%);
+            transform: translate(-50%, -100%);
             transition: left 2.8s ease-in-out, transform 0.25s ease, opacity 0.2s ease;
         }
         .stationmaster-penguin img {
@@ -286,7 +296,7 @@
         }
         .stationmaster-penguin.is-looking-left img,
         .stationmaster-penguin.is-walking-left img { transform: scaleX(-1); }
-        .stationmaster-penguin.is-reacting { transform: translateX(-50%) scale(1.04); }
+        .stationmaster-penguin.is-reacting { transform: translate(-50%, -100%) scale(1.04); }
         .stationmaster-penguin.is-breathing img { animation: penguinHomeBreathe 2.8s ease-in-out infinite; }
         .stationmaster-penguin.is-bowing img { animation: penguinHomeBow 0.9s ease-in-out; }
         .stationmaster-penguin.is-waving img { animation: penguinHomeWave 0.9s ease-in-out; }
@@ -307,7 +317,7 @@
         }
 
         .nr-home-header {
-            --nr-home-ratio: 2.35 / 1;
+            --nr-home-ratio: 2 / 1;
             --penguin-walk-min: 44;
             --penguin-walk-max: 56;
             width: 100%;
@@ -356,7 +366,6 @@
             z-index: 3 !important;
         }
         .stationmaster-penguin {
-            bottom: 1%;
             width: clamp(82px, 10.5vw, 116px);
             z-index: 44;
         }
@@ -391,7 +400,7 @@
                 width: 157px !important;
                 opacity: 0.86;
             }
-            .stationmaster-penguin { width: clamp(42px, 11vw, 54px); bottom: 1.5%; }
+            .stationmaster-penguin { width: clamp(42px, 11vw, 54px); }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -424,9 +433,11 @@
             <img class="nr-station-bg" src="assets/images/station/station_scene.png" alt="" onerror="this.hidden=true;">
             <div class="absolute inset-0 pointer-events-none z-[3] overflow-hidden" id="starry-sky-bg"></div>
         </div>
-        <button id="stationmaster-penguin-home" class="stationmaster-penguin" type="button" aria-label="駅長ペンギンにあいさつする">
-            <img id="stationmaster-penguin-img" src="assets/images/penguin/common/penguin_front_01.png" alt="駅長ペンギン">
-        </button>
+        <div class="nr-station-image-overlay">
+            <button id="stationmaster-penguin-home" class="stationmaster-penguin" type="button" aria-label="駅長ペンギンにあいさつする">
+                <img id="stationmaster-penguin-img" src="assets/images/penguin/common/penguin_front_01.png" alt="駅長ペンギン">
+            </button>
+        </div>
 
         <!-- 🌙 月とうさぎ -->
         <div class="nr-home-legacy-moon absolute top-2.5 right-2 md:right-4 w-12 h-12 pointer-events-none z-10 opacity-90">
