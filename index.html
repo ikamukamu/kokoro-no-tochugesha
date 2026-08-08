@@ -27,13 +27,38 @@
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #E91E63; border-radius: 4px; }
         
-        @keyframes runTrain {
-            0% { transform: translate(-340px, 38px) scale(0.38) rotate(-7deg); opacity: 0; }
-            12% { opacity: 0.9; }
-            88% { opacity: 0.85; }
-            100% { transform: translate(110vw, -54px) scale(0.42) rotate(-7deg); opacity: 0; }
+        @keyframes flyKokoroExpress {
+            0% { left: -12%; top: var(--kokoro-express-start-top); opacity: 0; }
+            8% { opacity: 0.82; }
+            88% { opacity: 0.8; }
+            100% { left: 105%; top: var(--kokoro-express-end-top); opacity: 0; }
         }
-        .train-animation { animation: runTrain 72s linear infinite; }
+        .kokoro-express-flight {
+            --kokoro-express-start-top: 28%;
+            --kokoro-express-end-top: -17%;
+            position: absolute;
+            left: -12%;
+            top: var(--kokoro-express-start-top);
+            width: min(14.5vw, 205px);
+            aspect-ratio: 2 / 1;
+            animation: flyKokoroExpress 26s linear infinite;
+        }
+        .kokoro-express-trail-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .kokoro-express-image {
+            display: block;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: auto;
+            transform: rotate(2deg);
+            transform-origin: center;
+        }
 
         @keyframes twinkleFast { 0%, 100% { opacity: 0.15; transform: scale(0.8); } 50% { opacity: 0.9; transform: scale(1.1); } }
         @keyframes twinkleSlow { 0%, 100% { opacity: 0.1; } 50% { opacity: 0.75; } }
@@ -244,26 +269,43 @@
         #starry-sky-bg {
             clip-path: polygon(
                 0% 0%,
-                0% 40%,
-                68% 40%,
-                68% 20%,
-                100% 20%,
+                0% 49.2%,
+                68% 49.2%,
+                68% 32.2%,
+                100% 32.2%,
                 100% 0%
             );
         }
-        .nr-station-bg {
+        .nr-extended-sky {
             position: absolute;
             inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
-            object-position: center top;
+            background: linear-gradient(to bottom, #00071b 0%, #011535 55%, #00071b 100%);
+            pointer-events: none;
             z-index: 1;
+        }
+        .nr-station-bg {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 2 / 1;
+            display: block;
+            z-index: 1;
+        }
+        .nr-station-bg-moon {
+            top: 0;
+            z-index: 3;
+            -webkit-mask-image: radial-gradient(ellipse 7% 14% at 66% 14%, #000 0 68%, transparent 100%);
+            mask-image: radial-gradient(ellipse 7% 14% at 66% 14%, #000 0 68%, transparent 100%);
+        }
+        .nr-station-bg-home {
+            top: var(--nr-sky-extension);
+            -webkit-mask-image: radial-gradient(ellipse 7% 14% at 66% 14%, transparent 0 68%, #000 100%);
+            mask-image: radial-gradient(ellipse 7% 14% at 66% 14%, transparent 0 68%, #000 100%);
         }
         .nr-station-image-overlay {
             position: absolute;
-            top: 0;
+            top: var(--nr-sky-extension);
             left: 0;
             width: 100%;
             aspect-ratio: 2 / 1;
@@ -317,7 +359,8 @@
         }
 
         .nr-home-header {
-            --nr-home-ratio: 2 / 1;
+            --nr-home-ratio: 2 / 1.18;
+            --nr-sky-extension: 15.254%;
             --penguin-walk-min: 44;
             --penguin-walk-max: 56;
             width: 100%;
@@ -329,7 +372,7 @@
         .nr-home-ticket-nav {
             position: absolute !important;
             left: 50%;
-            top: clamp(76px, 22%, 128px);
+            top: clamp(76px, 11vw, 128px);
             bottom: auto;
             transform: translateX(-50%);
             z-index: 42 !important;
@@ -351,14 +394,6 @@
         .nr-home-ticket-nav .nav-btn span:nth-child(2) {
             font-size: clamp(10px, 0.9vw, 12px) !important;
         }
-        .nr-home-header .train-animation {
-            top: clamp(18px, 6%, 42px) !important;
-            bottom: auto !important;
-            width: min(37.8vw, 319px) !important;
-            height: auto !important;
-            opacity: 0.88;
-            z-index: 3;
-        }
         .nr-home-legacy-moon {
             display: none !important;
         }
@@ -372,14 +407,19 @@
 
         @media (max-width: 640px) {
             .nr-home-header {
+                --nr-home-ratio: 2 / 1.4;
+                --nr-sky-extension: 28.571%;
                 --penguin-walk-min: 46;
                 --penguin-walk-max: 54;
                 padding: 0 !important;
                 min-height: 0 !important;
                 aspect-ratio: var(--nr-home-ratio);
             }
+            #starry-sky-bg {
+                clip-path: polygon(0% 0%, 0% 57.15%, 68% 57.15%, 68% 42.86%, 100% 42.86%, 100% 0%);
+            }
             .nr-home-ticket-nav {
-                top: 23%;
+                top: 11.5vw;
                 width: min(84vw, 340px) !important;
                 max-width: min(84vw, 340px) !important;
                 gap: 0.25rem !important;
@@ -395,15 +435,17 @@
             .nr-home-ticket-nav .nav-btn span:nth-child(2) {
                 font-size: 8.5px !important;
             }
-            .nr-home-header .train-animation {
-                top: 5% !important;
-                width: 157px !important;
-                opacity: 0.86;
+            .kokoro-express-flight {
+                --kokoro-express-start-top: 32%;
+                --kokoro-express-end-top: -24%;
+                width: 96px;
             }
             .stationmaster-penguin { width: clamp(42px, 11vw, 54px); }
         }
 
         @media (prefers-reduced-motion: reduce) {
+            .kokoro-express-flight { animation: none; opacity: 0; }
+            .kokoro-express-trail-canvas { display: none; }
             .stationmaster-penguin,
             .stationmaster-penguin img {
                 animation: none !important;
@@ -430,9 +472,11 @@
         </div>
 
         <div id="nr-station-home-scene" class="nr-station-scene" aria-label="NR赤坂Stの小さなホーム">
-            <img class="nr-station-bg" src="assets/images/station/station_scene.png" alt="" onerror="this.hidden=true;">
-            <div class="absolute inset-0 pointer-events-none z-[3] overflow-hidden" id="starry-sky-bg"></div>
+            <div class="nr-extended-sky"></div>
+            <img class="nr-station-bg nr-station-bg-moon" src="assets/images/station/station_scene.png" alt="" onerror="this.hidden=true;">
+            <img class="nr-station-bg nr-station-bg-home" src="assets/images/station/station_scene.png" alt="" onerror="this.hidden=true;">
         </div>
+        <div class="absolute inset-0 pointer-events-none z-[3] overflow-hidden" id="starry-sky-bg"></div>
         <div class="nr-station-image-overlay">
             <button id="stationmaster-penguin-home" class="stationmaster-penguin" type="button" aria-label="駅長ペンギンにあいさつする">
                 <img id="stationmaster-penguin-img" src="assets/images/penguin/common/penguin_front_01.png" alt="駅長ペンギン">
@@ -452,42 +496,12 @@
             </svg>
         </div>
 
-        <!-- 🚂 【右向きSL銀河鉄道】 -->
+        <!-- 🚂 夜空を飛ぶココロ特急 -->
         <div class="nr-home-legacy-train absolute inset-0 pointer-events-none z-10">
-            <svg class="train-animation absolute bottom-4 left-0 w-64 h-12" viewBox="0 0 250 40" style="filter: drop-shadow(0px 0px 4px rgba(251,191,36,0.35));">
-                <circle cx="184" cy="8" r="2.5" class="star-fast" fill="#ffffff" opacity="0.45"/>
-                <circle cx="192" cy="6" r="3.5" class="star-slow" fill="#ffffff" opacity="0.35"/>
-                <circle cx="202" cy="4" r="5" class="star-fast" fill="#ffffff" opacity="0.2"/>
-                <rect x="10" y="14" width="42" height="18" rx="2" fill="#1b2552" stroke="#FBBF24" stroke-width="0.75"/>
-                <rect x="14" y="18" width="6" height="6" fill="#FCD34D"/><rect x="24" y="18" width="6" height="6" fill="#FCD34D"/>
-                <rect x="34" y="18" width="6" height="6" fill="#FCD34D"/><rect x="44" y="18" width="6" height="6" fill="#FCD34D"/>
-                <circle cx="18" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <circle cx="44" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <line x1="52" y1="28" x2="56" y2="28" stroke="#FBBF24" stroke-width="1.5"/>
-                <rect x="58" y="14" width="42" height="18" rx="2" fill="#1b2552" stroke="#FBBF24" stroke-width="0.75"/>
-                <rect x="62" y="18" width="6" height="6" fill="#FCD34D"/><rect x="72" y="18" width="6" height="6" fill="#FCD34D"/>
-                <rect x="82" y="18" width="6" height="6" fill="#FCD34D"/><rect x="92" y="18" width="6" height="6" fill="#FCD34D"/>
-                <circle cx="66" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <circle cx="92" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <line x1="100" y1="28" x2="104" y2="28" stroke="#FBBF24" stroke-width="1.5"/>
-                <rect x="106" y="14" width="42" height="18" rx="2" fill="#1b2552" stroke="#FBBF24" stroke-width="0.75"/>
-                <rect x="110" y="18" width="6" height="6" fill="#FCD34D"/><rect x="120" y="18" width="6" height="6" fill="#FCD34D"/>
-                <rect x="130" y="18" width="6" height="6" fill="#FCD34D"/><rect x="140" y="18" width="6" height="6" fill="#FCD34D"/>
-                <circle cx="114" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <circle cx="140" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <line x1="148" y1="28" x2="152" y2="28" stroke="#FBBF24" stroke-width="1.5"/>
-                <rect x="154" y="18" width="24" height="14" fill="#1b2552" stroke="#FBBF24" stroke-width="0.75"/>
-                <circle cx="160" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <circle cx="172" cy="34" r="3" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <line x1="178" y1="28" x2="182" y2="28" stroke="#FBBF24" stroke-width="1.5"/>
-                <path d="M182,14 L196,14 L196,18 L228,18 L228,26 L234,26 L234,32 L182,32 Z" fill="#1b2552" stroke="#FBBF24" stroke-width="0.75"/>
-                <rect x="220" y="8" width="4" height="10" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <path d="M204,18 C204,14 210,14 210,18 Z" fill="#1b2552" stroke="#FBBF24" stroke-width="0.5"/>
-                <path d="M228,32 L238,32 L234,26 Z" fill="#000000" stroke="#FBBF24" stroke-width="0.5"/>
-                <circle cx="190" cy="32" r="5" fill="#000000" stroke="#FBBF24" stroke-width="0.75"/>
-                <circle cx="203" cy="32" r="5" fill="#000000" stroke="#FBBF24" stroke-width="0.75"/>
-                <circle cx="216" cy="32" r="5" fill="#000000" stroke="#FBBF24" stroke-width="0.75"/>
-            </svg>
+            <canvas class="kokoro-express-trail-canvas" id="kokoro-express-trail" aria-hidden="true"></canvas>
+            <div class="kokoro-express-flight" aria-hidden="true">
+                <img class="kokoro-express-image" src="assets/images/station/train_lineart_final.png" alt="">
+            </div>
         </div>
         <!-- 🎫 6連切符ナビ -->
         <nav class="nr-home-ticket-nav relative grid grid-cols-3 md:grid-cols-6 gap-1.5 md:gap-2 justify-center z-30 w-full max-w-[580px] px-1 mx-auto box-border">
@@ -3344,11 +3358,129 @@
             pendingDeleteId = null; pendingDeleteType = null;
         }
 
-        // --- 14. 🌟 上品な星屑空 ---
+        // --- 14. 🚂 ココロ特急の光の航跡 ---
+        function initKokoroExpressTrail() {
+            const canvas = document.getElementById('kokoro-express-trail');
+            const flight = document.querySelector('.kokoro-express-flight');
+            const trainImage = document.querySelector('.kokoro-express-image');
+            const host = canvas?.parentElement;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (!canvas || !flight || !trainImage || !host || reduceMotion.matches) return;
+
+            const ctx = canvas.getContext('2d', { alpha: true });
+            if (!ctx) return;
+
+            const particlePool = Array.from({ length: 520 }, () => ({ active: false }));
+            let poolCursor = 0;
+            let emissionCarry = 0;
+            let lastFrame = performance.now();
+            let statsStartedAt = lastFrame;
+            let statsFrames = 0;
+
+            function resizeCanvas() {
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+                const nextWidth = Math.round(width * pixelRatio);
+                const nextHeight = Math.round(height * pixelRatio);
+                if (canvas.width === nextWidth && canvas.height === nextHeight) return;
+                canvas.width = nextWidth;
+                canvas.height = nextHeight;
+                ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+                particlePool.forEach(particle => { particle.active = false; });
+            }
+
+            function emitParticle(imageRect, hostRect, appearance) {
+                const particle = particlePool[poolCursor];
+                poolCursor = (poolCursor + 1) % particlePool.length;
+                const sourcePosition = Math.random();
+                const sideSpread = (Math.random() + Math.random() - 1) * 5;
+
+                particle.active = true;
+                particle.x = imageRect.left - hostRect.left + imageRect.width * (0.07 + sourcePosition * 0.8) + (Math.random() - 0.5) * 1.2;
+                particle.y = imageRect.top - hostRect.top + imageRect.height * (0.74 - sourcePosition * 0.28) + (Math.random() - 0.5) * 1.2;
+                particle.vx = -2 - Math.random() * 4 + sideSpread * 0.24;
+                particle.vy = 0.5 + Math.random() * 1.5 + sideSpread * 0.97;
+                particle.age = 0;
+                particle.life = 3.4 + Math.random() * 1.8;
+                particle.size = 0.35 + Math.pow(Math.random(), 1.8) * 1.15;
+                particle.alpha = (0.72 + Math.random() * 0.27) * appearance;
+                particle.warm = Math.random() < 0.28;
+            }
+
+            function drawParticle(particle, progress) {
+                const fade = Math.pow(1 - progress, 1.65) * particle.alpha;
+                const radius = particle.size * (0.78 + progress * 0.5);
+                ctx.beginPath();
+                ctx.fillStyle = particle.warm
+                    ? `rgba(255, 179, 99, ${fade * 0.42})`
+                    : `rgba(255, 255, 255, ${fade * 0.36})`;
+                ctx.arc(particle.x, particle.y, radius * 1.65, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.fillStyle = particle.warm
+                    ? `rgba(255, 205, 145, ${fade})`
+                    : `rgba(255, 250, 235, ${fade})`;
+                ctx.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            function animateTrail(now) {
+                resizeCanvas();
+                const deltaSeconds = Math.min((now - lastFrame) / 1000, 0.05);
+                lastFrame = now;
+                const hostRect = host.getBoundingClientRect();
+                const imageRect = trainImage.getBoundingClientRect();
+                const flightOpacity = Number.parseFloat(getComputedStyle(flight).opacity);
+                const appearance = Math.min(flightOpacity / 0.82, 1);
+                const trainIsVisible = appearance > 0.01
+                    && imageRect.right > hostRect.left && imageRect.left < hostRect.right
+                    && imageRect.bottom > hostRect.top && imageRect.top < hostRect.bottom;
+
+                if (trainIsVisible) {
+                    emissionCarry += deltaSeconds * 120 * appearance;
+                    const emissionCount = Math.min(Math.floor(emissionCarry), 10);
+                    emissionCarry -= emissionCount;
+                    for (let i = 0; i < emissionCount; i++) emitParticle(imageRect, hostRect, appearance);
+                }
+
+                ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+                ctx.globalCompositeOperation = 'lighter';
+                let activeCount = 0;
+                particlePool.forEach(particle => {
+                    if (!particle.active) return;
+                    particle.age += deltaSeconds;
+                    if (particle.age >= particle.life) {
+                        particle.active = false;
+                        return;
+                    }
+                    particle.x += particle.vx * deltaSeconds;
+                    particle.y += particle.vy * deltaSeconds;
+                    drawParticle(particle, particle.age / particle.life);
+                    activeCount++;
+                });
+                ctx.globalCompositeOperation = 'source-over';
+
+                statsFrames++;
+                if (now - statsStartedAt >= 1000) {
+                    canvas.dataset.trailFps = Math.round(statsFrames * 1000 / (now - statsStartedAt));
+                    canvas.dataset.activeParticles = activeCount;
+                    statsFrames = 0;
+                    statsStartedAt = now;
+                }
+                requestAnimationFrame(animateTrail);
+            }
+
+            window.addEventListener('resize', resizeCanvas, { passive: true });
+            resizeCanvas();
+            requestAnimationFrame(animateTrail);
+        }
+
+        // --- 15. 🌟 上品な星屑空 ---
         function initStarrySky() {
             const starrySky = document.getElementById('starry-sky-bg'); if (!starrySky) return;
             starrySky.innerHTML = ""; 
-            const starCount = 55, starSymbols = ["✦", "✧", "★", "✦"];
+            const starCount = 90, starSymbols = ["✦", "✧", "★", "✦"];
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 const x = Math.random() * 100, y = Math.random() * 100, size = Math.random() * 3 + 2, opacity = Math.random() * 0.45 + 0.15, char = starSymbols[Math.floor(Math.random() * starSymbols.length)];
@@ -3361,7 +3493,7 @@
             }
         }
 
-        // --- 15. 🔌 安全なイベントバインド接続 ---
+        // --- 16. 🔌 安全なイベントバインド接続 ---
         function bind(id, event, callback) {
             const el = document.getElementById(id);
             if (el) el.addEventListener(event, callback);
@@ -3472,7 +3604,7 @@
             bind('btn-confirm-delete', 'click', runShredderDelete);
         }
 
-        // --- 16. 初期化起動 & カレンダー初期化 ---
+        // --- 17. 初期化起動 & カレンダー初期化 ---
         function convertToJapaneseDate(rawDateStr) {
             if (!rawDateStr) return "令和八年 六月二十五日"; 
             const d = new Date(rawDateStr), year = d.getFullYear(), month = d.getMonth() + 1, date = d.getDate();
@@ -3490,6 +3622,7 @@
             initStationPenguinHome();
             setSessionDuration(sessionDurationSeconds);
             initStarrySky();
+            initKokoroExpressTrail();
             updateApiBtnStyle();
             initDailyWord();
             renderDialogueList();
