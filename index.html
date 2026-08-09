@@ -213,6 +213,61 @@
             outline: 2px solid #ff2d73;
             outline-offset: 3px;
         }
+        .mindfulness-departure-trigger {
+            position: relative;
+            animation: mindfulnessDepartureBorderBreathe 7.5s ease-in-out infinite;
+        }
+        .mindfulness-departure-icons {
+            position: relative;
+            flex: 0 0 1.25em;
+            width: 1.25em;
+            height: 1.25em;
+        }
+        .mindfulness-departure-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: mindfulnessDepartureIconCycle 13.5s linear infinite;
+        }
+        .mindfulness-departure-icon.apple { animation-delay: -9s; }
+        .mindfulness-departure-icon.penguin { animation-delay: -4.5s; }
+        .mindfulness-departure-icon img {
+            display: block;
+            width: 1.2em;
+            height: 1.2em;
+            object-fit: contain;
+        }
+        .mindfulness-departure-icon.penguin img {
+            width: 1.25em;
+            height: 1.25em;
+            filter:
+                brightness(0) saturate(100%) invert(30%) sepia(97%) saturate(3214%) hue-rotate(326deg) brightness(107%) contrast(101%)
+                drop-shadow(0.2px 0 0 #ff2d73)
+                drop-shadow(-0.2px 0 0 #ff2d73)
+                drop-shadow(0 0.2px 0 #ff2d73)
+                drop-shadow(0 -0.2px 0 #ff2d73);
+        }
+        @keyframes mindfulnessDepartureIconCycle {
+            0%, 29.63% { opacity: 1; }
+            33.33%, 96.3% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes mindfulnessDepartureBorderBreathe {
+            0%, 100% {
+                border-color: #f72572;
+                box-shadow: 0 0 0 rgba(247, 37, 114, 0);
+            }
+            45% {
+                border-color: #ff85b3;
+                box-shadow:
+                    0 0 3px rgba(255, 220, 234, 0.95),
+                    0 0 8px rgba(255, 45, 115, 0.9),
+                    0 0 16px rgba(247, 37, 114, 0.65);
+            }
+        }
 
         .breathing-modal-panel {
             --breath-bg: #fffdf7;
@@ -446,6 +501,9 @@
         @media (prefers-reduced-motion: reduce) {
             .kokoro-express-flight { animation: none; opacity: 0; }
             .kokoro-express-trail-canvas { display: none; }
+            .mindfulness-departure-trigger { animation: none; box-shadow: none; }
+            .mindfulness-departure-icon { animation: none; opacity: 0; }
+            .mindfulness-departure-icon.clock { opacity: 1; }
             .stationmaster-penguin,
             .stationmaster-penguin img {
                 animation: none !important;
@@ -540,9 +598,14 @@
 
     <section class="max-w-4xl mx-auto w-full px-4 pt-3" aria-label="発車標">
         <div class="rounded-xl border-2 border-neutral-700 bg-[#181818] p-2 font-mono shadow-[3px_3px_0_#000] sm:border-4">
-            <button id="mindfulness-departure-trigger" type="button" class="mindfulness-departure-trigger flex w-full items-center justify-between rounded-md border-2 border-[#f72572] px-2 py-2 text-left text-[11px] font-bold text-neutral-200 transition-colors hover:bg-[#f72572]/10 sm:text-xs" aria-label="マインドフルネス呼吸を開く">
-                <span><i class="fa-solid fa-clock mr-1.5 text-[#ff2d73]"></i>［マインドフルネス呼吸］</span>
-                <span class="text-[10px] text-[#f72572]">タップして開始 <i class="fa-solid fa-chevron-right"></i></span>
+            <button id="mindfulness-departure-trigger" type="button" class="mindfulness-departure-trigger flex w-full items-center gap-2 rounded-md border-2 border-[#f72572] px-2 py-2 text-left text-[11px] font-bold text-neutral-200 transition-colors hover:bg-[#f72572]/10 sm:text-xs" aria-label="マインドフルネス瞑想を開く">
+                <span class="mindfulness-departure-icons text-[#ff2d73]" aria-hidden="true">
+                    <span class="mindfulness-departure-icon clock"><i class="fa-solid fa-clock"></i></span>
+                    <span class="mindfulness-departure-icon apple"><i class="fa-solid fa-apple-whole"></i></span>
+                    <span class="mindfulness-departure-icon penguin"><img src="assets/images/penguin/icon/penguin_icon_stationmaster_final.png" alt=""></span>
+                </span>
+                <span class="min-w-0 flex-1 whitespace-nowrap">マインドフルネス瞑想</span>
+                <span class="shrink-0 text-[10px] text-[#00ff66]">タップして開始 <i class="fa-solid fa-chevron-right"></i></span>
             </button>
         </div>
     </section>
