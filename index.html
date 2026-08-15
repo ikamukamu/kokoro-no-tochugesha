@@ -275,6 +275,8 @@
             --breath-muted: #5f5a50;
             background: var(--breath-bg);
             color: var(--breath-fg);
+            height: min(720px, calc(100dvh - 1.5rem));
+            overflow: hidden;
         }
         .breathing-modal-panel.is-dark {
             --breath-bg: #090b10;
@@ -282,7 +284,8 @@
             --breath-muted: #b7b1a4;
         }
         .breathing-muted { color: var(--breath-muted); }
-        .breathing-apple-wrap { width: min(64vw, 270px); aspect-ratio: 1; }
+        .breathing-session-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+        .breathing-apple-wrap { width: min(52vw, 220px); aspect-ratio: 1; flex-shrink: 0; }
         .breathing-apple {
             color: #c5cbd4;
             font-size: clamp(106px, 28vw, 132px);
@@ -308,10 +311,68 @@
             stroke-dasharray: 678.58;
             stroke-dashoffset: 678.58;
         }
+        .breathing-progress.is-fading { animation: breathing-ring-opacity-fade 7s ease-in-out infinite; }
+        .breathing-box-guide { overflow: visible; }
+        .breathing-box-bg { fill: none; stroke: color-mix(in srgb, #f72572 20%, transparent); stroke-width: 10; }
+        .breathing-box-side {
+            stroke: #f72572;
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 170;
+            stroke-dashoffset: 170;
+        }
         .breathing-duration-btn:disabled { cursor: default; opacity: .48; }
         .breathing-duration-btn.is-selected { background: #f72572; color: white; border-color: #f72572; }
+        .breathing-pattern-btn {
+            padding: .4rem .5rem;
+            font-size: .7rem;
+            line-height: 1.15;
+            transition: background-color .2s ease, color .2s ease, border-color .2s ease, opacity .2s ease;
+        }
+        .breathing-pattern-btn.is-selected { background: #f72572; color: white; border-color: #f72572; }
+        .breathing-pattern-btn:disabled { cursor: default; opacity: .48; }
+        .breathing-pattern-description { animation: breath-description-in .25s ease-out; }
+        .breathing-counting-word { min-height: 2.6rem; font-size: clamp(1.55rem, 7vw, 2rem); line-height: 1.25; letter-spacing: .12em; }
+        .breathing-counting-word.is-visible { animation: breathing-counting-word-in 2.4s ease-in-out forwards; }
+        #breathing-session-view.is-counting #breath-timer-count { margin-top: 0; min-height: 1rem; font-size: .7rem; opacity: .58; }
+        .breathing-action-bar {
+            z-index: 5;
+            padding: .55rem 0 .1rem;
+            border-top: 1px solid color-mix(in srgb, var(--breath-fg) 12%, transparent);
+            background: var(--breath-bg);
+        }
+        .breathing-selection-summary { background: color-mix(in srgb, #f72572 12%, var(--breath-bg)); }
+        .breathing-apple.is-glowing { animation: breathing-ambient-glow 7s ease-in-out infinite; }
+        .breathing-apple.is-tappable { cursor: pointer; }
+        .breathing-apple.is-tapped { animation: breathing-tap-feedback .35s ease-out; }
+        @keyframes breath-description-in {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes breathing-ambient-glow {
+            0%, 100% { filter: drop-shadow(0 8px 10px rgba(0,0,0,.32)) drop-shadow(0 0 2px rgba(247,37,114,.2)); }
+            50% { filter: drop-shadow(0 8px 10px rgba(0,0,0,.32)) drop-shadow(0 0 18px rgba(247,37,114,.85)); }
+        }
+        @keyframes breathing-ring-opacity-fade {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        @keyframes breathing-counting-word-in {
+            0% { opacity: 0; transform: translateY(4px); }
+            16.67%, 83.33% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; }
+        }
+        @keyframes breathing-tap-feedback {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
         @media (prefers-reduced-motion: reduce) {
             .breathing-apple { transition-duration: .25s !important; }
+            .breathing-apple.is-glowing,
+            .breathing-progress.is-fading,
+            .breathing-apple.is-tapped,
+            .breathing-counting-word.is-visible,
+            .breathing-pattern-description { animation: none !important; }
         }
 
         .nr-station-scene {
@@ -1182,11 +1243,11 @@
 
     <!-- トースト -->
     <div id="breathing-modal" class="hidden fixed inset-0 z-[60000] bg-black/70 p-3 sm:p-5 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="breathing-modal-title">
-        <div id="breathing-modal-panel" class="breathing-modal-panel relative w-full max-w-lg max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-3xl border-4 border-black shadow-[7px_7px_0_#000] px-4 py-5 sm:p-6">
-            <div class="flex items-center justify-between gap-3">
+        <div id="breathing-modal-panel" class="breathing-modal-panel relative flex w-full max-w-lg flex-col rounded-3xl border-4 border-black shadow-[7px_7px_0_#000] px-4 py-3 sm:p-5">
+            <div class="flex shrink-0 items-center justify-between gap-3">
                 <div>
                     <h2 id="breathing-modal-title" class="text-xl font-black">マインドフルネス瞑想</h2>
-                    <p class="breathing-muted text-xs font-bold">4秒吸う・7秒止める・8秒吐く</p>
+                    <p class="breathing-muted text-xs font-bold">自分に合う呼吸法を選びましょう</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button id="btn-breath-theme" type="button" class="w-9 h-9 rounded-full border-2 border-current flex items-center justify-center" aria-label="背景を黒に切り替える"><i class="fa-solid fa-circle-half-stroke"></i></button>
@@ -1194,43 +1255,63 @@
                 </div>
             </div>
 
-            <div id="breathing-session-view" class="flex flex-col items-center pt-3">
+            <div id="breathing-session-view" class="flex min-h-0 flex-1 flex-col">
+                <div class="breathing-session-scroll flex min-h-0 flex-1 flex-col items-center pt-2 pb-1">
+                <div id="breathing-pattern-controls" class="mb-2 w-full" aria-label="呼吸法を選択">
+                    <div id="breathing-pattern-selector" class="grid grid-cols-2 gap-1.5">
+                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="diaphragmatic">腹式呼吸</button>
+                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="478">4・7・8呼吸法</button>
+                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="box">ボックスブリージング</button>
+                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="counting">数息観</button>
+                    </div>
+                    <p id="breathing-pattern-description" class="hidden breathing-muted mt-1.5 rounded-xl border border-current/15 px-2.5 py-1.5 text-[10px] font-bold" aria-live="polite"></p>
+                </div>
                 <div class="mb-1 flex w-full items-center justify-center gap-1.5" id="breathing-duration-selector" aria-label="セッション時間">
                     <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="30">30秒</button>
                     <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="60">1分</button>
                     <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="120">2分</button>
                     <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="180">3分</button>
                 </div>
+                <div id="breathing-selection-summary" class="breathing-selection-summary hidden rounded-full border border-current/20 px-3 py-1 text-[10px] font-black" aria-live="polite"></div>
                 <div id="mindful-timer-display" class="font-mono text-2xl font-black tracking-[.18em] breathing-muted">03:00</div>
                 <div class="breathing-apple-wrap relative my-1">
                     <svg class="breathing-progress absolute inset-0 w-full h-full" viewBox="0 0 240 240" aria-hidden="true">
                         <circle class="breathing-progress-bg" cx="120" cy="120" r="108"></circle>
                         <circle id="breathing-progress-value" class="breathing-progress-value" cx="120" cy="120" r="108"></circle>
                     </svg>
+                    <svg id="breathing-box-guide" class="breathing-box-guide hidden absolute inset-0 h-full w-full" viewBox="0 0 240 240" aria-hidden="true">
+                        <rect class="breathing-box-bg" x="35" y="35" width="170" height="170" rx="8"></rect>
+                        <line class="breathing-box-side" data-side="0" x1="35" y1="35" x2="205" y2="35"></line>
+                        <line class="breathing-box-side" data-side="1" x1="205" y1="35" x2="205" y2="205"></line>
+                        <line class="breathing-box-side" data-side="2" x1="205" y1="205" x2="35" y2="205"></line>
+                        <line class="breathing-box-side" data-side="3" x1="35" y1="205" x2="35" y2="35"></line>
+                    </svg>
                     <div class="absolute inset-7 flex items-center justify-center">
                         <i id="breathing-apple" class="breathing-apple fa-solid fa-apple-whole" aria-hidden="true"></i>
                     </div>
                 </div>
                 <div id="breath-guide-text" class="min-h-[2.25rem] text-3xl font-black"></div>
-                <div id="breath-timer-count" class="mt-1 font-mono text-3xl font-black breathing-muted">—</div>
-                <div class="mt-4 flex items-center gap-3">
-                    <button id="btn-mindful-start" type="button" class="rounded-full border-2 border-black bg-[#f72572] px-7 py-2.5 text-sm font-black text-white shadow-[3px_3px_0_#000]">スタート</button>
-                    <button id="btn-breath-pause" type="button" class="hidden rounded-full border-2 border-black bg-[#f72572] px-5 py-2.5 text-sm font-black text-white shadow-[3px_3px_0_#000]" aria-label="呼吸を一時停止する">|| 一時停止</button>
-                    <button id="btn-mindful-reset" type="button" class="rounded-full border-2 border-current px-5 py-2.5 text-sm font-black">リセット</button>
-                </div>
+                <div id="breath-timer-count" class="mt-1 min-h-[2.25rem] font-mono text-3xl font-black breathing-muted">—</div>
+                <div id="breath-counting-word" class="breathing-counting-word font-black text-[#f72572]" aria-live="polite"></div>
 
-                <div class="mt-5 w-full border-t-2 border-current/15 pt-4">
+                <div class="mt-2 w-full border-t-2 border-current/15 pt-2">
                     <div id="bgm-selector-group" class="grid grid-cols-5 gap-1">
-                        <button id="btn-scene-cave" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 洞窟"><i class="fa-solid fa-mountain"></i><span class="block">洞窟</span></button>
-                        <button id="btn-scene-brook" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 せせらぎ"><i class="fa-solid fa-water"></i><span class="block">せせらぎ</span></button>
-                        <button id="btn-scene-fire" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 焚火"><i class="fa-solid fa-fire-flame-curved"></i><span class="block">焚火</span></button>
-                        <button id="btn-scene-suikinkutsu" class="scene-selector-btn rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 水琴窟"><i class="fa-solid fa-droplet"></i><span class="block">水琴窟</span></button>
-                        <button id="btn-scene-auto" class="scene-selector-btn active rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 自動"><i class="fa-solid fa-shuffle"></i><span class="block">自動</span></button>
+                        <button id="btn-scene-cave" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 洞窟"><i class="fa-solid fa-mountain"></i><span class="block">洞窟</span></button>
+                        <button id="btn-scene-brook" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 せせらぎ"><i class="fa-solid fa-water"></i><span class="block">せせらぎ</span></button>
+                        <button id="btn-scene-fire" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 焚火"><i class="fa-solid fa-fire-flame-curved"></i><span class="block">焚火</span></button>
+                        <button id="btn-scene-suikinkutsu" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 水琴窟"><i class="fa-solid fa-droplet"></i><span class="block">水琴窟</span></button>
+                        <button id="btn-scene-auto" class="scene-selector-btn active rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 自動"><i class="fa-solid fa-shuffle"></i><span class="block">自動</span></button>
                     </div>
-                    <div class="mt-3 flex items-center gap-3">
-                        <button id="btn-sound-toggle" type="button" class="w-9 h-9 shrink-0 rounded-full border border-current/30" aria-label="環境音を消音する"><i class="fa-solid fa-volume-high"></i></button>
+                    <div class="mt-1.5 flex items-center gap-2">
+                        <button id="btn-sound-toggle" type="button" class="h-8 w-8 shrink-0 rounded-full border border-current/30 text-xs" aria-label="環境音を消音する"><i class="fa-solid fa-volume-high"></i></button>
                         <input id="breath-volume" class="w-full accent-[#ef315d]" type="range" min="0" max="100" value="100" aria-label="環境音の音量">
                     </div>
+                </div>
+                </div>
+                <div class="breathing-action-bar flex w-full shrink-0 items-center justify-center gap-3">
+                    <button id="btn-mindful-start" type="button" class="rounded-full border-2 border-black bg-[#f72572] px-7 py-2 text-sm font-black text-white shadow-[3px_3px_0_#000]">スタート</button>
+                    <button id="btn-breath-pause" type="button" class="hidden rounded-full border-2 border-black bg-[#f72572] px-5 py-2 text-sm font-black text-white shadow-[3px_3px_0_#000]" aria-label="呼吸を一時停止する">|| 一時停止</button>
+                    <button id="btn-mindful-reset" type="button" class="rounded-full border-2 border-current px-5 py-2 text-sm font-black">リセット</button>
                 </div>
             </div>
 
@@ -1670,6 +1751,27 @@
             { text: "息を止めて", sec: 7, scale: 1.15 },
             { text: "息を吐いて", sec: 8, scale: 0.72 }
         ];
+        const BOX_BREATH_PHASES = [
+            { text: "息を吸って", sec: 4, scale: 1.15 },
+            { text: "止めて", sec: 4, scale: 1.15 },
+            { text: "息を吐いて", sec: 4, scale: 0.72 },
+            { text: "止めて", sec: 4, scale: 0.72 }
+        ];
+        const BREATH_PATTERNS = {
+            diaphragmatic: { name: "腹式呼吸", description: "鼻から吸ってお腹をふくらませ、ゆっくり吐きます。自分の心地よいタイミングで続けましょう。", guided: false },
+            "478": { name: "4・7・8呼吸法", description: "4秒吸い、7秒止め、8秒かけて吐く呼吸法です。", guided: true, phases: DEFAULT_BREATH_PHASES },
+            box: { name: "ボックスブリージング", description: "4秒ずつ、吸う・止める・吐く・止めるを繰り返します。", guided: true, phases: BOX_BREATH_PHASES, shape: "square" },
+            counting: { name: "数息観", description: "①姿勢を整える ②最初に口から一度しっかり息を吐ききる。吐き始めにリンゴをタップして1〜10を数えます。", guided: true, mode: "tap" }
+        };
+        const COUNTING_BREATH_WORDS = [
+            "ひー・とー・つー", "ふー・たー・つー", "みー・っ・つー", "よー・っ・つー", "いー・つー・つー",
+            "むー・っ・つー", "なー・なー・つー", "やー・っ・つー", "こー・こー・のー・つー", "とー・おー"
+        ];
+        const BREATH_PATTERN_STORAGE_KEY = 'kokoro_breath_pattern';
+        const savedBreathPattern = storage.getItem(BREATH_PATTERN_STORAGE_KEY);
+        let selectedBreathPattern = BREATH_PATTERNS[savedBreathPattern] ? savedBreathPattern : "diaphragmatic";
+        let countingBreathValue = 1;
+        let countingWordTimers = [];
         const AMBIENCE_AUDIO_FILES = {
             cave: 'assets/audio/ambience/cave.mp3',
             brook: 'assets/audio/ambience/brook.mp3',
@@ -2070,6 +2172,29 @@
             ring.style.strokeDashoffset = `${678.58 * (1 - normalized)}`;
         }
 
+        function resetBoxGuide() {
+            document.querySelectorAll('.breathing-box-side').forEach(side => {
+                side.style.transition = 'none';
+                side.style.strokeDashoffset = '170';
+            });
+        }
+
+        function animateBoxGuideSide(stepIndex, seconds) {
+            const sides = document.querySelectorAll('.breathing-box-side');
+            if (!sides.length) return;
+            if (stepIndex === 0) resetBoxGuide();
+            sides.forEach((side, index) => {
+                if (index < stepIndex) side.style.strokeDashoffset = '0';
+            });
+            const side = sides[stepIndex];
+            if (!side) return;
+            side.style.transition = 'none';
+            side.style.strokeDashoffset = '170';
+            void side.getBoundingClientRect();
+            side.style.transition = `stroke-dashoffset ${seconds}s linear`;
+            side.style.strokeDashoffset = '0';
+        }
+
         function setSessionDuration(seconds) {
             if (mindfulnessState !== 'idle') return;
             sessionDurationSeconds = Number(seconds) || 180;
@@ -2084,6 +2209,139 @@
             document.querySelectorAll('.breathing-duration-btn').forEach(button => { button.disabled = disabled; });
         }
 
+        function setSessionControlsCollapsed(collapsed) {
+            document.getElementById('breathing-pattern-controls')?.classList.toggle('hidden', collapsed);
+            document.getElementById('breathing-duration-selector')?.classList.toggle('hidden', collapsed);
+            const summary = document.getElementById('breathing-selection-summary');
+            if (summary) {
+                summary.textContent = `${BREATH_PATTERNS[selectedBreathPattern].name}・${formatSessionDuration(sessionDurationSeconds)}`;
+                summary.classList.toggle('hidden', !collapsed);
+            }
+        }
+
+        function formatSessionDuration(seconds) {
+            return seconds < 60 ? `${seconds}秒` : `${seconds / 60}分`;
+        }
+
+        function setBreathPattern(patternId, expandDescription = true) {
+            if (mindfulnessState !== 'idle' || !BREATH_PATTERNS[patternId]) return;
+            selectedBreathPattern = patternId;
+            storage.setItem(BREATH_PATTERN_STORAGE_KEY, patternId);
+            document.querySelectorAll('.breathing-pattern-btn').forEach(button => {
+                button.classList.toggle('is-selected', button.dataset.pattern === patternId);
+                button.setAttribute('aria-pressed', button.dataset.pattern === patternId ? 'true' : 'false');
+            });
+            const description = document.getElementById('breathing-pattern-description');
+            if (description) {
+                description.textContent = BREATH_PATTERNS[patternId].description;
+                description.classList.toggle('hidden', !expandDescription);
+                description.classList.remove('breathing-pattern-description');
+                if (expandDescription) {
+                    void description.offsetWidth;
+                    description.classList.add('breathing-pattern-description');
+                }
+            }
+            setBreathGuideShape(BREATH_PATTERNS[patternId]);
+            document.getElementById('breathing-session-view')?.classList.toggle('is-counting', patternId === 'counting');
+        }
+
+        function setPatternControlsDisabled(disabled) {
+            document.querySelectorAll('.breathing-pattern-btn').forEach(button => { button.disabled = disabled; });
+        }
+
+        function startBreathGuideForPattern(patternId) {
+            const pattern = BREATH_PATTERNS[patternId] || BREATH_PATTERNS.diaphragmatic;
+            setBreathGuideShape(pattern);
+            if (pattern.guided && pattern.phases) {
+                startBreathCycle(pattern.phases);
+            } else if (pattern.mode === 'tap') {
+                startCountingBreath();
+            } else {
+                startDiaphragmaticGuide();
+            }
+        }
+
+        function setBreathGuideShape(pattern) {
+            const square = pattern?.shape === 'square';
+            document.querySelector('.breathing-progress')?.classList.toggle('hidden', square);
+            document.getElementById('breathing-box-guide')?.classList.toggle('hidden', !square);
+        }
+
+        function startDiaphragmaticGuide() {
+            const apple = document.getElementById('breathing-apple');
+            if (apple) {
+                apple.classList.remove('is-glowing');
+                apple.style.transition = 'none';
+                apple.style.transform = 'scale(1)';
+            }
+            document.querySelector('.breathing-progress')?.classList.add('is-fading');
+            const text = document.getElementById('breath-guide-text');
+            const count = document.getElementById('breath-timer-count');
+            if (text) text.textContent = '呼吸を観察しましょう';
+            if (count) count.textContent = '—';
+        }
+
+        function stopDiaphragmaticGuide() {
+            document.getElementById('breathing-apple')?.classList.remove('is-glowing');
+            document.querySelector('.breathing-progress')?.classList.remove('is-fading');
+        }
+
+        function startCountingBreath() {
+            const apple = document.getElementById('breathing-apple');
+            const text = document.getElementById('breath-guide-text');
+            const count = document.getElementById('breath-timer-count');
+            if (text) text.textContent = '吐き始めにタップ';
+            if (count) count.textContent = '—';
+            apple?.classList.add('is-glowing', 'is-tappable');
+            apple?.addEventListener('click', handleCountingBreathTap);
+        }
+
+        function handleCountingBreathTap() {
+            if (mindfulnessState !== 'running' || selectedBreathPattern !== 'counting') return;
+            const count = document.getElementById('breath-timer-count');
+            const apple = document.getElementById('breathing-apple');
+            if (count) count.textContent = `${countingBreathValue}`;
+            showCountingBreathWord(countingBreathValue);
+            countingBreathValue = countingBreathValue >= 10 ? 1 : countingBreathValue + 1;
+            apple?.classList.remove('is-tapped');
+            void apple?.offsetWidth;
+            apple?.classList.add('is-tapped');
+            setTimeout(() => apple?.classList.remove('is-tapped'), 350);
+        }
+
+        function showCountingBreathWord(value) {
+            countingWordTimers.forEach(timer => clearTimeout(timer));
+            countingWordTimers = [];
+            const word = document.getElementById('breath-counting-word');
+            if (!word) return;
+            const sounds = COUNTING_BREATH_WORDS[value - 1].split('・');
+            word.textContent = '';
+            word.classList.remove('is-visible');
+            void word.offsetWidth;
+            word.classList.add('is-visible');
+            sounds.forEach((sound, index) => {
+                countingWordTimers.push(setTimeout(() => {
+                    word.textContent = sounds.slice(0, index + 1).join('・');
+                }, index * (1200 / Math.max(1, sounds.length - 1))));
+            });
+        }
+
+        function stopCountingBreath(resetValue = false) {
+            const apple = document.getElementById('breathing-apple');
+            apple?.removeEventListener('click', handleCountingBreathTap);
+            apple?.classList.remove('is-glowing', 'is-tappable', 'is-tapped');
+            countingWordTimers.forEach(timer => clearTimeout(timer));
+            countingWordTimers = [];
+            if (resetValue) {
+                countingBreathValue = 1;
+                const word = document.getElementById('breath-counting-word');
+                if (word) {
+                    word.textContent = '';
+                    word.classList.remove('is-visible');
+                }
+            }
+        }
+
         function openBreathingModal() {
             const modal = document.getElementById('breathing-modal');
             if (!modal) return;
@@ -2092,6 +2350,7 @@
             document.getElementById('breathing-complete-view')?.classList.add('hidden');
             document.getElementById('breathing-complete-view')?.classList.remove('flex');
             document.getElementById('breathing-session-view')?.classList.remove('hidden');
+            setBreathPattern(selectedBreathPattern, false);
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.style.overflow = 'hidden';
@@ -2140,12 +2399,14 @@
             mindfulnessState = "running";
             document.getElementById('btn-mindful-start')?.classList.add('hidden');
             setDurationControlsDisabled(true);
+            setPatternControlsDisabled(true);
+            setSessionControlsCollapsed(true);
             updateBreathPauseButton(false);
             currentPlayingScene = selectedAmbienceScene === "auto" ? ["cave", "brook", "fire", "suikinkutsu"][Math.floor(Math.random() * 4)] : selectedAmbienceScene;
             playStationMelody();
             setTimeout(() => { if (mindfulnessState === "running") startNaturalAmbienceForScene(currentPlayingScene); }, 1200);
             startMindfulnessCountdown();
-            startBreathCycle(DEFAULT_BREATH_PHASES);
+            startBreathGuideForPattern(selectedBreathPattern);
         }
 
         function startMindfulnessCountdown() {
@@ -2162,6 +2423,13 @@
             clearInterval(mindfulnessTimerInterval);
             clearInterval(breathCycleTimer);
             stopNaturalAmbience();
+            const pattern = BREATH_PATTERNS[selectedBreathPattern];
+            if (!pattern?.phases) {
+                stopDiaphragmaticGuide();
+                stopCountingBreath();
+                updateBreathPauseButton(true);
+                return;
+            }
             const apple = document.getElementById('breathing-apple');
             const ring = document.getElementById('breathing-progress-value');
             if (apple) {
@@ -2169,7 +2437,14 @@
                 apple.style.transition = 'none';
                 apple.style.transform = currentTransform;
             }
-            if (ring) {
+            if (pattern.shape === 'square') {
+                const side = document.querySelector(`.breathing-box-side[data-side="${breathStep}"]`);
+                if (side) {
+                    const currentOffset = getComputedStyle(side).strokeDashoffset;
+                    side.style.transition = 'none';
+                    side.style.strokeDashoffset = currentOffset;
+                }
+            } else if (ring) {
                 const currentOffset = getComputedStyle(ring).strokeDashoffset;
                 ring.style.transition = 'none';
                 ring.style.strokeDashoffset = currentOffset;
@@ -2180,7 +2455,10 @@
         function resumeMindfulnessTimer() {
             mindfulnessState = 'running';
             startMindfulnessCountdown();
-            resumeBreathPhase();
+            const pattern = BREATH_PATTERNS[selectedBreathPattern];
+            if (pattern?.phases) resumeBreathPhase(pattern);
+            else if (pattern?.mode === 'tap') startCountingBreath();
+            else startDiaphragmaticGuide();
             startNaturalAmbienceForScene(currentPlayingScene);
             updateBreathPauseButton(false);
         }
@@ -2201,6 +2479,10 @@
             mindfulnessTimeRemaining = sessionDurationSeconds;
             activeBreathPhases = null;
             setDurationControlsDisabled(false);
+            setPatternControlsDisabled(false);
+            setSessionControlsCollapsed(false);
+            stopDiaphragmaticGuide();
+            stopCountingBreath(true);
             updateMindfulTimerDisplay();
             const startBtn = document.getElementById('btn-mindful-start');
             if (startBtn) {
@@ -2227,6 +2509,8 @@
             clearInterval(mindfulnessTimerInterval);
             clearInterval(breathCycleTimer);
             stopNaturalAmbience();
+            stopDiaphragmaticGuide();
+            stopCountingBreath(true);
             playSingingBowlSound();
             mindfulnessState = "idle";
             mindfulnessTimeRemaining = 0;
@@ -2265,7 +2549,7 @@
             }, 1000);
         }
 
-        function resumeBreathPhase() {
+        function resumeBreathPhase(pattern = BREATH_PATTERNS[selectedBreathPattern]) {
             const step = activeBreathPhases?.[breathStep];
             if (!step) return;
             const apple = document.getElementById('breathing-apple');
@@ -2274,7 +2558,13 @@
                 apple.style.transition = `transform ${breathPhaseSecondsLeft}s linear`;
                 apple.style.transform = `scale(${step.scale})`;
             }
-            if (ring) {
+            if (pattern?.shape === 'square') {
+                const side = document.querySelector(`.breathing-box-side[data-side="${breathStep}"]`);
+                if (side) {
+                    side.style.transition = `stroke-dashoffset ${breathPhaseSecondsLeft}s linear`;
+                    side.style.strokeDashoffset = '0';
+                }
+            } else if (ring) {
                 ring.style.transition = `stroke-dashoffset ${breathPhaseSecondsLeft}s linear`;
                 ring.style.strokeDashoffset = '0';
             }
@@ -2288,6 +2578,8 @@
             const countEl = document.getElementById('breath-timer-count');
             const apple = document.getElementById('breathing-apple');
             const ring = document.getElementById('breathing-progress-value');
+            const pattern = BREATH_PATTERNS[selectedBreathPattern];
+            apple?.classList.remove('is-glowing', 'is-tappable', 'is-tapped');
             breathPhaseSecondsLeft = step.sec;
             if (txt) txt.textContent = step.text;
             if (countEl) countEl.textContent = `${step.sec}`;
@@ -2295,7 +2587,9 @@
                 apple.style.transition = `transform ${step.sec}s linear`;
                 apple.style.transform = `scale(${step.scale})`;
             }
-            if (ring) {
+            if (pattern?.shape === 'square') {
+                animateBoxGuideSide(breathStep, step.sec);
+            } else if (ring) {
                 ring.style.transition = 'none';
                 setBreathRingProgress(0);
                 void ring.getBoundingClientRect();
@@ -2314,6 +2608,8 @@
             if (apple) { apple.style.transition = 'transform .3s linear'; apple.style.transform = 'scale(1)'; }
             if (ring) ring.style.transition = 'none';
             setBreathRingProgress(0);
+            resetBoxGuide();
+            setBreathGuideShape(BREATH_PATTERNS[selectedBreathPattern]);
             breathStep = 0;
         }
 
@@ -3593,6 +3889,9 @@
             document.getElementById('breath-volume')?.addEventListener('input', event => setBreathVolume(event.target.value));
             document.querySelectorAll('.breathing-duration-btn').forEach(button => {
                 button.addEventListener('click', () => setSessionDuration(button.dataset.seconds));
+            });
+            document.querySelectorAll('.breathing-pattern-btn').forEach(button => {
+                button.addEventListener('click', () => setBreathPattern(button.dataset.pattern));
             });
 
             // 環境音切り替え
