@@ -275,7 +275,8 @@
             --breath-muted: #5f5a50;
             background: var(--breath-bg);
             color: var(--breath-fg);
-            height: min(720px, calc(100dvh - 1.5rem));
+            height: auto;
+            max-height: calc(100dvh - 1rem);
             overflow: hidden;
         }
         .breathing-modal-panel.is-dark {
@@ -284,8 +285,8 @@
             --breath-muted: #b7b1a4;
         }
         .breathing-muted { color: var(--breath-muted); }
-        .breathing-session-scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
-        .breathing-apple-wrap { width: min(52vw, 220px); aspect-ratio: 1; flex-shrink: 0; }
+        .breathing-session-scroll { min-height: 0; overflow: hidden; }
+        .breathing-apple-wrap { width: min(64vw, 270px); aspect-ratio: 1; flex-shrink: 0; }
         .breathing-apple {
             color: #c5cbd4;
             font-size: clamp(106px, 28vw, 132px);
@@ -324,20 +325,61 @@
         .breathing-duration-btn:disabled { cursor: default; opacity: .48; }
         .breathing-duration-btn.is-selected { background: #f72572; color: white; border-color: #f72572; }
         .breathing-pattern-btn {
-            padding: .4rem .5rem;
+            padding: .7rem .8rem;
             font-size: .7rem;
             line-height: 1.15;
+            text-align: left;
             transition: background-color .2s ease, color .2s ease, border-color .2s ease, opacity .2s ease;
         }
         .breathing-pattern-btn.is-selected { background: #f72572; color: white; border-color: #f72572; }
+        .breathing-pattern-btn.is-selected .breathing-pattern-option-description { color: rgba(255,255,255,.88); }
         .breathing-pattern-btn:disabled { cursor: default; opacity: .48; }
+        .breathing-pattern-toggle:disabled { cursor: default; opacity: .55; }
+        .breathing-pattern-menu { gap: .6rem !important; animation: breath-description-in .2s ease-out; }
+        .breathing-pattern-option-description { display: flex; width: 100%; flex-direction: column; gap: .2rem; margin-top: .2rem; color: var(--breath-muted); font-size: .625rem; font-weight: 700; line-height: 1.4; text-align: left; }
+        .breathing-pattern-description-row { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: .2rem; align-items: start; }
+        .breathing-pattern-description-row + .breathing-pattern-description-row { padding-top: .2rem; border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+        .breathing-pattern-description-label { font-weight: 900; }
+        .breathing-posture-panel {
+            position: absolute;
+            top: 2.5rem;
+            right: 0;
+            z-index: 20;
+            width: min(84vw, 22rem);
+            padding: .65rem .75rem;
+            border: 2px solid currentColor;
+            border-radius: 1rem;
+            background: var(--breath-bg);
+            color: var(--breath-fg);
+            box-shadow: 3px 3px 0 rgba(0, 0, 0, .28);
+            text-align: left;
+        }
         .breathing-pattern-description { animation: breath-description-in .25s ease-out; }
-        .breathing-counting-word { min-height: 2.6rem; font-size: clamp(1.55rem, 7vw, 2rem); line-height: 1.25; letter-spacing: .12em; }
-        .breathing-counting-word.is-visible { animation: breathing-counting-word-in 2.4s ease-in-out forwards; }
-        #breathing-session-view.is-counting #breath-timer-count { margin-top: 0; min-height: 1rem; font-size: .7rem; opacity: .58; }
+        .breathing-counting-word { display: none; min-height: 2.6rem; font-size: clamp(1.55rem, 7vw, 2rem); line-height: 1.25; letter-spacing: .18em; }
+        .breathing-counting-word.is-visible { animation: breathing-counting-word-in 4.8s ease-in-out forwards; }
+        .breathing-practice-area { position: relative; }
+        #breathing-session-view.is-counting .breathing-counting-word.is-visible {
+            position: absolute;
+            top: 47%;
+            left: 0;
+            z-index: 3;
+            display: block;
+            width: 100%;
+            min-height: 0;
+            padding: .2rem;
+            text-align: center;
+            background: color-mix(in srgb, var(--breath-bg) 82%, transparent);
+        }
+        #breathing-session-view.is-counting #breath-timer-count { display: none; }
+        #breathing-session-view.is-diaphragmatic #breath-timer-count { display: none; }
+        #breathing-session-view.is-pattern-open .breathing-practice-area,
+        #breathing-session-view.is-pattern-open #breathing-duration-selector,
+        #breathing-session-view.is-pattern-open #mindful-timer-display,
+        #breathing-session-view.is-pattern-open .breathing-audio-controls { display: none; }
+        #breathing-session-view.is-pattern-open .breathing-action-bar { display: none; }
         .breathing-action-bar {
             z-index: 5;
-            padding: .55rem 0 .1rem;
+            padding: .75rem 0 .45rem;
             border-top: 1px solid color-mix(in srgb, var(--breath-fg) 12%, transparent);
             background: var(--breath-bg);
         }
@@ -1242,38 +1284,51 @@
     </div>
 
     <!-- トースト -->
-    <div id="breathing-modal" class="hidden fixed inset-0 z-[60000] bg-black/70 p-3 sm:p-5 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="breathing-modal-title">
-        <div id="breathing-modal-panel" class="breathing-modal-panel relative flex w-full max-w-lg flex-col rounded-3xl border-4 border-black shadow-[7px_7px_0_#000] px-4 py-3 sm:p-5">
-            <div class="flex shrink-0 items-center justify-between gap-3">
+    <div id="breathing-modal" class="hidden fixed inset-0 z-[60000] bg-black/70 p-2 sm:p-5 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="breathing-modal-title">
+        <div id="breathing-modal-panel" class="breathing-modal-panel relative flex w-full max-w-lg flex-col rounded-3xl border-4 border-black shadow-[7px_7px_0_#000] px-3 py-2 sm:p-5">
+            <div class="flex shrink-0 items-center justify-between gap-2">
                 <div>
-                    <h2 id="breathing-modal-title" class="text-xl font-black">マインドフルネス瞑想</h2>
-                    <p class="breathing-muted text-xs font-bold">自分に合う呼吸法を選びましょう</p>
+                    <h2 id="breathing-modal-title" class="text-lg font-black sm:text-xl">マインドフルネス瞑想</h2>
+                    <p class="breathing-muted text-[10px] font-bold sm:text-xs">自分に合う呼吸法を選びましょう</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button id="btn-breath-theme" type="button" class="w-9 h-9 rounded-full border-2 border-current flex items-center justify-center" aria-label="背景を黒に切り替える"><i class="fa-solid fa-circle-half-stroke"></i></button>
-                    <button id="btn-breath-close" type="button" class="w-9 h-9 rounded-full border-2 border-current flex items-center justify-center text-xl" aria-label="呼吸を終了する">×</button>
+                <div class="relative flex items-center gap-1.5">
+                    <button id="btn-breath-posture" type="button" class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-current text-base" aria-label="基本の姿勢" aria-expanded="false" aria-controls="breathing-posture-panel">ⓘ</button>
+                    <div id="breathing-posture-panel" class="breathing-posture-panel hidden" role="region" aria-labelledby="breathing-posture-title">
+                        <h3 id="breathing-posture-title" class="mb-1 text-xs font-black">マインドフルネス瞑想の基本姿勢</h3>
+                        <ul class="list-disc space-y-1 pl-4 text-[10px] font-bold leading-relaxed">
+                            <li>背筋をまっすぐ伸ばし、心身の力を抜く</li>
+                            <li>床にあぐらや正座、または椅子に浅く腰掛ける</li>
+                            <li>感覚や感情が浮かび上がったら、呼吸に意識を戻す</li>
+                        </ul>
+                    </div>
+                    <button id="btn-breath-theme" type="button" class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-current" aria-label="背景を黒に切り替える"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                    <button id="btn-breath-close" type="button" class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-current text-lg" aria-label="呼吸を終了する">×</button>
                 </div>
             </div>
 
-            <div id="breathing-session-view" class="flex min-h-0 flex-1 flex-col">
-                <div class="breathing-session-scroll flex min-h-0 flex-1 flex-col items-center pt-2 pb-1">
-                <div id="breathing-pattern-controls" class="mb-2 w-full" aria-label="呼吸法を選択">
-                    <div id="breathing-pattern-selector" class="grid grid-cols-2 gap-1.5">
-                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="diaphragmatic">腹式呼吸</button>
-                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="478">4・7・8呼吸法</button>
-                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="box">ボックスブリージング</button>
-                        <button type="button" class="breathing-pattern-btn rounded-xl border-2 border-current/30 font-black" data-pattern="counting">数息観</button>
+            <div id="breathing-session-view" class="flex flex-col">
+                <div class="breathing-session-scroll flex flex-col items-center pt-2 pb-1">
+                <div id="breathing-pattern-controls" class="mb-1 w-full" aria-label="呼吸法を選択">
+                    <button id="breathing-pattern-toggle" type="button" class="breathing-pattern-toggle flex w-full items-center justify-between rounded-full border border-current/25 px-3 py-1.5 text-[11px] font-black" aria-expanded="false" aria-controls="breathing-pattern-selector">
+                        <span class="breathing-muted">呼吸法の切替</span>
+                        <span><span id="breathing-pattern-current">腹式呼吸</span> <i class="fa-solid fa-chevron-down text-[9px]"></i></span>
+                    </button>
+                    <div id="breathing-pattern-selector" class="breathing-pattern-menu hidden mt-1 flex flex-col gap-1">
+                        <button type="button" class="breathing-pattern-btn flex flex-col items-start rounded-xl border-2 border-current/30 font-black" data-pattern="diaphragmatic"><span>腹式呼吸</span><span class="breathing-pattern-option-description"></span></button>
+                        <button type="button" class="breathing-pattern-btn flex flex-col items-start rounded-xl border-2 border-current/30 font-black" data-pattern="478"><span>4・7・8呼吸法</span><span class="breathing-pattern-option-description"></span></button>
+                        <button type="button" class="breathing-pattern-btn flex flex-col items-start rounded-xl border-2 border-current/30 font-black" data-pattern="box"><span>ボックスブリージング</span><span class="breathing-pattern-option-description"></span></button>
+                        <button type="button" class="breathing-pattern-btn flex flex-col items-start rounded-xl border-2 border-current/30 font-black" data-pattern="counting"><span>数息観</span><span class="breathing-pattern-option-description"></span></button>
                     </div>
-                    <p id="breathing-pattern-description" class="hidden breathing-muted mt-1.5 rounded-xl border border-current/15 px-2.5 py-1.5 text-[10px] font-bold" aria-live="polite"></p>
+                    <p id="breathing-pattern-description" class="hidden" aria-live="polite"></p>
                 </div>
-                <div class="mb-1 flex w-full items-center justify-center gap-1.5" id="breathing-duration-selector" aria-label="セッション時間">
-                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="30">30秒</button>
-                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="60">1分</button>
-                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="120">2分</button>
-                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-3 py-1 text-xs font-black" data-seconds="180">3分</button>
+                <div class="mb-1 flex w-full items-center justify-center gap-1" id="breathing-duration-selector" aria-label="セッション時間">
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-2.5 py-1 text-[10px] font-black" data-seconds="30">30秒</button>
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-2.5 py-1 text-[10px] font-black" data-seconds="60">1分</button>
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-2.5 py-1 text-[10px] font-black" data-seconds="120">2分</button>
+                    <button type="button" class="breathing-duration-btn rounded-full border border-current/30 px-2.5 py-1 text-[10px] font-black" data-seconds="180">3分</button>
                 </div>
-                <div id="breathing-selection-summary" class="breathing-selection-summary hidden rounded-full border border-current/20 px-3 py-1 text-[10px] font-black" aria-live="polite"></div>
                 <div id="mindful-timer-display" class="font-mono text-2xl font-black tracking-[.18em] breathing-muted">03:00</div>
+                <div class="breathing-practice-area flex flex-col items-center">
                 <div class="breathing-apple-wrap relative my-1">
                     <svg class="breathing-progress absolute inset-0 w-full h-full" viewBox="0 0 240 240" aria-hidden="true">
                         <circle class="breathing-progress-bg" cx="120" cy="120" r="108"></circle>
@@ -1290,28 +1345,29 @@
                         <i id="breathing-apple" class="breathing-apple fa-solid fa-apple-whole" aria-hidden="true"></i>
                     </div>
                 </div>
-                <div id="breath-guide-text" class="min-h-[2.25rem] text-3xl font-black"></div>
+                <div id="breath-guide-text" class="min-h-[1.5rem] text-lg font-black sm:text-2xl"></div>
                 <div id="breath-timer-count" class="mt-1 min-h-[2.25rem] font-mono text-3xl font-black breathing-muted">—</div>
                 <div id="breath-counting-word" class="breathing-counting-word font-black text-[#f72572]" aria-live="polite"></div>
+                </div>
 
-                <div class="mt-2 w-full border-t-2 border-current/15 pt-2">
-                    <div id="bgm-selector-group" class="grid grid-cols-5 gap-1">
-                        <button id="btn-scene-cave" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 洞窟"><i class="fa-solid fa-mountain"></i><span class="block">洞窟</span></button>
-                        <button id="btn-scene-brook" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 せせらぎ"><i class="fa-solid fa-water"></i><span class="block">せせらぎ</span></button>
-                        <button id="btn-scene-fire" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 焚火"><i class="fa-solid fa-fire-flame-curved"></i><span class="block">焚火</span></button>
-                        <button id="btn-scene-suikinkutsu" class="scene-selector-btn rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 水琴窟"><i class="fa-solid fa-droplet"></i><span class="block">水琴窟</span></button>
-                        <button id="btn-scene-auto" class="scene-selector-btn active rounded-lg border border-current/30 py-1 text-[8px]" aria-label="環境音 自動"><i class="fa-solid fa-shuffle"></i><span class="block">自動</span></button>
+                <div class="breathing-audio-controls mt-2 w-full border-t border-current/15 pt-2">
+                    <div id="bgm-selector-group" class="grid w-full min-w-0 grid-cols-5 gap-1 px-[2px] pb-[2px]">
+                        <button id="btn-scene-cave" class="scene-selector-btn min-w-0 rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 洞窟"><i class="fa-solid fa-mountain"></i><span class="block">洞窟</span></button>
+                        <button id="btn-scene-brook" class="scene-selector-btn min-w-0 rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 せせらぎ"><i class="fa-solid fa-water"></i><span class="block">せせらぎ</span></button>
+                        <button id="btn-scene-fire" class="scene-selector-btn min-w-0 rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 焚火"><i class="fa-solid fa-fire-flame-curved"></i><span class="block">焚火</span></button>
+                        <button id="btn-scene-suikinkutsu" class="scene-selector-btn min-w-0 rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 水琴窟"><i class="fa-solid fa-droplet"></i><span class="block">水琴窟</span></button>
+                        <button id="btn-scene-auto" class="scene-selector-btn active min-w-0 rounded-lg border border-current/30 py-2 text-[9px]" aria-label="環境音 自動"><i class="fa-solid fa-shuffle"></i><span class="block">自動</span></button>
                     </div>
-                    <div class="mt-1.5 flex items-center gap-2">
+                    <div class="mt-2 flex items-center gap-2">
                         <button id="btn-sound-toggle" type="button" class="h-8 w-8 shrink-0 rounded-full border border-current/30 text-xs" aria-label="環境音を消音する"><i class="fa-solid fa-volume-high"></i></button>
                         <input id="breath-volume" class="w-full accent-[#ef315d]" type="range" min="0" max="100" value="100" aria-label="環境音の音量">
                     </div>
                 </div>
                 </div>
                 <div class="breathing-action-bar flex w-full shrink-0 items-center justify-center gap-3">
-                    <button id="btn-mindful-start" type="button" class="rounded-full border-2 border-black bg-[#f72572] px-7 py-2 text-sm font-black text-white shadow-[3px_3px_0_#000]">スタート</button>
-                    <button id="btn-breath-pause" type="button" class="hidden rounded-full border-2 border-black bg-[#f72572] px-5 py-2 text-sm font-black text-white shadow-[3px_3px_0_#000]" aria-label="呼吸を一時停止する">|| 一時停止</button>
-                    <button id="btn-mindful-reset" type="button" class="rounded-full border-2 border-current px-5 py-2 text-sm font-black">リセット</button>
+                    <button id="btn-mindful-start" type="button" class="h-11 w-28 rounded-full border-2 border-black bg-[#f72572] text-sm font-black text-white shadow-[3px_3px_0_#000]">スタート</button>
+                    <button id="btn-breath-pause" type="button" class="hidden h-11 w-28 rounded-full border-2 border-black bg-[#f72572] text-sm font-black text-white shadow-[3px_3px_0_#000]" aria-label="呼吸を一時停止する">|| 一時停止</button>
+                    <button id="btn-mindful-reset" type="button" class="h-11 w-28 rounded-full border-2 border-current text-sm font-black">リセット</button>
                 </div>
             </div>
 
@@ -1758,14 +1814,34 @@
             { text: "止めて", sec: 4, scale: 0.72 }
         ];
         const BREATH_PATTERNS = {
-            diaphragmatic: { name: "腹式呼吸", description: "鼻から吸ってお腹をふくらませ、ゆっくり吐きます。自分の心地よいタイミングで続けましょう。", guided: false },
-            "478": { name: "4・7・8呼吸法", description: "4秒吸い、7秒止め、8秒かけて吐く呼吸法です。", guided: true, phases: DEFAULT_BREATH_PHASES },
-            box: { name: "ボックスブリージング", description: "4秒ずつ、吸う・止める・吐く・止めるを繰り返します。", guided: true, phases: BOX_BREATH_PHASES, shape: "square" },
-            counting: { name: "数息観", description: "①姿勢を整える ②最初に口から一度しっかり息を吐ききる。吐き始めにリンゴをタップして1〜10を数えます。", guided: true, mode: "tap" }
+            diaphragmatic: {
+                name: "腹式呼吸",
+                description: "効果：副交感神経を優位にし、心身をリラックスさせる\n方法：鼻から吸ってお腹を膨らませ、口から倍の時間をかけてゆっくり吐く（お腹を凹ませる）\nコツ：胸ではなくお腹が上下しているように意識する",
+                guided: false
+            },
+            "478": {
+                name: "4・7・8呼吸法",
+                description: "効果：高ぶった神経を鎮め、素早く深いリラックス状態へ導く\n方法：4秒吸う→7秒止める→8秒かけて音を立てて吐く\nコツ：吐くときは舌先を上の前歯の裏につけ、フーッという摩擦音を意識する",
+                guided: true,
+                phases: DEFAULT_BREATH_PHASES
+            },
+            box: {
+                name: "ボックスブリージング",
+                description: "効果：意識を呼吸に集中させ、パニックや焦りを即座に鎮める\n方法：吸う→止める→吐く→止める、をすべて4秒で繰り返す\nコツ：秒数を一定のペースで数え、四角形を頭の中で思い描く",
+                guided: true,
+                phases: BOX_BREATH_PHASES,
+                shape: "square"
+            },
+            counting: {
+                name: "数息観",
+                description: "効果：雑念を払い、乱れた心を落ち着かせ集中力を高める\n方法：自然な呼吸を続け、吐く時に心の中で「ひとつ」「ふたつ」と10まで数える\nコツ：数え忘れたり雑念が浮かんだりしても、責めずに静かに数え直す",
+                guided: true,
+                mode: "tap"
+            }
         };
         const COUNTING_BREATH_WORDS = [
-            "ひー・とー・つー", "ふー・たー・つー", "みー・っ・つー", "よー・っ・つー", "いー・つー・つー",
-            "むー・っ・つー", "なー・なー・つー", "やー・っ・つー", "こー・こー・のー・つー", "とー・おー"
+            ["ひー", "とー", "つー"], ["ふー", "たー", "つー"], ["みー", "っ", "つー"], ["よー", "っ", "つー"], ["いー", "つー", "つー"],
+            ["むー", "っ", "つー"], ["なー", "なー", "つー"], ["やー", "っ", "つー"], ["こー", "こー", "のー", "つー"], ["とー", "おー"]
         ];
         const BREATH_PATTERN_STORAGE_KEY = 'kokoro_breath_pattern';
         const savedBreathPattern = storage.getItem(BREATH_PATTERN_STORAGE_KEY);
@@ -2203,6 +2279,7 @@
                 button.classList.toggle('is-selected', Number(button.dataset.seconds) === sessionDurationSeconds);
             });
             updateMindfulTimerDisplay();
+            updateBreathSelectionLabel();
         }
 
         function setDurationControlsDisabled(disabled) {
@@ -2210,20 +2287,40 @@
         }
 
         function setSessionControlsCollapsed(collapsed) {
-            document.getElementById('breathing-pattern-controls')?.classList.toggle('hidden', collapsed);
-            document.getElementById('breathing-duration-selector')?.classList.toggle('hidden', collapsed);
-            const summary = document.getElementById('breathing-selection-summary');
-            if (summary) {
-                summary.textContent = `${BREATH_PATTERNS[selectedBreathPattern].name}・${formatSessionDuration(sessionDurationSeconds)}`;
-                summary.classList.toggle('hidden', !collapsed);
-            }
+            updateBreathSelectionLabel();
         }
 
         function formatSessionDuration(seconds) {
             return seconds < 60 ? `${seconds}秒` : `${seconds / 60}分`;
         }
 
-        function setBreathPattern(patternId, expandDescription = true) {
+        function updateBreathSelectionLabel() {
+            const current = document.getElementById('breathing-pattern-current');
+            if (current) current.textContent = BREATH_PATTERNS[selectedBreathPattern].name;
+        }
+
+        function renderBreathPatternDescriptions() {
+            document.querySelectorAll('.breathing-pattern-btn').forEach(button => {
+                const description = button.querySelector('.breathing-pattern-option-description');
+                if (description && BREATH_PATTERNS[button.dataset.pattern]) {
+                    description.textContent = '';
+                    BREATH_PATTERNS[button.dataset.pattern].description.split('\n').forEach(item => {
+                        const separatorIndex = item.indexOf('：');
+                        const row = document.createElement('span');
+                        row.className = 'breathing-pattern-description-row';
+                        const label = document.createElement('span');
+                        label.className = 'breathing-pattern-description-label';
+                        label.textContent = separatorIndex >= 0 ? item.slice(0, separatorIndex + 1) : '';
+                        const text = document.createElement('span');
+                        text.textContent = separatorIndex >= 0 ? item.slice(separatorIndex + 1) : item;
+                        row.append(label, text);
+                        description.appendChild(row);
+                    });
+                }
+            });
+        }
+
+        function setBreathPattern(patternId) {
             if (mindfulnessState !== 'idle' || !BREATH_PATTERNS[patternId]) return;
             selectedBreathPattern = patternId;
             storage.setItem(BREATH_PATTERN_STORAGE_KEY, patternId);
@@ -2231,22 +2328,36 @@
                 button.classList.toggle('is-selected', button.dataset.pattern === patternId);
                 button.setAttribute('aria-pressed', button.dataset.pattern === patternId ? 'true' : 'false');
             });
+            updateBreathSelectionLabel();
             const description = document.getElementById('breathing-pattern-description');
-            if (description) {
-                description.textContent = BREATH_PATTERNS[patternId].description;
-                description.classList.toggle('hidden', !expandDescription);
-                description.classList.remove('breathing-pattern-description');
-                if (expandDescription) {
-                    void description.offsetWidth;
-                    description.classList.add('breathing-pattern-description');
-                }
-            }
+            if (description) description.textContent = BREATH_PATTERNS[patternId].description;
             setBreathGuideShape(BREATH_PATTERNS[patternId]);
-            document.getElementById('breathing-session-view')?.classList.toggle('is-counting', patternId === 'counting');
+            const session = document.getElementById('breathing-session-view');
+            session?.classList.toggle('is-counting', patternId === 'counting');
+            session?.classList.toggle('is-diaphragmatic', patternId === 'diaphragmatic');
+            closeBreathPatternMenu();
+        }
+
+        function toggleBreathPatternMenu() {
+            if (mindfulnessState !== 'idle') return;
+            const menu = document.getElementById('breathing-pattern-selector');
+            const willOpen = menu?.classList.contains('hidden');
+            menu?.classList.toggle('hidden', !willOpen);
+            document.getElementById('breathing-pattern-toggle')?.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+            document.getElementById('breathing-session-view')?.classList.toggle('is-pattern-open', Boolean(willOpen));
+        }
+
+        function closeBreathPatternMenu() {
+            document.getElementById('breathing-pattern-selector')?.classList.add('hidden');
+            document.getElementById('breathing-pattern-toggle')?.setAttribute('aria-expanded', 'false');
+            document.getElementById('breathing-session-view')?.classList.remove('is-pattern-open');
         }
 
         function setPatternControlsDisabled(disabled) {
             document.querySelectorAll('.breathing-pattern-btn').forEach(button => { button.disabled = disabled; });
+            const toggle = document.getElementById('breathing-pattern-toggle');
+            if (toggle) toggle.disabled = disabled;
+            if (disabled) closeBreathPatternMenu();
         }
 
         function startBreathGuideForPattern(patternId) {
@@ -2314,15 +2425,15 @@
             countingWordTimers = [];
             const word = document.getElementById('breath-counting-word');
             if (!word) return;
-            const sounds = COUNTING_BREATH_WORDS[value - 1].split('・');
+            const sounds = COUNTING_BREATH_WORDS[value - 1];
             word.textContent = '';
             word.classList.remove('is-visible');
             void word.offsetWidth;
             word.classList.add('is-visible');
             sounds.forEach((sound, index) => {
                 countingWordTimers.push(setTimeout(() => {
-                    word.textContent = sounds.slice(0, index + 1).join('・');
-                }, index * (1200 / Math.max(1, sounds.length - 1))));
+                    word.textContent = sounds.slice(0, index + 1).join('');
+                }, index * (2400 / Math.max(1, sounds.length - 1))));
             });
         }
 
@@ -2342,6 +2453,21 @@
             }
         }
 
+        function closeBreathingPosturePanel() {
+            document.getElementById('breathing-posture-panel')?.classList.add('hidden');
+            const button = document.getElementById('btn-breath-posture');
+            button?.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleBreathingPosturePanel() {
+            const panel = document.getElementById('breathing-posture-panel');
+            if (!panel) return;
+            const willOpen = panel.classList.contains('hidden');
+            panel.classList.toggle('hidden', !willOpen);
+            const button = document.getElementById('btn-breath-posture');
+            button?.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        }
+
         function openBreathingModal() {
             const modal = document.getElementById('breathing-modal');
             if (!modal) return;
@@ -2350,7 +2476,10 @@
             document.getElementById('breathing-complete-view')?.classList.add('hidden');
             document.getElementById('breathing-complete-view')?.classList.remove('flex');
             document.getElementById('breathing-session-view')?.classList.remove('hidden');
-            setBreathPattern(selectedBreathPattern, false);
+            renderBreathPatternDescriptions();
+            setBreathPattern(selectedBreathPattern);
+            closeBreathPatternMenu();
+            closeBreathingPosturePanel();
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.style.overflow = 'hidden';
@@ -2359,6 +2488,7 @@
 
         function closeBreathingModal() {
             resetMindfulnessTimer();
+            closeBreathingPosturePanel();
             document.getElementById('breathing-exit-confirm')?.classList.add('hidden');
             document.getElementById('breathing-exit-confirm')?.classList.remove('flex');
             const modal = document.getElementById('breathing-modal');
@@ -3886,10 +4016,18 @@
             bind('btn-breath-end', 'click', closeBreathingModal);
             bind('btn-breath-complete-close', 'click', closeBreathingModal);
             bind('btn-breath-theme', 'click', toggleBreathingTheme);
+            bind('btn-breath-posture', 'click', toggleBreathingPosturePanel);
+            document.addEventListener('click', event => {
+                const panel = document.getElementById('breathing-posture-panel');
+                const button = document.getElementById('btn-breath-posture');
+                if (!panel || panel.classList.contains('hidden')) return;
+                if (!panel.contains(event.target) && !button?.contains(event.target)) closeBreathingPosturePanel();
+            });
             document.getElementById('breath-volume')?.addEventListener('input', event => setBreathVolume(event.target.value));
             document.querySelectorAll('.breathing-duration-btn').forEach(button => {
                 button.addEventListener('click', () => setSessionDuration(button.dataset.seconds));
             });
+            bind('breathing-pattern-toggle', 'click', toggleBreathPatternMenu);
             document.querySelectorAll('.breathing-pattern-btn').forEach(button => {
                 button.addEventListener('click', () => setBreathPattern(button.dataset.pattern));
             });
