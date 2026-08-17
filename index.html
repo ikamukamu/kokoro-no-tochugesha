@@ -2499,7 +2499,9 @@
         }
 
         function requestBreathingExit() {
-            if (mindfulnessState !== 'running' && mindfulnessTimeRemaining === sessionDurationSeconds) {
+            const completeView = document.getElementById('breathing-complete-view');
+            const isShowingComplete = completeView && !completeView.classList.contains('hidden');
+            if (isShowingComplete || (mindfulnessState !== 'running' && mindfulnessTimeRemaining === sessionDurationSeconds)) {
                 closeBreathingModal();
                 return;
             }
