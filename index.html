@@ -730,9 +730,9 @@
                     <button type="button" class="coping-state-tab rounded-full border-2 border-gray-200 bg-white px-1 py-2 text-gray-600" data-state="👥 他人の目（嫌われてるかも犬）" aria-selected="false"><span class="block text-lg leading-none" aria-hidden="true">👤</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">チクチク視線</span></button>
                     <button type="button" class="coping-state-tab rounded-full border-2 border-gray-200 bg-white px-1 py-2 text-gray-600" data-state="🔋 意欲低下・おっくう・体が動かない" aria-selected="false"><span class="block text-lg leading-none" aria-hidden="true">🔋</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">ポッカリ虚無</span></button>
                 </div>
-                <div class="flex items-center gap-3 rounded-xl border-2 border-gray-700 bg-gray-800 p-3">
-                    <p id="coping-state-description" class="min-w-0 flex-1 text-[11px] font-bold leading-relaxed text-white sm:text-xs"></p>
-                    <button id="btn-open-my-coping" type="button" class="shrink-0 rounded-lg border-2 border-pdPink bg-white px-3 py-2 text-[10px] font-black text-pdPink shadow-[2px_2px_0_#000]" aria-label="マイコーピングを追加">＋ 追加登録</button>
+                <div class="flex items-center gap-3 rounded-xl border-2 border-pdPink bg-rose-50 p-3">
+                    <p id="coping-state-description" class="min-w-0 flex-1 text-[11px] font-bold leading-relaxed text-gray-700 sm:text-xs"></p>
+                    <button id="btn-open-my-coping" type="button" class="shrink-0 rounded-full border-2 border-pdPink bg-white px-3 py-2 text-[10px] font-black text-pdPink" aria-label="マイコーピングを追加">＋ 追加登録</button>
                 </div>
                 <div id="coping-filters" class="grid grid-cols-4 gap-1 border-b border-gray-200" aria-label="一覧フィルタ">
                     <button type="button" class="coping-filter border-b-2 border-pdPink px-0.5 py-2 text-[8px] font-bold text-pdNavy sm:text-[11px]" data-filter="all" aria-pressed="true">すべて表示</button>
@@ -1419,11 +1419,60 @@
         }
 
         const copingSkillsDatabase = {
-            "⚡ 動悸・緊張・心臓バクバク": ["冷たい水で手を洗う。感覚に集中しリセットします。","「神門（しんもん）」というツボを1分揉みほぐす。","4秒かけて吸い、4秒止め、4秒吐き、4秒止めるボックス呼吸。"],
-            "😡 怒り・理不尽なイライラ": ["イライラや愚痴を紙に書き殴り、破いてゴミ箱へ捨てる。","怒りを感じた瞬間から、100から7ずつ逆に数える。","コップの冷たさに指先で触り、その感覚に全集中する。"],
-            "🏆 完璧主義「ねばならない」の罠": ["『まずは半分の出来(50%)で終わらせる』と言い換える。","今日できたことを1つ探して自分を褒める。","ノートに『まあ、いっか。』と大きな文字でゆっくり書く。"],
-            "👥 他人の目（嫌われてるかも犬）": ["『相手の気持ちは相手の持ち物』と心の中で線を引く。","いま見えている事実を3つだけ紙に書き出す。","肩の力を抜き、足裏の感覚に10秒だけ注意を戻す。"],
-            "🔋 意欲低下・おっくう・体が動かない": ["『パソコンを開いて1秒見る』だけを当面の目標にする。","やる気待ちを諦め、外の空気を吸いに一歩出る。","首の後ろに温かい蒸しタオルを3分あてる。"]
+            "⚡ 動悸・緊張・心臓バクバク": [
+                "冷たい水で手を洗う。感覚に集中しリセットします。",
+                "「神門（しんもん）」というツボを1分揉みほぐす。",
+                "4秒かけて吸い、4秒止め、4秒吐き、4秒止めるボックス呼吸。",
+                { title: "自信がなくて不安な時の対処", detail: "てのひらをさすりながら自分をねぎらう、ぬいぐるみに名前をつけて話しかける・抱きしめる。または、無理にねぎらわず自信が持てない自分をありのまま受け止める。" },
+                { title: "強烈な不安、トラウマへの対処", detail: "不安を回転する何かの塊に見立てて、ゆっくり逆回転させ、色を明るく塗り替える。" },
+                { title: "漠然とした不安やモヤモヤ", detail: "心の中に「満月」を思い浮かべる、合谷のツボを叩く、または運動、音楽（マルコーニ・ユニオン Weightless）、没頭できる活動を行う。" },
+                { title: "プレゼン前の緊張への対処", detail: "「トントントン」と一定リズムで胸を叩く。または自分の状態を言語化して俯瞰する。" },
+                { title: "軸をつくる方法", detail: "グラウンディングを行い、ブレない軸をつくる。" }
+            ],
+            "😡 怒り・理不尽なイライラ": [
+                "イライラや愚痴を紙に書き殴り、破いてゴミ箱へ捨てる。",
+                "怒りを感じた瞬間から、100から7ずつ逆に数える。",
+                "コップの冷たさに指先で触り、その感覚に全集中する。",
+                { title: "苦手な人への接し方", detail: "自分のハートと相手が繋がっているとイメージする、または相手を「10年来の友人」と思って接する。" },
+                { title: "イライラしている人への対処", detail: "相手との間に透明な強化ガラスをイメージする、または相手を「困っている人だ」と捉える。" },
+                { title: "ガミガミ言われるストレス", detail: "相手の声をミッキーマウスの声でアテレコしてみる。" },
+                { title: "変化のない毎日のイライラ", detail: "いつもと違う道を歩く、あるいは新しいものに触れて刺激を取り入れる。" }
+            ],
+            "🏆 完璧主義「ねばならない」の罠": [
+                "『まずは半分の出来(50%)で終わらせる』と言い換える。",
+                "今日できたことを1つ探して自分を褒める。",
+                "ノートに『まあ、いっか。』と大きな文字でゆっくり書く。",
+                { title: "ぐるぐる思考が止まらない時", detail: "「パン」と手を叩き「ストップ」と言う。または「それはそれとして」という言葉で目的にフォーカスする。" },
+                { title: "「ダメだ」と思った時", detail: "「ダメだ」と思っていた、と過去形にして表現してみる。" },
+                { title: "ハードルを下げる思考法", detail: "「〜ねばならない」という思考を「〜できたら良いね」に変換する。" },
+                { title: "自分を見る視点の切り替え", detail: "減点法をやめて、加点法で自分を見るようにする。" },
+                { title: "2者択一で悩む時", detail: "メリットとデメリットをリスト化して整理する。" },
+                { title: "眠る前の自己肯定", detail: "今日一日を過ごした自分に対し、自分をほめる言葉や認める言葉をかける。" }
+            ],
+            "👥 他人の目（嫌われてるかも犬）": [
+                "『相手の気持ちは相手の持ち物』と心の中で線を引く。",
+                "いま見えている事実を3つだけ紙に書き出す。",
+                "肩の力を抜き、足裏の感覚に10秒だけ注意を戻す。",
+                { title: "人前に立つ緊張と不安", detail: "光輝く自分をイメージする。" },
+                { title: "思い込みのクセへの対処", detail: "脳内に「嫌われてるかも犬」などのキャラクターを飼っているとイメージしてみる。" },
+                { title: "対人関係の不安（不機嫌な人）", detail: "他人の不機嫌を、わざわざ自分に紐づけないようにする。" },
+                { title: "いきなり怒られて不安な時", detail: "鏡で自分の顔をチェックする。" },
+                { title: "他人の顔色をうかがう時", detail: "他人ではなく「自分の機嫌」をとることに注力する。" },
+                { title: "「No」と言えない時", detail: "あらかじめ、何と言って断るかのフレーズを決めておく。" },
+                { title: "振る舞い方に悩む時", detail: "尊敬する人の視点を借りて考えてみる。" },
+                { title: "姿勢による改善", detail: "背筋を伸ばして堂々とした姿勢をとる。" }
+            ],
+            "🔋 意欲低下・おっくう・体が動かない": [
+                "『パソコンを開いて1秒見る』だけを当面の目標にする。",
+                "やる気待ちを諦め、外の空気を吸いに一歩出る。",
+                "首の後ろに温かい蒸しタオルを3分あてる。",
+                { title: "この先どう動くか不安な時", detail: "10年後の理想の自分を想像し、その人にアドバイスを聞いてみる。" },
+                { title: "過去のつらい記憶の浄化", detail: "記憶を具現化して、笹に乗せて川に流すイメージを持つ。" },
+                { title: "孤独感やワクワクを取り戻す", detail: "「とーほかーみーえーみーたーめー」と唱え、先祖に感謝する。" },
+                { title: "心が錆びついていると感じる時", detail: "自分の良かったことを毎晩1〜3つ書き出し、幸せを実感する。" },
+                { title: "身体面からのアプローチ", detail: "MCTオイルとオメガ3オイルを摂取し、腸内のセロトニン合成を促す。" },
+                { title: "感情表現の習慣化", detail: "「ありがとう」「うれしい」「助かる」といったポジティブな感情表現を積極的に使う。" }
+            ]
         };
 
         const tumbleWordsDatabase = {
@@ -2892,10 +2941,18 @@
         }
 
         function getPresetCopingRecords(stateTag) {
-            return (copingSkillsDatabase[stateTag] || []).map((detail, index) => ({
-                id: `preset_${Object.keys(copingSkillsDatabase).indexOf(stateTag)}_${index}`,
-                title: detail.replace(/[。．]$/, ''), detail, stateTag, type: 'preset', isFavorite: false
-            }));
+            return (copingSkillsDatabase[stateTag] || []).map((item, index) => {
+                const isStructured = typeof item === 'object' && item !== null;
+                const detail = isStructured ? item.detail : item;
+                return {
+                    id: `preset_${Object.keys(copingSkillsDatabase).indexOf(stateTag)}_${index}`,
+                    title: isStructured ? item.title : detail.replace(/[。．]$/, ''),
+                    detail,
+                    stateTag,
+                    type: 'preset',
+                    isFavorite: false
+                };
+            });
         }
 
         function getCopingRecordsForState(stateTag) {
@@ -2945,14 +3002,14 @@
                     <button type="button" class="coping-accordion-trigger flex w-full items-center gap-2 p-3 text-left" data-id="${escapeMyCopingHtml(item.id)}" aria-expanded="${expanded}">
                         <i class="fa-solid fa-chevron-${expanded ? 'down' : 'right'} w-3 shrink-0 text-[10px] text-gray-500"></i>
                         <span class="min-w-0 flex-1 break-words text-xs font-bold text-pdNavy">${escapeMyCopingHtml(item.title)}</span>
-                        <span class="shrink-0 rounded px-1.5 py-0.5 text-[8px] font-black ${isMine ? 'bg-pdPink text-white' : 'bg-teal-100 text-teal-800'}">${isMine ? 'わたし' : '駅長のヒント'}</span>
+                        <span class="shrink-0 rounded px-1.5 py-0.5 text-[8px] font-black ${isMine ? 'bg-rose-100 text-rose-800' : 'bg-teal-100 text-teal-800'}">${isMine ? 'わたし' : '駅長のヒント'}</span>
                     </button>
                     <div class="${expanded ? '' : 'hidden'} border-t border-dashed border-gray-300 p-3 pt-2">
                         <p class="whitespace-pre-wrap break-words text-[11px] leading-relaxed text-gray-700">${escapeMyCopingHtml(item.detail || '詳細メモはまだありません。')}</p>
                         <div class="mt-3 flex flex-wrap gap-2">
-                            <button type="button" class="coping-used-btn min-h-[36px] rounded-lg border-2 border-pdBlack bg-pdPink px-3 py-2 text-[10px] font-bold text-white shadow-[2px_2px_0_#000]" data-id="${escapeMyCopingHtml(item.id)}">やってみた</button>
-                            ${isMine ? `<button type="button" class="coping-edit-btn rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-pen"></i> 編集</button>
-                            <button type="button" class="coping-delete-btn rounded-lg border-2 border-rose-600 bg-white px-3 py-2 text-[10px] font-bold text-rose-600" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-trash"></i> 削除</button>` : `<button type="button" class="min-h-[36px] rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" aria-label="マイコーピングに追加（準備中）">＋ マイコーピングに追加</button>`}
+                            <button type="button" class="coping-used-btn min-h-[36px] rounded-lg border-2 border-emerald-600 bg-white px-3 py-2 text-[10px] font-bold text-emerald-700" data-id="${escapeMyCopingHtml(item.id)}">💊 やってみた</button>
+                            ${isMine ? `<button type="button" class="coping-edit-btn min-h-[36px] rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-pen"></i> 編集</button>
+                            <button type="button" class="coping-delete-btn min-h-[36px] rounded-lg border-2 border-rose-600 bg-white px-3 py-2 text-[10px] font-bold text-rose-600" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-trash"></i> 削除</button>` : `<button type="button" class="coping-add-placeholder-btn min-h-[36px] rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" aria-label="マイコーピングに追加（準備中）">＋ マイコーピングに追加</button>`}
                         </div>
                     </div>
                 </article>`;
@@ -3052,11 +3109,27 @@
 
         function recordCopingUsage(id) {
             const item = getCopingListItems().find(record => record.id === id);
-            if (!item) { showToast('コーピングが見つかりませんでした。', 'error'); return; }
+            if (!item) { showToast('コーピングが見つかりませんでした。', 'error'); return false; }
             const usedAt = new Date().toISOString();
             const record = { id: 'coping_usage_' + crypto.randomUUID(), copingId: item.id, title: item.title, stateTag: item.stateTag, copingType: item.type, usedAt };
-            if (!saveLocalData(COPING_USAGE_STORAGE_KEY, record)) { showToast('使用記録を保存できませんでした。', 'error'); return; }
-            showToast('🎫 使用記録をきっぷ保管庫に残しました。', 'success');
+            if (!saveLocalData(COPING_USAGE_STORAGE_KEY, record)) { showToast('使用記録を保存できませんでした。', 'error'); return false; }
+            showToast('💊 やってみたと記録しました。', 'success');
+            return true;
+        }
+
+        function showCopingUsedFeedback(button) {
+            if (!button || button.disabled) return;
+            const originalHtml = button.innerHTML;
+            button.disabled = true;
+            button.classList.remove('bg-white', 'text-emerald-700');
+            button.classList.add('bg-emerald-600', 'text-white');
+            button.innerHTML = '<i class="fa-solid fa-check"></i> 記録しました';
+            setTimeout(() => {
+                button.innerHTML = originalHtml;
+                button.classList.remove('bg-emerald-600', 'text-white');
+                button.classList.add('bg-white', 'text-emerald-700');
+                button.disabled = false;
+            }, 900);
         }
 
         // --- 6. セルフトークキャラ相談 ---
@@ -4084,7 +4157,12 @@
                 const deleteButton = event.target.closest('.coping-delete-btn');
                 if (deleteButton) { requestMyCopingDelete(deleteButton.dataset.id); return; }
                 const usedButton = event.target.closest('.coping-used-btn');
-                if (usedButton) recordCopingUsage(usedButton.dataset.id);
+                if (usedButton) {
+                    if (recordCopingUsage(usedButton.dataset.id)) showCopingUsedFeedback(usedButton);
+                    return;
+                }
+                const addPlaceholderButton = event.target.closest('.coping-add-placeholder-btn');
+                if (addPlaceholderButton) showToast('この機能は準備中です。', 'info');
             });
             renderCopingList();
 
