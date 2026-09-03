@@ -721,24 +721,26 @@
             <div class="bg-white border-4 border-pdBlack p-4 sm:p-5 rounded-3xl shadow-[6px_6px_0_#000] space-y-4">
                 <div>
                     <h2 class="text-xl font-bold text-pdNavy mb-1 flex items-center gap-2"><i class="fa-solid fa-notes-medical text-pdPink"></i> コーピング処方箋</h2>
-                    <p class="text-xs text-gray-600">今、どんな状態？</p>
+                    <p class="text-xs text-gray-600">今のストレス状態への効果的なアクションを探してみましょう🐧</p>
                 </div>
                 <div id="coping-state-tabs" class="grid grid-cols-5 gap-1" role="tablist" aria-label="今の状態">
                     <button type="button" class="coping-state-tab rounded-full border-2 border-pdPink bg-rose-50 px-1 py-2 text-pdNavy" data-state="⚡ 動悸・緊張・心臓バクバク" aria-selected="true"><span class="block text-lg leading-none" aria-hidden="true">💓</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">バクバク心臓</span></button>
-                    <button type="button" class="coping-state-tab rounded-full border-2 border-gray-200 bg-white px-1 py-2 text-gray-600" data-state="😡 怒り・理不尽なイライラ" aria-selected="false"><span class="block text-lg leading-none" aria-hidden="true">💢</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">イライラ気分</span></button>
+                    <button type="button" class="coping-state-tab rounded-full border-2 border-gray-200 bg-white px-1 py-2 text-gray-600" data-state="😡 怒り・理不尽なイライラ" aria-selected="false"><span class="block text-lg leading-none" aria-hidden="true">💭</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">イライラ気分</span></button>
                     <button type="button" class="coping-state-tab rounded-full border-2 border-gray-200 bg-white px-1 py-2 text-gray-600" data-state="🏆 完璧主義「ねばならない」の罠" aria-selected="false"><span class="block text-lg leading-none" aria-hidden="true">⛓️</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">ガチガチ思考</span></button>
                     <button type="button" class="coping-state-tab rounded-full border-2 border-gray-200 bg-white px-1 py-2 text-gray-600" data-state="👥 他人の目（嫌われてるかも犬）" aria-selected="false"><span class="block text-lg leading-none" aria-hidden="true">👤</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">チクチク視線</span></button>
                     <button type="button" class="coping-state-tab rounded-full border-2 border-gray-200 bg-white px-1 py-2 text-gray-600" data-state="🔋 意欲低下・おっくう・体が動かない" aria-selected="false"><span class="block text-lg leading-none" aria-hidden="true">🔋</span><span class="mt-1 block text-[9px] font-black sm:text-[11px]">ポッカリ虚無</span></button>
                 </div>
-                <div class="flex items-center gap-3 rounded-xl border-2 border-pdPink bg-rose-50 p-3">
+                <div id="coping-state-description-bubble" class="relative flex items-center gap-3 rounded-xl border-2 border-gray-300 bg-gray-50 p-3">
+                    <span id="coping-state-bubble-tail" class="absolute -top-[7px] h-3 w-3 -translate-x-1/2 rotate-45 border-l-2 border-t-2 border-gray-300 bg-gray-50" aria-hidden="true"></span>
                     <p id="coping-state-description" class="min-w-0 flex-1 text-[11px] font-bold leading-relaxed text-gray-700 sm:text-xs"></p>
                     <button id="btn-open-my-coping" type="button" class="shrink-0 rounded-full border-2 border-pdPink bg-white px-3 py-2 text-[10px] font-black text-pdPink" aria-label="マイコーピングを追加">＋ 追加登録</button>
                 </div>
-                <div id="coping-filters" class="grid grid-cols-4 gap-1 border-b border-gray-200" aria-label="一覧フィルタ">
-                    <button type="button" class="coping-filter border-b-2 border-pdPink px-0.5 py-2 text-[8px] font-bold text-pdNavy sm:text-[11px]" data-filter="all" aria-pressed="true">すべて表示</button>
-                    <button type="button" class="coping-filter border-b-2 border-transparent px-0.5 py-2 text-[8px] font-bold text-gray-500 sm:text-[11px]" data-filter="mine" aria-pressed="false">マイコーピング</button>
-                    <button type="button" class="coping-filter border-b-2 border-transparent px-0.5 py-2 text-[8px] font-bold text-gray-500 sm:text-[11px]" data-filter="preset" aria-pressed="false">おすすめコーピング</button>
-                    <button type="button" class="coping-filter border-b-2 border-transparent px-0.5 py-2 text-[8px] font-bold text-gray-500 sm:text-[11px]" data-filter="favorite" aria-pressed="false">お気に入り</button>
+                <div class="pt-2">
+                    <div id="coping-filters" class="grid grid-cols-3 gap-1 border-b border-gray-200" aria-label="一覧フィルタ">
+                        <button type="button" class="coping-filter border-b-2 border-pdPink px-0.5 py-2 text-[8px] font-bold text-pdNavy sm:text-[11px]" data-filter="all" aria-pressed="true">すべて表示</button>
+                        <button type="button" class="coping-filter border-b-2 border-transparent px-0.5 py-2 text-[8px] font-bold text-gray-500 sm:text-[11px]" data-filter="mine" aria-pressed="false">マイコーピング</button>
+                        <button type="button" class="coping-filter border-b-2 border-transparent px-0.5 py-2 text-[8px] font-bold text-gray-500 sm:text-[11px]" data-filter="preset" aria-pressed="false">駅長のヒント集</button>
+                    </div>
                 </div>
                 <p id="coping-hit-count" class="text-right text-[10px] font-bold text-gray-500" aria-live="polite"></p>
                 <div id="coping-list" class="space-y-2" aria-live="polite"></div>
@@ -1102,6 +1104,9 @@
                 <label class="block text-[11px] font-bold">タイトル（最大30文字）
                     <input id="my-coping-title" maxlength="30" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs" type="text">
                 </label>
+                <label class="block text-[11px] font-bold">効果のイメージ（任意）
+                    <textarea id="my-coping-effect" rows="3" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs"></textarea>
+                </label>
                 <label class="block text-[11px] font-bold">詳細メモ（最大200文字）
                     <textarea id="my-coping-detail" maxlength="200" rows="4" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs"></textarea>
                 </label>
@@ -1420,63 +1425,63 @@
 
         const copingSkillsDatabase = {
             "⚡ 動悸・緊張・心臓バクバク": [
-                { title: "冷たい水で手を洗う", detail: "冷たい水で手を洗う。感覚に集中しリセットします。" },
-                { title: "神門のツボ押し", detail: "「神門（しんもん）」というツボを1分揉みほぐす。" },
-                { title: "ボックス呼吸", detail: "4秒かけて吸い、4秒止め、4秒吐き、4秒止めるボックス呼吸。" },
-                { title: "自分をねぎらう", detail: "てのひらをさすりながら自分をねぎらう、ぬいぐるみに名前をつけて話しかける・抱きしめる。" },
-                { title: "ありのままの自分を受け止める", detail: "無理にねぎらわず、自信が持てない自分をありのまま受け止める。" },
-                { title: "強烈な不安、トラウマへの対処", detail: "不安を回転する何かの塊に見立てて、ゆっくり逆回転させ、色を明るく塗り替える。" },
-                { title: "満月をイメージ・ツボを叩く", detail: "心の中に「満月」を思い浮かべる、合谷のツボを叩く。" },
-                { title: "運動や音楽で没頭する", detail: "運動、音楽（マルコーニ・ユニオン Weightless）、没頭できる活動を行う。" },
-                { title: "胸をトントンと叩く", detail: "「トントントン」と一定リズムで胸を叩く。" },
-                { title: "自分の状態を言語化する", detail: "自分の状態を言語化して俯瞰する。" },
-                { title: "軸をつくる方法", detail: "足の裏が地面に接している感覚に意識を向け、体の重みを感じる。呼吸を整えながら、今この瞬間の感覚に注意を戻す。" }
+                { title: "冷たい水で手を洗う", effect: "冷たさに意識が向くことで、今この瞬間に気持ちが戻ってきて、ドキドキが少し落ち着く", detail: "冷たい水で手を洗ってみる。その感覚に集中して、気持ちをリセットする。" },
+                { title: "神門のツボ押し", effect: "ツボを刺激することで、体の緊張がふっとゆるむ", detail: "「神門（しんもん）」というツボを、1分くらい揉みほぐしてみる。" },
+                { title: "ボックス呼吸", effect: "呼吸のリズムを整えることで、気持ちも一緒に落ち着いてくる", detail: "4秒吸って、4秒止めて、4秒吐いて、4秒止める。このボックス呼吸を繰り返してみる。" },
+                { title: "自分をねぎらう", effect: "自分に優しく触れることで、安心感が戻ってくる", detail: "てのひらをさすりながら自分をねぎらう、ぬいぐるみに名前をつけて話しかける・抱きしめる。" },
+                { title: "ありのままの自分を受け止める", effect: "無理に元気づけようとしないことで、かえって気持ちが軽くなる", detail: "無理にねぎらわず、自信が持てない自分をありのまま受け止める。" },
+                { title: "不安を色で塗り替える", effect: "不安の見え方を変えることで、重たさが少し和らぐ", detail: "不安を、ぐるぐる回る塊としてイメージしてみる。ゆっくり逆回転させながら、色を明るく塗り替えていく。" },
+                { title: "満月を思い浮かべる", effect: "イメージに意識を向けることで、気持ちが落ち着いてくる", detail: "心の中に「満月」を思い浮かべる、合谷のツボを叩く。" },
+                { title: "運動や音楽で没頭する", effect: "別のことに意識が向くことで、不安から少し距離ができる", detail: "体を動かしたり、音楽（マルコーニ・ユニオンの「Weightless」など）を聴いたり、何かに没頭できることをやってみる。" },
+                { title: "胸をトントンと叩く", effect: "一定のリズムを刻むことで、緊張がやわらいでいく", detail: "「トントントン」と一定リズムで胸を叩く。" },
+                { title: "自分の状態を言語化する", effect: "今の自分を言葉にすることで、一歩引いて状況を見られるようになる", detail: "自分の状態を言語化して俯瞰する。" },
+                { title: "軸をつくる方法", effect: "体の感覚に意識を向けることで、気持ちが安定してくる", detail: "足の裏が地面に接している感覚に意識を向け、体の重みを感じる。呼吸を整えながら、今この瞬間の感覚に注意を戻す。" }
             ],
             "😡 怒り・理不尽なイライラ": [
-                { title: "書いて破って捨てる", detail: "イライラや愚痴を紙に書き殴り、破いてゴミ箱へ捨てる。" },
-                { title: "100から7ずつ逆算カウント", detail: "怒りを感じた瞬間から、100から7ずつ逆に数える。" },
-                { title: "冷たいコップに集中する", detail: "コップの冷たさに指先で触り、その感覚に全集中する。" },
-                { title: "ハートが繋がっているとイメージ", detail: "自分のハートと相手が繋がっているとイメージする。" },
-                { title: "10年来の友人だと思って接する", detail: "相手を「10年来の友人」と思って接する。" },
-                { title: "強化ガラスをイメージする", detail: "相手との間に透明な強化ガラスをイメージする。" },
-                { title: "困っている人だと捉える", detail: "相手を「困っている人だ」と捉える。" },
-                { title: "ガミガミ言われるストレス", detail: "相手の声をミッキーマウスの声でアテレコしてみる。" },
-                { title: "いつもと違う道を歩く", detail: "いつもと違う道を歩く。" },
-                { title: "新しい刺激を取り入れる", detail: "新しいものに触れて刺激を取り入れる。" }
+                { title: "書いて破って捨てる", effect: "感情を吐き出しきることで、怒りのエネルギーが発散される", detail: "イライラや愚痴を紙に書き殴って、破ってゴミ箱に捨ててみる。" },
+                { title: "100から7ずつ逆算カウント", effect: "計算に集中することで、怒りから意識がそれていく", detail: "怒りを感じたら、100から7ずつ引き算しながら数えてみる。" },
+                { title: "冷たいコップに集中する", effect: "感覚に意識を向けることで、怒りを繰り返し考えるのが止まる", detail: "コップの冷たさを指先で感じて、その感覚に意識を集中してみる。" },
+                { title: "ハートが繋がっているとイメージ", effect: "相手とのつながりを感じることで、怒りがやわらぐ", detail: "自分のハートと相手が繋がっているとイメージする。" },
+                { title: "10年来の友人だと思って接する", effect: "見方を変えることで、心に余裕が生まれる", detail: "相手を「10年来の友人」と思って接する。" },
+                { title: "強化ガラスをイメージする", effect: "心の距離を作ることで、感情に巻き込まれにくくなる", detail: "相手との間に透明な強化ガラスをイメージする。" },
+                { title: "困っている人だと捉える", effect: "相手の背景を想像することで、怒りが共感に変わっていく", detail: "相手を「困っている人だ」と捉える。" },
+                { title: "ミッキー風にアテレコしてみる", effect: "ちょっとした遊び心で、緊張が解けて笑えてくる", detail: "相手の声を、頭の中でミッキーマウスの声に変換してみる。" },
+                { title: "いつもと違う道を歩く", effect: "環境を変えることで、気分がリセットされる", detail: "いつもと違う道を歩く。" },
+                { title: "新しい刺激を取り入れる", effect: "新しいことに意識が向くことで、苛立ちから離れられる", detail: "新しいものに触れて刺激を取り入れる。" }
             ],
             "🏆 完璧主義「ねばならない」の罠": [
-                { title: "「まず半分でOK」と言い換える", detail: "『まずは半分の出来(50%)で終わらせる』と言い換える。" },
-                { title: "今日できたことを1つ褒める", detail: "今日できたことを1つ探して自分を褒める。" },
-                { title: "『まあ、いっか』と書く", detail: "ノートに『まあ、いっか。』と大きな文字でゆっくり書く。" },
-                { title: "「パン」と手を叩きストップと言う", detail: "「パン」と手を叩き「ストップ」と言う。" },
-                { title: "「それはそれとして」で目的に戻る", detail: "「それはそれとして」という言葉で目的にフォーカスする。" },
-                { title: "「ダメだ」と思った時", detail: "「ダメだ」と思っていた、と過去形にして表現してみる。" },
-                { title: "ハードルを下げる思考法", detail: "「〜ねばならない」という思考を「〜できたら良いね」に変換する。" },
-                { title: "自分を見る視点の切り替え", detail: "減点法をやめて、加点法で自分を見るようにする。" },
-                { title: "2者択一で悩む時", detail: "メリットとデメリットをリスト化して整理する。" },
-                { title: "眠る前の自己肯定", detail: "今日一日を過ごした自分に対し、自分をほめる言葉や認める言葉をかける。" }
+                { title: "「まず半分でOK」と言い換える", effect: "ハードルが下がることで、動き出しやすくなる", detail: "「まずは半分(50%)でOK」と、自分に言い換えてみる。" },
+                { title: "今日できたことを1つ褒める", effect: "小さな達成を認めることで、自分への信頼が積み重なる", detail: "今日できたことを1つ見つけて、自分をほめてみる。" },
+                { title: "『まあ、いっか』と書く", effect: "言葉にして手放すことで、こだわりが少しゆるむ", detail: "ノートに「まあ、いっか」と、大きな文字でゆっくり書いてみる。" },
+                { title: "「パン」と手を叩きストップと言う", effect: "動作を挟むことで、ぐるぐる思考が一旦止まる", detail: "「パン」と手を叩き「ストップ」と言う。" },
+                { title: "「それはそれとして」で目的に戻る", effect: "意識を目的に戻すことで、堂々巡りから抜け出せる", detail: "「それはそれとして」という言葉で目的にフォーカスする。" },
+                { title: "「ダメだった」と過去形にする", effect: "過去の出来事として扱うことで、今の自分から切り離せる", detail: "「ダメだ」ではなく「ダメだと思っていた」と、過去形にして言い換えてみる。" },
+                { title: "「できたらいいね」に変換", effect: "義務感がゆるむことで、気が楽になる", detail: "「〜ねばならない」を「〜できたらいいね」に言い換えてみる。" },
+                { title: "加点法で自分を見る", effect: "できたことに目を向けることで、自己肯定感が育っていく", detail: "減点方式はいったん置いておいて、できたことを数える「加点方式」で自分を見てみる。" },
+                { title: "メリット・デメリットを書き出す", effect: "考えを目に見える形にすることで、頭の中が整理される", detail: "迷っている2つの選択肢、それぞれのメリット・デメリットを紙に書き出してみる。" },
+                { title: "今日の自分をほめて眠る", effect: "一日を認めてもらえることで、安心して眠りにつける", detail: "今日一日がんばった自分に、ほめ言葉や「よくやった」を一言かけてみる。" }
             ],
             "👥 他人の目（嫌われてるかも犬）": [
-                { title: "相手の気持ちと線を引く", detail: "『相手の気持ちは相手の持ち物』と心の中で線を引く。" },
-                { title: "見えている事実を3つ書き出す", detail: "いま見えている事実を3つだけ紙に書き出す。" },
-                { title: "足裏の感覚に意識を戻す", detail: "肩の力を抜き、足裏の感覚に10秒だけ注意を戻す。" },
-                { title: "人前に立つ緊張と不安", detail: "光輝く自分をイメージする。" },
-                { title: "思い込みのクセへの対処", detail: "脳内に「嫌われてるかも犬」などのキャラクターを飼っているとイメージしてみる。" },
-                { title: "対人関係の不安（不機嫌な人）", detail: "他人の不機嫌を、わざわざ自分に紐づけないようにする。" },
-                { title: "いきなり怒られて不安な時", detail: "鏡で自分の顔をチェックする。" },
-                { title: "他人の顔色をうかがう時", detail: "他人ではなく「自分の機嫌」をとることに注力する。" },
-                { title: "「No」と言えない時", detail: "あらかじめ、何と言って断るかのフレーズを決めておく。" },
-                { title: "振る舞い方に悩む時", detail: "尊敬する人の視点を借りて考えてみる。" },
-                { title: "姿勢による改善", detail: "背筋を伸ばして堂々とした姿勢をとる。" }
+                { title: "相手の気持ちと線を引く", effect: "他人の気持ちと自分を分けて考えることで、気が楽になる", detail: "「相手の気持ちは相手のもの」と、心の中で線を引いてみる。" },
+                { title: "見えている事実を3つ書き出す", effect: "事実と想像を分けることで、不安が少し小さくなる", detail: "いま見えている事実を、3つだけ紙に書き出してみる。" },
+                { title: "足裏の感覚に意識を戻す", effect: "体の感覚に意識を向けることで、今この瞬間に戻ってこられる", detail: "肩の力を抜いて、足の裏の感覚に10秒だけ意識を向けてみる。" },
+                { title: "光り輝く自分をイメージする", effect: "自分を肯定的にイメージすることで、自信が戻ってくる", detail: "自分が光に包まれて、輝いているところをイメージしてみる。" },
+                { title: "嫌われてるかも犬を飼う", effect: "思い込みに名前をつけることで、一歩引いて眺められるようになる", detail: "「また心配性の犬（嫌われてるかも犬）が出てきたな」くらいの感覚で、思い込みを一歩引いて見てみる。" },
+                { title: "相手の機嫌は相手のもの", effect: "相手の感情を自分の責任にしないことで、心が軽くなる", detail: "その人が不機嫌なのは、あなたのせいじゃないかもしれない。わざわざ自分と結びつけなくて大丈夫。" },
+                { title: "鏡で自分の顔を見る", effect: "自分を客観的に見ることで、余計な不安が落ち着く", detail: "一度鏡を見て、自分の表情を確認してみる。" },
+                { title: "自分の機嫌を自分でとる", effect: "他人の評価に頼らないことで、自分の軸ができる", detail: "相手の顔色をうかがうより、まず自分の機嫌を自分でとってあげる。" },
+                { title: "断り文句を先に決めておく", effect: "準備しておくことで、いざという時の不安が減る", detail: "「ごめん、今日はちょっと…」など、断るときの一言をあらかじめ決めておく。" },
+                { title: "尊敬する人ならと考える", effect: "視点を変えることで、新しい行動のヒントが見つかる", detail: "「あの人ならどうするだろう」と、尊敬する人の視点を借りて考えてみる。" },
+                { title: "背筋を伸ばして堂々と立つ", effect: "姿勢を変えることで、気持ちも自然と前向きになる", detail: "背筋をすっと伸ばして、堂々とした姿勢をとってみる。" }
             ],
             "🔋 意欲低下・おっくう・体が動かない": [
-                { title: "パソコンを1秒だけ見る", detail: "『パソコンを開いて1秒見る』だけを当面の目標にする。" },
-                { title: "外の空気を吸いに出る", detail: "やる気待ちを諦め、外の空気を吸いに一歩出る。" },
-                { title: "温かい蒸しタオルをあてる", detail: "首の後ろに温かい蒸しタオルを3分あてる。" },
-                { title: "この先どう動くか不安な時", detail: "10年後の理想の自分を想像し、その人にアドバイスを聞いてみる。" },
-                { title: "過去のつらい記憶の浄化", detail: "記憶を具現化して、笹に乗せて川に流すイメージを持つ。" },
-                { title: "心が錆びついていると感じる時", detail: "自分の良かったことを毎晩1〜3つ書き出し、幸せを実感する。" },
-                { title: "感情表現の習慣化", detail: "「ありがとう」「うれしい」「助かる」といったポジティブな感情表現を積極的に使う。" }
+                { title: "パソコンを1秒だけ見る", effect: "ハードルを極限まで下げることで、行動のきっかけがつかめる", detail: "とりあえず「パソコンを開いて1秒だけ見る」を目標にしてみる。" },
+                { title: "外の空気を吸いに出る", effect: "環境を変えることで、気分がふっと切り替わる", detail: "やる気が出るのを待つのはやめて、外の空気を吸いに一歩出てみる。" },
+                { title: "温かい蒸しタオルをあてる", effect: "温かさに包まれることで、体の力が抜けていく", detail: "首の後ろに、温かい蒸しタオルを3分くらいあててみる。" },
+                { title: "未来の自分に相談する", effect: "先の自分を想像することで、今の悩みが少し小さく見えてくる", detail: "10年後、理想の自分になれていると想像してみる。その自分に、今の自分へアドバイスをもらってみる。" },
+                { title: "記憶を川に流す", effect: "イメージの中で手放すことで、心が軽くなる", detail: "つらい記憶を何か形のあるものに例えて、笹の葉に乗せて川に流していくイメージをしてみる。" },
+                { title: "良かったことを毎晩書き出す", effect: "良かったことを積み重ねることで、自分への信頼が育っていく", detail: "毎晩、その日あった良かったことを1〜3つだけ書き出してみる。" },
+                { title: "「ありがとう」を口にしてみる", effect: "前向きな言葉を口にすることで、気分が上向いてくる", detail: "「ありがとう」「うれしい」「助かる」、そんな言葉を意識して口にしてみる。" }
             ]
         };
 
@@ -2914,7 +2919,7 @@
         };
         const copingStateDisplayMeta = {
             "⚡ 動悸・緊張・心臓バクバク": { icon: "💓", label: "バクバク心臓" },
-            "😡 怒り・理不尽なイライラ": { icon: "💢", label: "イライラ気分" },
+            "😡 怒り・理不尽なイライラ": { icon: "💭", label: "イライラ気分" },
             "🏆 完璧主義「ねばならない」の罠": { icon: "⛓️", label: "ガチガチ思考" },
             "👥 他人の目（嫌われてるかも犬）": { icon: "👤", label: "チクチク視線" },
             "🔋 意欲低下・おっくう・体が動かない": { icon: "🔋", label: "ポッカリ虚無" }
@@ -2952,6 +2957,7 @@
                 return {
                     id: `preset_${Object.keys(copingSkillsDatabase).indexOf(stateTag)}_${index}`,
                     title: isStructured ? item.title : detail.replace(/[。．]$/, ''),
+                    effect: isStructured ? item.effect : '',
                     detail,
                     stateTag,
                     type: 'preset',
@@ -2977,6 +2983,9 @@
         function renderCopingList() {
             const description = document.getElementById('coping-state-description');
             if (description) description.textContent = copingStateDescriptions[selectedCopingState];
+            const selectedStateIndex = Object.keys(copingSkillsDatabase).indexOf(selectedCopingState);
+            const bubbleTail = document.getElementById('coping-state-bubble-tail');
+            if (bubbleTail) bubbleTail.style.left = `${((selectedStateIndex + 0.5) / 5) * 100}%`;
             document.querySelectorAll('.coping-state-tab').forEach(button => {
                 const selected = button.dataset.state === selectedCopingState;
                 button.setAttribute('aria-selected', String(selected));
@@ -3007,9 +3016,10 @@
                     <button type="button" class="coping-accordion-trigger flex w-full items-center gap-2 p-3 text-left" data-id="${escapeMyCopingHtml(item.id)}" aria-expanded="${expanded}">
                         <i class="fa-solid fa-chevron-${expanded ? 'down' : 'right'} w-3 shrink-0 text-[10px] text-gray-500"></i>
                         <span class="min-w-0 flex-1 break-words text-xs font-bold text-pdNavy">${escapeMyCopingHtml(item.title)}</span>
-                        <span class="shrink-0 rounded px-1.5 py-0.5 text-[8px] font-black ${isMine ? 'bg-rose-100 text-rose-800' : 'bg-teal-100 text-teal-800'}">${isMine ? 'わたし' : '駅長のヒント'}</span>
+                        <span class="shrink-0 rounded px-1.5 py-0.5 text-[8px] font-black ${isMine ? 'bg-rose-100 text-rose-800' : 'bg-teal-100 text-teal-800'}">${isMine ? 'わたしの登録' : '駅長のヒント'}</span>
                     </button>
                     <div class="${expanded ? '' : 'hidden'} border-t border-dashed border-gray-300 p-3 pt-2">
+                        ${item.effect ? `<div class="mb-2 rounded-lg bg-emerald-50 px-3 py-2 text-[11px] leading-relaxed text-emerald-900"><span class="mb-0.5 block text-[9px] font-black text-emerald-700">効果のイメージ</span><p class="whitespace-pre-wrap break-words">${escapeMyCopingHtml(item.effect)}</p></div>` : ''}
                         <p class="whitespace-pre-wrap break-words text-[11px] leading-relaxed text-gray-700">${escapeMyCopingHtml(item.detail || '詳細メモはまだありません。')}</p>
                         <div class="mt-3 flex flex-wrap gap-2">
                             <button type="button" class="coping-used-btn min-h-[36px] rounded-lg border-2 border-emerald-600 bg-white px-3 py-2 text-[10px] font-bold text-emerald-700" data-id="${escapeMyCopingHtml(item.id)}">💊 やってみた</button>
@@ -3039,6 +3049,7 @@
             editingMyCopingId = id;
             populateMyCopingStateOptions(target?.stateTag || getSelectedCopingState());
             document.getElementById('my-coping-title').value = target?.title || '';
+            document.getElementById('my-coping-effect').value = target?.effect || '';
             document.getElementById('my-coping-detail').value = target?.detail || '';
             document.getElementById('my-coping-form-title').textContent = id ? '💊 編集' : '💊 新規追加';
             document.getElementById('my-coping-modal').classList.remove('hidden');
@@ -3051,6 +3062,7 @@
 
         function saveMyCoping() {
             const title = document.getElementById('my-coping-title').value.trim();
+            const effect = document.getElementById('my-coping-effect').value.trim();
             const detail = document.getElementById('my-coping-detail').value.trim();
             const stateTag = document.getElementById('my-coping-state').value;
             if (!title) { showToast('タイトルを入力してください。', 'error'); return; }
@@ -3060,10 +3072,10 @@
                 const existing = getMyCopingRecords().find(item => item.id === editingMyCopingId);
                 if (!existing) { showToast('編集するマイコーピングが見つかりませんでした。', 'error'); closeMyCopingForm(); renderCopingList(); return; }
                 previousRecord = existing;
-                record = { ...existing, stateTag, title, detail, updatedAt: now };
+                record = { ...existing, stateTag, title, effect, detail, updatedAt: now };
                 deleteLocalData(MY_COPING_STORAGE_KEY, existing.id);
             } else {
-                record = { id: 'my_coping_' + crypto.randomUUID(), stateTag, title, detail, createdAt: now, updatedAt: now };
+                record = { id: 'my_coping_' + crypto.randomUUID(), stateTag, title, effect, detail, createdAt: now, updatedAt: now };
             }
             if (!saveLocalData(MY_COPING_STORAGE_KEY, record)) {
                 if (previousRecord) saveLocalData(MY_COPING_STORAGE_KEY, previousRecord);
