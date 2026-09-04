@@ -3024,7 +3024,8 @@
                         <div class="mt-3 flex flex-wrap gap-2">
                             <button type="button" class="coping-used-btn min-h-[36px] rounded-lg border-2 border-emerald-600 bg-white px-3 py-2 text-[10px] font-bold text-emerald-700" data-id="${escapeMyCopingHtml(item.id)}">💊 やってみた</button>
                             ${isMine ? `<button type="button" class="coping-edit-btn min-h-[36px] rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-pen"></i> 編集</button>
-                            <button type="button" class="coping-delete-btn min-h-[36px] rounded-lg border-2 border-rose-600 bg-white px-3 py-2 text-[10px] font-bold text-rose-600" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-trash"></i> 削除</button>` : `<button type="button" class="coping-add-placeholder-btn min-h-[36px] rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" aria-label="マイコーピングに追加（準備中）">＋ マイコーピングに追加</button>`}
+                            <button type="button" class="coping-delete-btn min-h-[36px] rounded-lg border-2 border-rose-600 bg-white px-3 py-2 text-[10px] font-bold text-rose-600" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-trash"></i> 削除</button>` : `<button type="button" class="coping-add-asis-btn min-h-[36px] rounded-lg border-2 border-pdPink bg-white px-3 py-2 text-[10px] font-bold text-pdPink" data-id="${escapeMyCopingHtml(item.id)}">＋ そのまま追加</button>
+                            <button type="button" class="coping-add-edit-btn min-h-[36px] rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" data-id="${escapeMyCopingHtml(item.id)}">✎ 自分用に変えて追加</button>`}
                         </div>
                     </div>
                 </article>`;
@@ -3040,20 +3041,55 @@
             select.value = selectedState;
         }
 
-        function openMyCopingForm(id = null) {
+        function openMyCopingForm(id = null, prefill = null) {
             let target = null;
             if (id) {
                 target = getMyCopingRecords().find(item => item.id === id);
                 if (!target) { showToast('編集するマイコーピングが見つかりませんでした。', 'error'); return; }
             }
             editingMyCopingId = id;
-            populateMyCopingStateOptions(target?.stateTag || getSelectedCopingState());
-            document.getElementById('my-coping-title').value = target?.title || '';
-            document.getElementById('my-coping-effect').value = target?.effect || '';
-            document.getElementById('my-coping-detail').value = target?.detail || '';
+            const source = target || prefill;
+            populateMyCopingStateOptions(source?.stateTag || getSelectedCopingState());
+            document.getElementById('my-coping-title').value = source?.title || '';
+            document.getElementById('my-coping-effect').value = source?.effect || '';
+            document.getElementById('my-coping-detail').value = source?.detail || '';
             document.getElementById('my-coping-form-title').textContent = id ? '💊 編集' : '💊 新規追加';
             document.getElementById('my-coping-modal').classList.remove('hidden');
             document.getElementById('my-coping-title').focus();
+        }
+
+        function addPresetAsMyCoping(presetId) {
+            const item = getCopingListItems().find(record => record.id === presetId);
+            if (!item) { showToast('コーピングが見つかりませんでした。', 'error'); return; }
+            const now = new Date().toISOString();
+            const record = {
+                id: 'my_coping_' + crypto.randomUUID(),
+                stateTag: item.stateTag,
+                title: item.title,
+                effect: item.effect || '',
+                detail: item.detail || '',
+                createdAt: now,
+                updatedAt: now
+            };
+            if (!saveLocalData(MY_COPING_STORAGE_KEY, record)) {
+                showToast('マイコーピングに追加できませんでした。', 'error');
+                return;
+            }
+            expandedCopingId = record.id;
+            activeCopingFilter = 'all';
+            renderCopingList();
+            showToast('マイコーピングに追加しました。', 'success');
+        }
+
+        function openCopingEditAndAddForm(presetId) {
+            const item = getCopingListItems().find(record => record.id === presetId);
+            if (!item) { showToast('コーピングが見つかりませんでした。', 'error'); return; }
+            openMyCopingForm(null, {
+                stateTag: item.stateTag,
+                title: item.title,
+                effect: item.effect || '',
+                detail: item.detail || ''
+            });
         }
 
         function closeMyCopingForm() {
@@ -4178,8 +4214,10 @@
                     if (recordCopingUsage(usedButton.dataset.id)) showCopingUsedFeedback(usedButton);
                     return;
                 }
-                const addPlaceholderButton = event.target.closest('.coping-add-placeholder-btn');
-                if (addPlaceholderButton) showToast('この機能は準備中です。', 'info');
+                const addAsIsButton = event.target.closest('.coping-add-asis-btn');
+                if (addAsIsButton) { addPresetAsMyCoping(addAsIsButton.dataset.id); return; }
+                const addEditButton = event.target.closest('.coping-add-edit-btn');
+                if (addEditButton) { openCopingEditAndAddForm(addEditButton.dataset.id); }
             });
             renderCopingList();
 
