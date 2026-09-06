@@ -1130,6 +1130,17 @@
         </div>
     </div>
 
+    <!-- マイコーピング重複登録確認モーダル -->
+    <div id="my-coping-duplicate-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[40000]">
+        <div class="bg-white border-4 border-pdBlack max-w-sm w-full rounded-2xl p-5 shadow-[4px_4px_0_#000] text-center space-y-4">
+            <h4 class="font-black text-xs text-pdNavy">同じタイトルの登録がすでにあります。追加しますか？</h4>
+            <div class="flex gap-2">
+                <button id="btn-confirm-my-coping-duplicate" class="flex-1 bg-pdPink text-white border-2 border-black rounded-lg py-2 text-xs font-bold">追加する</button>
+                <button id="btn-cancel-my-coping-duplicate" class="flex-1 bg-white border-2 border-black rounded-lg py-2 text-xs font-bold">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 🗑️ シュレッダーモーダル -->
     <div id="delete-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[40000]">
         <div class="bg-white border-4 border-pdBlack max-w-sm w-full rounded-2xl p-5 shadow-[4px_4px_0_#000] text-center space-y-4">
@@ -2925,6 +2936,7 @@
             "🔋 意欲低下・おっくう・体が動かない": { icon: "🔋", label: "ポッカリ虚無" }
         };
         let editingMyCopingId = null, pendingMyCopingDeleteId = null;
+        let pendingMyCopingSourcePresetId = null;
         let selectedCopingState = Object.keys(copingSkillsDatabase)[0];
         let activeCopingFilter = 'all';
         let expandedCopingId = null;
@@ -2947,6 +2959,7 @@
 
         function closeMyCopingModal() {
             editingMyCopingId = null;
+            pendingMyCopingSourcePresetId = null;
             document.getElementById('my-coping-modal')?.classList.add('hidden');
         }
 
@@ -2977,7 +2990,8 @@
             if (activeCopingFilter === 'mine') return mine;
             if (activeCopingFilter === 'preset') return presets;
             if (activeCopingFilter === 'favorite') return all.filter(item => item.isFavorite === true || item.favorite === true);
-            return all;
+            const addedPresetIds = new Set(mine.map(item => item.sourcePresetId).filter(Boolean));
+            return [...mine, ...presets.filter(item => !addedPresetIds.has(item.id))];
         }
 
         function renderCopingList() {
@@ -3006,17 +3020,24 @@
             });
             const list = document.getElementById('coping-list');
             const records = getCopingListItems();
+            const registeredPresetIds = activeCopingFilter === 'preset'
+                ? new Set(getMyCopingRecords(selectedCopingState).map(item => item.sourcePresetId).filter(Boolean))
+                : new Set();
             const hitCount = document.getElementById('coping-hit-count');
             if (hitCount) hitCount.textContent = `${records.length}枚`;
             if (!records.some(item => item.id === expandedCopingId)) expandedCopingId = null;
             list.innerHTML = records.length ? records.map(item => {
                 const isMine = item.type === 'mine';
+                const isPresetRegistered = !isMine && registeredPresetIds.has(item.id);
                 const expanded = item.id === expandedCopingId;
                 return `<article class="overflow-hidden rounded-xl border-2 ${isMine ? 'border-pdPink bg-rose-50/30' : 'border-gray-300 bg-white'}">
                     <button type="button" class="coping-accordion-trigger flex w-full items-center gap-2 p-3 text-left" data-id="${escapeMyCopingHtml(item.id)}" aria-expanded="${expanded}">
                         <i class="fa-solid fa-chevron-${expanded ? 'down' : 'right'} w-3 shrink-0 text-[10px] text-gray-500"></i>
                         <span class="min-w-0 flex-1 break-words text-xs font-bold text-pdNavy">${escapeMyCopingHtml(item.title)}</span>
-                        <span class="shrink-0 rounded px-1.5 py-0.5 text-[8px] font-black ${isMine ? 'bg-rose-100 text-rose-800' : 'bg-teal-100 text-teal-800'}">${isMine ? 'わたしの登録' : '駅長のヒント'}</span>
+                        <span class="flex shrink-0 flex-wrap justify-end gap-1">
+                            <span class="rounded px-1.5 py-0.5 text-[8px] font-black ${isMine ? 'bg-rose-100 text-rose-800' : 'bg-teal-100 text-teal-800'}">${isMine ? 'わたしの登録' : '駅長のヒント'}</span>
+                            ${isPresetRegistered ? '<span class="rounded bg-slate-100 px-1.5 py-0.5 text-[8px] font-black text-slate-600">マイコーピング登録済み</span>' : ''}
+                        </span>
                     </button>
                     <div class="${expanded ? '' : 'hidden'} border-t border-dashed border-gray-300 p-3 pt-2">
                         <p class="whitespace-pre-wrap break-words text-[11px] leading-relaxed text-gray-700">${escapeMyCopingHtml(item.detail || '詳細メモはまだありません。')}</p>
@@ -3049,6 +3070,7 @@
             }
             editingMyCopingId = id;
             const source = target || prefill;
+            pendingMyCopingSourcePresetId = source?.sourcePresetId || null;
             populateMyCopingStateOptions(source?.stateTag || getSelectedCopingState());
             document.getElementById('my-coping-title').value = source?.title || '';
             document.getElementById('my-coping-effect').value = source?.effect || '';
@@ -3059,11 +3081,21 @@
         }
 
         function addPresetAsMyCoping(presetId) {
+            const existing = getMyCopingRecords().find(record => record.sourcePresetId === presetId);
+            if (existing) {
+                selectedCopingState = existing.stateTag;
+                activeCopingFilter = 'all';
+                expandedCopingId = existing.id;
+                renderCopingList();
+                showToast('すでに追加済みです', 'info');
+                return;
+            }
             const item = getCopingListItems().find(record => record.id === presetId);
             if (!item) { showToast('コーピングが見つかりませんでした。', 'error'); return; }
             const now = new Date().toISOString();
             const record = {
                 id: 'my_coping_' + crypto.randomUUID(),
+                sourcePresetId: presetId,
                 stateTag: item.stateTag,
                 title: item.title,
                 effect: item.effect || '',
@@ -3085,6 +3117,7 @@
             const item = getCopingListItems().find(record => record.id === presetId);
             if (!item) { showToast('コーピングが見つかりませんでした。', 'error'); return; }
             openMyCopingForm(null, {
+                sourcePresetId: item.id,
                 stateTag: item.stateTag,
                 title: item.title,
                 effect: item.effect || '',
@@ -3096,22 +3129,39 @@
             closeMyCopingModal();
         }
 
-        function saveMyCoping() {
+        function closeMyCopingDuplicateModal() {
+            document.getElementById('my-coping-duplicate-modal')?.classList.add('hidden');
+        }
+
+        function confirmDuplicateMyCopingSave() {
+            closeMyCopingDuplicateModal();
+            saveMyCoping(true);
+        }
+
+        function saveMyCoping(skipDuplicateCheck = false) {
             const title = document.getElementById('my-coping-title').value.trim();
             const effect = document.getElementById('my-coping-effect').value.trim();
             const detail = document.getElementById('my-coping-detail').value.trim();
             const stateTag = document.getElementById('my-coping-state').value;
             if (!title) { showToast('タイトルを入力してください。', 'error'); return; }
+            const hasSameTitle = !editingMyCopingId && getMyCopingRecords(stateTag).some(item =>
+                String(item.title || '').trim().toLowerCase() === title.toLowerCase()
+            );
+            if (hasSameTitle && !skipDuplicateCheck) {
+                document.getElementById('my-coping-duplicate-modal').classList.remove('hidden');
+                document.getElementById('btn-cancel-my-coping-duplicate').focus();
+                return;
+            }
             const now = new Date().toISOString();
             let record, previousRecord = null;
             if (editingMyCopingId) {
                 const existing = getMyCopingRecords().find(item => item.id === editingMyCopingId);
                 if (!existing) { showToast('編集するマイコーピングが見つかりませんでした。', 'error'); closeMyCopingForm(); renderCopingList(); return; }
                 previousRecord = existing;
-                record = { ...existing, stateTag, title, effect, detail, updatedAt: now };
+                record = { ...existing, sourcePresetId: existing.sourcePresetId || null, stateTag, title, effect, detail, updatedAt: now };
                 deleteLocalData(MY_COPING_STORAGE_KEY, existing.id);
             } else {
-                record = { id: 'my_coping_' + crypto.randomUUID(), stateTag, title, effect, detail, createdAt: now, updatedAt: now };
+                record = { id: 'my_coping_' + crypto.randomUUID(), sourcePresetId: pendingMyCopingSourcePresetId, stateTag, title, effect, detail, createdAt: now, updatedAt: now };
             }
             if (!saveLocalData(MY_COPING_STORAGE_KEY, record)) {
                 if (previousRecord) saveLocalData(MY_COPING_STORAGE_KEY, previousRecord);
@@ -4195,7 +4245,9 @@
             bind('btn-open-my-coping', 'click', () => openMyCopingForm());
             bind('btn-close-my-coping', 'click', closeMyCopingModal);
             bind('btn-cancel-my-coping-form', 'click', closeMyCopingForm);
-            bind('btn-save-my-coping', 'click', saveMyCoping);
+            bind('btn-save-my-coping', 'click', () => saveMyCoping());
+            bind('btn-cancel-my-coping-duplicate', 'click', closeMyCopingDuplicateModal);
+            bind('btn-confirm-my-coping-duplicate', 'click', confirmDuplicateMyCopingSave);
             bind('btn-cancel-my-coping-delete', 'click', closeMyCopingDeleteModal);
             bind('btn-confirm-my-coping-delete', 'click', confirmMyCopingDelete);
             document.getElementById('coping-list')?.addEventListener('click', event => {
