@@ -1102,13 +1102,13 @@
                     <select id="my-coping-state" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs"></select>
                 </label>
                 <label class="block text-[11px] font-bold">タイトル（最大30文字）
-                    <input id="my-coping-title" maxlength="30" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs" type="text">
+                    <input id="my-coping-title" maxlength="30" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-base" type="text">
                 </label>
                 <label class="block text-[11px] font-bold">詳細メモ（最大200文字）
-                    <textarea id="my-coping-detail" maxlength="200" rows="4" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs"></textarea>
+                    <textarea id="my-coping-detail" maxlength="200" rows="4" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-base"></textarea>
                 </label>
                 <label class="block text-[11px] font-bold">効果のイメージ（任意）
-                    <textarea id="my-coping-effect" rows="3" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-xs"></textarea>
+                    <textarea id="my-coping-effect" rows="3" class="mt-1 w-full border-2 border-gray-300 rounded-lg p-2 text-base"></textarea>
                 </label>
                 <div class="flex gap-2 pt-2">
                     <button id="btn-cancel-my-coping-form" class="flex-1 bg-gray-100 border-2 border-black rounded-lg py-2 text-xs font-bold">キャンセル</button>
@@ -3040,8 +3040,8 @@
                         </span>
                     </button>
                     <div class="${expanded ? '' : 'hidden'} border-t border-dashed border-gray-300 p-3 pt-2">
-                        <p class="whitespace-pre-wrap break-words text-[11px] leading-relaxed text-gray-700">${escapeMyCopingHtml(item.detail || '詳細メモはまだありません。')}</p>
-                        ${item.effect ? `<div class="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-[11px] leading-relaxed text-emerald-900"><span class="mb-0.5 block text-[9px] font-black text-emerald-700">効果のイメージ</span><p class="whitespace-pre-wrap break-words">${escapeMyCopingHtml(item.effect)}</p></div>` : ''}
+                        <p class="whitespace-pre-wrap break-words text-[13px] leading-[1.75] text-gray-900">${escapeMyCopingHtml(item.detail || '詳細メモはまだありません。')}</p>
+                        ${item.effect ? `<div class="mt-2 rounded-lg bg-emerald-50 px-3 py-2 text-[10px] leading-relaxed text-emerald-900"><span class="mb-0.5 block text-[9px] font-black text-emerald-700">効果のイメージ</span><p class="whitespace-pre-wrap break-words">${escapeMyCopingHtml(item.effect)}</p></div>` : ''}
                         <div class="mt-3 flex flex-wrap gap-2">
                             <button type="button" class="coping-used-btn min-h-[36px] whitespace-nowrap rounded-lg border-2 border-emerald-600 bg-white px-3 py-2 text-[10px] font-bold text-emerald-700" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-check"></i> やってみた</button>
                             ${isMine ? `<button type="button" class="coping-edit-btn min-h-[36px] rounded-lg border-2 border-pdBlack bg-white px-3 py-2 text-[10px] font-bold text-pdNavy" data-id="${escapeMyCopingHtml(item.id)}"><i class="fa-solid fa-pen"></i> 編集</button>
