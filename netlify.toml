@@ -1,6 +1,8 @@
 [build]
-  # docs/配下（Obsidian Vault・ISSドキュメント等）だけの変更ではビルド・デプロイを走らせない。
-  # 直前のデプロイ(HEAD^)から今回(HEAD)までの差分を見て、docs/以外に変更が一切なければ
-  # `git diff --quiet` が正常終了(exit 0)し、Netlifyはそれをビルドスキップの合図として扱う。
-  # index.html等、docs/以外に変更があればビルドが実行される。
-  ignore = "git diff --quiet HEAD^ HEAD -- . ':!docs'"
+  # 公開するのは dist/ のみ。docs/（Obsidian Vault）は配信しない。
+  command = "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp -r assets dist/"
+  publish = "dist"
+
+  # 最後にデプロイ成功したコミットから今回までの差分を見て、
+  # 公開対象（index.html / assets）に変更がなければビルドをスキップする。
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- index.html assets"
