@@ -1200,23 +1200,28 @@
 
     <!-- 📟 ご案内モーダル（絶対に見切れない・最上部からの可変スクロール調律版） -->
     <div id="help-modal" class="hidden fixed inset-0 bg-black/75 flex justify-center items-start pt-8 pb-12 px-4 z-[30000] overflow-y-auto">
-        <div id="help-modal-content" class="bg-[#FCFAF6] border-4 border-pdBlack max-w-lg w-full rounded-2xl p-5 shadow-[4px_4px_0_#000] space-y-4 my-4 scroll-mt-4">
-            <h3 class="font-black text-sm text-pdNavy flex items-center gap-1.5 border-b pb-2"><i class="fa-solid fa-compass text-rose-500"></i> ご案内センター＆総合案内所</h3>
+        <div id="help-modal-content" class="relative bg-[#FCFAF6] border-4 border-pdBlack max-w-lg w-full rounded-2xl p-5 shadow-[4px_4px_0_#000] space-y-4 my-4 scroll-mt-4">
+            <button id="btn-help-modal-close-top" class="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-500 shadow-sm hover:bg-gray-100 hover:text-pdPink" type="button" aria-label="ご案内を閉じる">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="font-black text-sm text-pdNavy flex items-center gap-1.5 border-b pb-2 pr-9"><i class="fa-solid fa-compass text-rose-500"></i> ご案内センター</h3>
 
             <section id="app-news-section" class="rounded-xl border-2 border-pdPink bg-rose-50/70 p-3 shadow-[2px_2px_0_#000]" aria-labelledby="app-news-heading">
                 <div class="mb-2 flex items-center justify-between gap-2">
                     <h4 id="app-news-heading" class="text-[11px] font-black text-pdNavy"><i class="fa-solid fa-bullhorn text-pdPink"></i> 更新情報</h4>
                     <span class="rounded-full bg-pdPink px-2 py-0.5 text-[8px] font-black text-white">NEWS</span>
                 </div>
+                <div id="app-news-tabs" class="mb-2 flex gap-1 overflow-x-auto pb-1" role="tablist" aria-label="更新情報の月"></div>
                 <div id="app-news-list" class="space-y-2"></div>
             </section>
             
-            <div class="space-y-1.5">
-                <span class="text-[10.5px] font-black text-pdNavy block"><i class="fa-solid fa-map-signs text-teal-600"></i> 使い方のご案内</span>
-                <p class="text-[10px] text-gray-650 leading-relaxed">
-                    ココロの途中下車は、日々のケア生活を支援するための瞑想＆自己理解アプリです。
-                </p>
-                <div class="overflow-x-auto border border-black rounded-lg bg-white">
+            <section class="border-t pt-3">
+                <button id="help-usage-toggle" class="flex w-full items-center justify-between gap-2 rounded-lg px-1 py-1 text-left" type="button" aria-expanded="false" aria-controls="help-usage-content">
+                    <span class="text-[10.5px] font-black text-pdNavy"><i class="fa-solid fa-map-signs text-teal-600"></i> 使い方のご案内</span>
+                    <i class="fa-solid fa-angle-down text-gray-400 transition-transform" aria-hidden="true"></i>
+                </button>
+                <div id="help-usage-content" class="hidden pt-2">
+                    <div class="overflow-x-auto border border-black rounded-lg bg-white">
                     <table class="w-full text-[9px] text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-100 border-b border-black">
@@ -1248,12 +1253,17 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="border-t pt-3 space-y-1.5">
-                <span class="text-[10.5px] font-black text-pdNavy block"><i class="fa-solid fa-mobile-screen-button text-rose-500"></i> 📱 スマホでのアイコン化（ホーム追加）手順</span>
-                <div class="bg-white border border-black p-2.5 rounded-lg text-[9.5px] text-gray-700 space-y-2 leading-relaxed">
+            <section class="border-t pt-3">
+                <button id="help-mobile-toggle" class="flex w-full items-center justify-between gap-2 rounded-lg px-1 py-1 text-left" type="button" aria-expanded="false" aria-controls="help-mobile-content">
+                    <span class="text-[10.5px] font-black text-pdNavy"><i class="fa-solid fa-mobile-screen-button text-rose-500"></i> 📱 スマホでのアイコン化（ホーム追加）手順</span>
+                    <i class="fa-solid fa-angle-down text-gray-400 transition-transform" aria-hidden="true"></i>
+                </button>
+                <div id="help-mobile-content" class="hidden pt-2">
+                    <div class="bg-white border border-black p-2.5 rounded-lg text-[9.5px] text-gray-700 space-y-2 leading-relaxed">
                     <div>
                         <span class="font-bold text-pdPink">【iPhone / iPad（Safari）】</span>
                         <ol class="list-decimal pl-6 space-y-0.5 mt-0.5">
@@ -1269,8 +1279,9 @@
                             <li>「ホーム画面に追加」または「インストール」を選択。</li>
                         </ol>
                     </div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             <div class="border-t pt-3 space-y-1.5">
                 <span class="text-[10.5px] font-black text-pdNavy block"><i class="fa-solid fa-key text-yellow-600"></i> 🔑 Gemini AI機能を使うには</span>
@@ -1281,7 +1292,7 @@
 
             <!-- 📮 ご意見・不具合のご連絡窓口 -->
             <div class="border-t pt-3 space-y-1.5 bg-amber-50/40 p-2.5 rounded-xl border border-dashed border-amber-300">
-                <span class="text-[10.5px] font-black text-pdNavy block flex items-center gap-1">📮 途中下車のご意見・不具合目安箱</span>
+                <span class="text-[10.5px] font-black text-pdNavy block flex items-center gap-1">📮 ココロの途中下車アプリのご意見・不具合はこちらから</span>
                 <div class="flex gap-2 pt-1.5">
                     <a href="https://forms.gle/xW1sQvRNVfGhmDdbA" target="_blank" class="flex-grow bg-rose-600 hover:bg-rose-700 text-white font-black text-center py-2 rounded-lg text-[9.5px] shadow-[1px_1px_0_#000] flex items-center justify-center gap-1 cursor-pointer">💬 ご意見フォーム</a>
                     <a href="mailto:takamura2502@gmail.com" class="flex-grow bg-white hover:bg-gray-100 text-gray-755 border border-black font-bold text-center py-2 rounded-lg text-[9.5px] shadow-[1px_1px_0_#000] flex items-center justify-center gap-1">📧 メールで連絡</a>
@@ -1965,14 +1976,19 @@
 
         const MODELS_TO_TRY = ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"];
         const APP_NEWS = [
-            {
-                id: "2026-09-22-gemini-model-update",
-                date: "2026.09.22",
-                title: "Gemini AIの接続モデルを更新しました",
-                body: "新しく取得したAPIキーでもAI機能を利用できるよう、接続先を安定版モデルへ更新しました。すでにAPIキーを設定済みの方は、原則として再取得・再入力は不要です。"
-            }
+            { id: "2026-09-22-gemini-model-update", month: "2026-09", date: "2026.09.22", category: "不具合解消", title: "Gemini APIキーの接続不具合を解消", body: "フォームからの不具合報告をありがとうございました。各種AI機能を使うためのキーコード（Gemini APIキー）が新規利用者に利用できないバージョンへ誘導されていた不具合を解消。" },
+            { id: "2026-09-09-help-copy", month: "2026-09", date: "2026.09.09", category: "改善", title: "ご案内の文章を見直しました", body: "使い方やAI機能の説明を、現在の機能に合った分かりやすい文章へ更新しました。" },
+            { id: "2026-09-08-coping-tags", month: "2026-09", date: "2026.09.08", category: "機能追加", title: "コーピングを時間・場所から探せるようになりました", body: "コーピング処方箋に、時間順・場所順の並び替えを追加しました。" },
+            { id: "2026-09-07-coping-improvements", month: "2026-09", date: "2026.09.07", category: "改善", title: "コーピング処方箋を使いやすくしました", body: "スマホでの入力、自分用コーピングの追加、登録済み表示などを改善しました。" },
+            { id: "2026-09-03-coping-renewal", month: "2026-09", date: "2026.09.03", category: "機能追加", title: "コーピング処方箋をリニューアルしました", body: "状態別の一覧、編集・削除、駅長のヒントから自分用に追加する機能を公開しました。" },
+            { id: "2026-08-17-mindfulness", month: "2026-08", date: "2026.08.17", category: "機能追加", title: "4種類の呼吸法を選べるようになりました", body: "腹式呼吸、4・7・8呼吸法、ボックスブリージング、数息観を追加しました。環境音の音量と完了時の操作も改善しました。" },
+            { id: "2026-08-09-departure-board", month: "2026-08", date: "2026.08.09", category: "改善", title: "発車標の演出を更新しました", body: "時計・りんご・駅長ペンギンの表示と、やさしく光る縁取り演出を追加しました。" },
+            { id: "2026-08-08-galaxy-train", month: "2026-08", date: "2026.08.08", category: "改善", title: "銀河鉄道とホームの景色を更新しました", body: "線路が見えるように景色を広げ、夜空を走る列車のデザインと演出を刷新しました。" },
+            { id: "2026-08-06-breathing-modal", month: "2026-08", date: "2026.08.06", category: "機能追加", title: "マインドフルネス瞑想を新しくしました", body: "呼吸ガイドを専用画面にまとめ、時間選択、一時停止、テーマ切替を追加しました。" },
+            { id: "2026-07-31-sound-stars", month: "2026-07", date: "2026.07.31", category: "改善", title: "環境音と夜空の演出を更新しました", body: "環境音を自然な音源へ変更し、夜空にまたたく星を追加しました。" }
         ];
         const NEWS_SEEN_STORAGE_KEY = "kokoro_seen_news_id";
+        let activeNewsMonth = APP_NEWS[0]?.month || "";
         const STATION_PENGUIN_MANIFEST = {
             common: ['assets/images/penguin/common/penguin_front_01.png'],
             walk: [
@@ -4098,9 +4114,34 @@
 
         // --- 13. モーダル制御 ---
         function renderAppNews() {
+            const tabs = document.getElementById('app-news-tabs');
             const list = document.getElementById('app-news-list');
-            if (!list) return;
-            list.replaceChildren(...APP_NEWS.map(item => {
+            if (!tabs || !list) return;
+
+            const months = [...new Set(APP_NEWS.map(item => item.month))];
+            tabs.replaceChildren(...months.map(month => {
+                const button = document.createElement('button');
+                const isActive = month === activeNewsMonth;
+                button.type = 'button';
+                button.role = 'tab';
+                button.setAttribute('aria-selected', String(isActive));
+                button.className = `shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-black ${isActive ? 'border-pdPink bg-pdPink text-white' : 'border-gray-300 bg-white text-gray-600'}`;
+                const [year, monthNumber] = month.split('-');
+                button.textContent = `${year}年${Number(monthNumber)}月`;
+                button.addEventListener('click', () => {
+                    activeNewsMonth = month;
+                    renderAppNews();
+                });
+                return button;
+            }));
+
+            const categoryClasses = {
+                '不具合解消': 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                '機能追加': 'bg-blue-100 text-blue-800 border-blue-300',
+                '改善': 'bg-amber-100 text-amber-800 border-amber-300'
+            };
+            const visibleNews = APP_NEWS.filter(item => item.month === activeNewsMonth);
+            list.replaceChildren(...visibleNews.map(item => {
                 const article = document.createElement('article');
                 article.className = 'rounded-lg border border-rose-200 bg-white p-2.5';
 
@@ -4112,6 +4153,10 @@
                 date.dateTime = item.id.slice(0, 10);
                 date.textContent = item.date;
 
+                const category = document.createElement('span');
+                category.className = `rounded-full border px-1.5 py-0.5 text-[7.5px] font-black ${categoryClasses[item.category] || 'border-gray-300 bg-gray-100 text-gray-700'}`;
+                category.textContent = item.category;
+
                 const title = document.createElement('h5');
                 title.className = 'text-[10px] font-black text-pdNavy';
                 title.textContent = item.title;
@@ -4120,10 +4165,20 @@
                 body.className = 'text-[9.5px] leading-relaxed text-gray-700';
                 body.textContent = item.body;
 
-                meta.append(date, title);
+                meta.append(date, category, title);
                 article.append(meta, body);
                 return article;
             }));
+        }
+
+        function toggleHelpAccordion(buttonId, contentId) {
+            const button = document.getElementById(buttonId);
+            const content = document.getElementById(contentId);
+            if (!button || !content) return;
+            const willOpen = button.getAttribute('aria-expanded') !== 'true';
+            button.setAttribute('aria-expanded', String(willOpen));
+            content.classList.toggle('hidden', !willOpen);
+            button.querySelector('.fa-angle-down')?.classList.toggle('rotate-180', willOpen);
         }
 
         function updateNewsBadge() {
@@ -4347,6 +4402,9 @@
             // 設定・ご案内
             bind('btn-help-modal-open', 'click', openHelpModal);
             bind('btn-help-modal-close', 'click', closeHelpModal);
+            bind('btn-help-modal-close-top', 'click', closeHelpModal);
+            bind('help-usage-toggle', 'click', () => toggleHelpAccordion('help-usage-toggle', 'help-usage-content'));
+            bind('help-mobile-toggle', 'click', () => toggleHelpAccordion('help-mobile-toggle', 'help-mobile-content'));
             bind('btn-api-modal-open', 'click', openApiKeyModal);
             bind('btn-api-modal-close-top', 'click', closeApiKeyModal);
             bind('btn-save-key', 'click', saveApiKey);
