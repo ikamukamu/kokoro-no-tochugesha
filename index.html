@@ -624,8 +624,9 @@
     <!-- Header Navigation (美しきミッドナイトインディゴの夜空、極小星空、うさぎ跳ねる月、りんご付駅名標) -->
     <header class="nr-home-header bg-gradient-to-b from-[#0a1128] via-[#16225f] to-[#0c1236] text-white py-3 px-3 shadow-md border-b-4 border-pdBlack relative z-50 overflow-hidden shrink-0 min-h-[280px] md:min-h-[320px]">
         <div class="absolute top-2 left-3 flex items-center gap-1.5 z-50">
-            <button id="btn-help-modal-open" class="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-pink-400/30 flex items-center gap-1 cursor-pointer shadow-md">
+            <button id="btn-help-modal-open" class="relative bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-pink-400/30 flex items-center gap-1 cursor-pointer shadow-md">
                 <i class="fa-solid fa-compass text-yellow-200"></i><span>ご案内</span>
+                <span id="news-new-badge" class="hidden absolute -top-2 -right-2 rounded-full border border-white bg-yellow-300 px-1.5 py-0.5 text-[7px] font-black leading-none text-pdNavy shadow-sm" aria-label="新しい更新情報があります">NEW</span>
             </button>
             <button id="btn-api-modal-open" class="bg-white/10 text-white/80 text-[9px] md:text-xs font-bold py-1.5 px-3 rounded-full border border-white/10 flex items-center gap-1 cursor-pointer">
                 <i id="api-status-icon" class="fa-solid fa-key text-yellow-300"></i><span id="api-btn-text">API設定</span>
@@ -1201,6 +1202,14 @@
     <div id="help-modal" class="hidden fixed inset-0 bg-black/75 flex justify-center items-start pt-8 pb-12 px-4 z-[30000] overflow-y-auto">
         <div id="help-modal-content" class="bg-[#FCFAF6] border-4 border-pdBlack max-w-lg w-full rounded-2xl p-5 shadow-[4px_4px_0_#000] space-y-4 my-4 scroll-mt-4">
             <h3 class="font-black text-sm text-pdNavy flex items-center gap-1.5 border-b pb-2"><i class="fa-solid fa-compass text-rose-500"></i> ご案内センター＆総合案内所</h3>
+
+            <section id="app-news-section" class="rounded-xl border-2 border-pdPink bg-rose-50/70 p-3 shadow-[2px_2px_0_#000]" aria-labelledby="app-news-heading">
+                <div class="mb-2 flex items-center justify-between gap-2">
+                    <h4 id="app-news-heading" class="text-[11px] font-black text-pdNavy"><i class="fa-solid fa-bullhorn text-pdPink"></i> 更新情報</h4>
+                    <span class="rounded-full bg-pdPink px-2 py-0.5 text-[8px] font-black text-white">NEWS</span>
+                </div>
+                <div id="app-news-list" class="space-y-2"></div>
+            </section>
             
             <div class="space-y-1.5">
                 <span class="text-[10.5px] font-black text-pdNavy block"><i class="fa-solid fa-map-signs text-teal-600"></i> 使い方のご案内</span>
@@ -1879,7 +1888,7 @@
         }
         const apiKey = "";
         let savedApiKey = storage.getItem('kokoro_gemini_api_key') || ""; 
-        let savedModel = storage.getItem('kokoro_gemini_model') || "gemini-2.5-flash-preview-09-2025"; 
+        let savedModel = storage.getItem('kokoro_gemini_model') || "gemini-3.6-flash";
         let cbtMode = 7; 
         let currentDialogueCategory = 'all';
         let currentActiveOmamoriText = "";
@@ -1954,7 +1963,16 @@
         const SINGING_BOWL_AUDIO_FILE = 'assets/audio/sfx/singing_bowl.mp3';
         let audioCtx = null, ambienceAudio = null, ambienceMediaSource = null, singingBowlAudio = null, waveGain = null, isMuted = false;
 
-        const MODELS_TO_TRY = ["gemini-2.5-flash-preview-09-2025", "gemini-2.5-flash"];
+        const MODELS_TO_TRY = ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"];
+        const APP_NEWS = [
+            {
+                id: "2026-09-22-gemini-model-update",
+                date: "2026.09.22",
+                title: "Gemini AIの接続モデルを更新しました",
+                body: "新しく取得したAPIキーでもAI機能を利用できるよう、接続先を安定版モデルへ更新しました。すでにAPIキーを設定済みの方は、原則として再取得・再入力は不要です。"
+            }
+        ];
+        const NEWS_SEEN_STORAGE_KEY = "kokoro_seen_news_id";
         const STATION_PENGUIN_MANIFEST = {
             common: ['assets/images/penguin/common/penguin_front_01.png'],
             walk: [
@@ -4013,14 +4031,14 @@
 
         function clearApiKey() {
             storage.removeItem('kokoro_gemini_api_key'); storage.removeItem('kokoro_gemini_model');
-            savedApiKey = ""; savedModel = "gemini-2.5-flash-preview-09-2025";
+            savedApiKey = ""; savedModel = "gemini-3.6-flash";
             const input = document.getElementById('api-key-input'); if (input) input.value = "";
             updateApiBtnStyle(); closeApiKeyModal(); showToast("APIキーをリセットしました。", "info");
         }
 
         async function callGemini(userQuery, systemPrompt) {
             const activeKey = savedApiKey || apiKey; 
-            const activeModel = storage.getItem('kokoro_gemini_model') || savedModel || "gemini-2.5-flash-preview-09-2025"; 
+            const activeModel = storage.getItem('kokoro_gemini_model') || savedModel || "gemini-3.6-flash";
             if (!activeKey) { openApiKeyModal(); showToast("🔑 API接続設定が必要です。", "error"); throw new Error("APIキー未設定"); }
             
             const tryModels = [activeModel, ...MODELS_TO_TRY.filter(m => m !== activeModel)];
@@ -4079,7 +4097,57 @@
         }
 
         // --- 13. モーダル制御 ---
-        function openHelpModal() { const modal = document.getElementById('help-modal'); if (modal) { modal.classList.remove('hidden'); modal.scrollTop = 0; } }
+        function renderAppNews() {
+            const list = document.getElementById('app-news-list');
+            if (!list) return;
+            list.replaceChildren(...APP_NEWS.map(item => {
+                const article = document.createElement('article');
+                article.className = 'rounded-lg border border-rose-200 bg-white p-2.5';
+
+                const meta = document.createElement('div');
+                meta.className = 'mb-1 flex flex-wrap items-center gap-1.5';
+
+                const date = document.createElement('time');
+                date.className = 'text-[8.5px] font-bold text-gray-500';
+                date.dateTime = item.id.slice(0, 10);
+                date.textContent = item.date;
+
+                const title = document.createElement('h5');
+                title.className = 'text-[10px] font-black text-pdNavy';
+                title.textContent = item.title;
+
+                const body = document.createElement('p');
+                body.className = 'text-[9.5px] leading-relaxed text-gray-700';
+                body.textContent = item.body;
+
+                meta.append(date, title);
+                article.append(meta, body);
+                return article;
+            }));
+        }
+
+        function updateNewsBadge() {
+            const badge = document.getElementById('news-new-badge');
+            const latestNewsId = APP_NEWS[0]?.id || '';
+            if (!badge || !latestNewsId) return;
+            badge.classList.toggle('hidden', storage.getItem(NEWS_SEEN_STORAGE_KEY) === latestNewsId);
+        }
+
+        function markLatestNewsAsSeen() {
+            const latestNewsId = APP_NEWS[0]?.id;
+            if (!latestNewsId) return;
+            storage.setItem(NEWS_SEEN_STORAGE_KEY, latestNewsId);
+            updateNewsBadge();
+        }
+
+        function openHelpModal() {
+            const modal = document.getElementById('help-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.scrollTop = 0;
+                markLatestNewsAsSeen();
+            }
+        }
         function closeHelpModal() { document.getElementById('help-modal')?.classList.add('hidden'); }
         function openApiKeyModal() {
             const err = document.getElementById('validation-error-msg'); if (err) err.classList.add('hidden');
@@ -4441,6 +4509,8 @@
             initStarrySky();
             initKokoroExpressTrail();
             updateApiBtnStyle();
+            renderAppNews();
+            updateNewsBadge();
             initDailyWord();
             renderDialogueList();
             switchLibraryCategory('pre');
