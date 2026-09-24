@@ -1221,38 +1221,42 @@
                     <i class="fa-solid fa-angle-down text-gray-400 transition-transform" aria-hidden="true"></i>
                 </button>
                 <div id="help-usage-content" class="hidden pt-2">
-                    <div class="overflow-x-auto border border-black rounded-lg bg-white">
-                    <table class="w-full text-[9px] text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100 border-b border-black">
-                                <th class="p-1.5 font-bold border-r border-black w-1/4">🎫 切符名</th>
-                                <th class="p-1.5 font-bold border-r border-black w-2/5">こんなとき</th>
-                                <th class="p-1.5 font-bold">効果</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <tr>
-                                <td class="p-1.5 font-black border-r border-black text-pdPink">コーピング</td>
-                                <td class="p-1.5 border-r border-black text-gray-600">さまざまなストレスやプレッシャー、つらさがあるとき</td>
-                                <td class="p-1.5 text-gray-600">その場で今すぐ1分以内でできるアクションを即時処方。</td>
-                            </tr>
-                            <tr>
-                                <td class="p-1.5 font-black border-r border-black text-amber-600">セルフトーク</td>
-                                <td class="p-1.5 border-r border-black text-gray-600">寄り添ってほしいとき</td>
-                                <td class="p-1.5 text-gray-600">キャラクターが共感肯定。お守り言葉を保存。</td>
-                            </tr>
-                            <tr>
-                                <td class="p-1.5 font-black border-r border-black text-teal-700">コラム法</td>
-                                <td class="p-1.5 border-r border-black text-gray-600">考えが極端で苦しい時</td>
-                                <td class="p-1.5 text-gray-600">5または7コラムで思考ほぐし。減圧率を視覚化。</td>
-                            </tr>
-                            <tr>
-                                <td class="p-1.5 font-black border-r border-black text-blue-900">良いこと日記</td>
-                                <td class="p-1.5 border-r border-black text-gray-600">一日の終わりに</td>
-                                <td class="p-1.5 text-gray-600">良かったことを3つ書き出して車掌AIの労い付き。</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="space-y-2 text-[9.5px] text-gray-700 leading-relaxed">
+                        <article class="rounded-lg border border-black border-l-4 border-l-pdPink bg-white p-2.5">
+                            <h5 class="mb-1 font-black text-pdPink">コーピング</h5>
+                            <p>いまのストレス状態に合わせて、気持ちや体を少し楽にするための具体的な行動を探せます。自分用のコーピングを追加・編集もできます。</p>
+                            <p class="mt-1"><span class="font-bold text-pdNavy">こんなときに：</span> 緊張、怒り、つらさ、何もする気が起きないときなど</p>
+                        </article>
+                        <article class="rounded-lg border border-black border-l-4 border-l-pdPink bg-white p-2.5">
+                            <h5 class="mb-1 font-black text-pdPink">セルフトーク</h5>
+                            <p>今の悩みや気持ちを書き、選んだ相談相手（6キャラのAI）から言葉を受け取れます。心に残った言葉は「お守り」として保存できます。</p>
+                            <p class="mt-1"><span class="font-bold text-pdNavy">こんなときに：</span> 誰かに話を聞いてほしいとき、自分を責めすぎているとき、自分への声掛けをしたいとき</p>
+                        </article>
+                        <article class="rounded-lg border border-black border-l-4 border-l-teal-600 bg-white p-2.5">
+                            <h5 class="mb-1 font-black text-teal-700">コラム法</h5>
+                            <p>出来事、気持ち、そのとき浮かんだ考えを順番に書き出し、別の見方がないか整理できます。5項目のライト版と7項目の標準版を選べます。</p>
+                            <p class="mt-1"><span class="font-bold text-pdNavy">こんなときに：</span> 考えが頭から離れないとき、思い込みが強くなって苦しいとき</p>
+                        </article>
+                        <article class="rounded-lg border border-black border-l-4 border-l-teal-600 bg-white p-2.5">
+                            <h5 class="mb-1 font-black text-teal-700">良いこと日記</h5>
+                            <p>その日にあった良かったことを3つ記録し、一日の中にあった小さな良い出来事を振り返れます。</p>
+                            <p class="mt-1"><span class="font-bold text-pdNavy">こんなときに：</span> 気持ちを整えたいとき、良かったことに目を向ける習慣をつくりたいとき</p>
+                        </article>
+                        <article class="rounded-lg border border-black border-l-4 border-l-amber-500 bg-white p-2.5">
+                            <h5 class="mb-1 font-black text-amber-600">言葉サプリ</h5>
+                            <p>心の状態やテーマに合わせて、考え方のヒントになる短い言葉を読めます。「今日の栄養」として、日替わりで一つ自動表示もされます。</p>
+                            <p class="mt-1"><span class="font-bold text-pdNavy">こんなときに：</span> 気持ちを切り替えるきっかけがほしいとき、自分に合う言葉を探したいとき</p>
+                        </article>
+                        <article class="rounded-lg border border-black border-l-4 border-l-amber-500 bg-white p-2.5">
+                            <h5 class="mb-1 font-black text-amber-600">きっぷ保管庫</h5>
+                            <p>セルフトークで保存したお守り、コラム法の記録、良いこと日記等をまとめて見返せます。</p>
+                            <p class="mt-1"><span class="font-bold text-pdNavy">こんなときに：</span> 過去の記録を振り返りたいとき、以前自分を助けてくれた言葉や考え方を確認したいとき。</p>
+                        </article>
+                        <article class="rounded-lg border border-black border-l-4 border-l-pdPink bg-white p-2.5">
+                            <h5 class="mb-1 font-black text-pdPink">マインドフルネス瞑想</h5>
+                            <p>4種類の呼吸法から自分に合うものと時間を選び、画面のガイドと環境音に合わせて呼吸を整えて、心身を落ち着けるための時間をつくれます。</p>
+                            <p class="mt-1"><span class="font-bold text-pdNavy">こんなときに：</span> 緊張をゆるめたいとき、考えから少し距離を置きたいとき、短い時間ですっきりしたいとき。</p>
+                        </article>
                     </div>
                 </div>
             </section>
