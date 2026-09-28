@@ -1212,7 +1212,10 @@
                     <span class="rounded-full bg-pdPink px-2 py-0.5 text-[8px] font-black text-white">NEWS</span>
                 </div>
                 <div id="app-news-tabs" class="mb-2 flex gap-1 overflow-x-auto pb-1" role="tablist" aria-label="更新情報の月"></div>
-                <div id="app-news-list" class="space-y-2"></div>
+                <div class="relative">
+                    <div id="app-news-list" class="max-h-[14rem] space-y-2 overflow-y-auto pb-4 pr-1 custom-scrollbar"></div>
+                    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-gradient-to-t from-rose-50/95 to-transparent" aria-hidden="true"></div>
+                </div>
             </section>
             
             <section class="border-t pt-3">
@@ -1980,16 +1983,16 @@
 
         const MODELS_TO_TRY = ["gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-2.5-flash"];
         const APP_NEWS = [
-            { id: "2026-09-22-gemini-model-update", month: "2026-09", date: "2026.09.22", category: "不具合解消", title: "Gemini APIキーの接続不具合を解消", body: "フォームからの不具合報告をありがとうございました。各種AI機能を使うためのキーコード（Gemini APIキー）が新規利用者に利用できないバージョンへ誘導されていた不具合を解消。" },
-            { id: "2026-09-09-help-copy", month: "2026-09", date: "2026.09.09", category: "改善", title: "ご案内の文章を見直しました", body: "使い方やAI機能の説明を、現在の機能に合った分かりやすい文章へ更新しました。" },
-            { id: "2026-09-08-coping-tags", month: "2026-09", date: "2026.09.08", category: "機能追加", title: "コーピングを時間・場所から探せるようになりました", body: "コーピング処方箋に、時間順・場所順の並び替えを追加しました。" },
-            { id: "2026-09-07-coping-improvements", month: "2026-09", date: "2026.09.07", category: "改善", title: "コーピング処方箋を使いやすくしました", body: "スマホでの入力、自分用コーピングの追加、登録済み表示などを改善しました。" },
-            { id: "2026-09-03-coping-renewal", month: "2026-09", date: "2026.09.03", category: "機能追加", title: "コーピング処方箋をリニューアルしました", body: "状態別の一覧、編集・削除、駅長のヒントから自分用に追加する機能を公開しました。" },
-            { id: "2026-08-17-mindfulness", month: "2026-08", date: "2026.08.17", category: "機能追加", title: "4種類の呼吸法を選べるようになりました", body: "腹式呼吸、4・7・8呼吸法、ボックスブリージング、数息観を追加しました。環境音の音量と完了時の操作も改善しました。" },
-            { id: "2026-08-09-departure-board", month: "2026-08", date: "2026.08.09", category: "改善", title: "発車標の演出を更新しました", body: "時計・りんご・駅長ペンギンの表示と、やさしく光る縁取り演出を追加しました。" },
-            { id: "2026-08-08-galaxy-train", month: "2026-08", date: "2026.08.08", category: "改善", title: "銀河鉄道とホームの景色を更新しました", body: "線路が見えるように景色を広げ、夜空を走る列車のデザインと演出を刷新しました。" },
-            { id: "2026-08-06-breathing-modal", month: "2026-08", date: "2026.08.06", category: "機能追加", title: "マインドフルネス瞑想を新しくしました", body: "呼吸ガイドを専用画面にまとめ、時間選択、一時停止、テーマ切替を追加しました。" },
-            { id: "2026-07-31-sound-stars", month: "2026-07", date: "2026.07.31", category: "改善", title: "環境音と夜空の演出を更新しました", body: "環境音を自然な音源へ変更し、夜空にまたたく星を追加しました。" }
+            { id: "2026-09-22-app-news", month: "2026-09", date: "2026.09.22", category: "機能追加", title: "更新情報のお知らせを始めました", body: ["ご案内に「更新情報」を追加しました。アプリの修正や新しい機能を、ここでお知らせします。", "未読のお知らせがあるときは、ご案内ボタンにNEWマークが付きます。"] },
+            { id: "2026-09-22-gemini-model-update", month: "2026-09", date: "2026.09.22", category: "不具合解消", title: "Gemini APIキーの接続不具合を解消", body: ["フォームからの不具合報告をありがとうございました。各種AI機能を使うためのキーコード（Gemini APIキー）が新規利用者に利用できないバージョンへ誘導されていた不具合を解消。"] },
+            { id: "2026-09-08-coping-tags", month: "2026-09", date: "2026.09.08", category: "機能追加", title: "コーピングを時間・場所から探せるようになりました", body: ["コーピング処方箋に、時間順・場所順の並び替えを追加しました。"] },
+            { id: "2026-09-07-coping-improvements", month: "2026-09", date: "2026.09.07", category: "改善", title: "コーピング処方箋を使いやすくしました", body: ["スマホでの入力、自分用コーピングの追加、登録済み表示などを改善しました。"] },
+            { id: "2026-09-03-coping-renewal", month: "2026-09", date: "2026.09.03", category: "機能追加", title: "コーピング処方箋をリニューアルしました", body: ["状態別の一覧、編集・削除、駅長のヒントから自分用に追加する機能を公開しました。"] },
+            { id: "2026-08-17-mindfulness", month: "2026-08", date: "2026.08.17", category: "機能追加", title: "4種類の呼吸法を選べるようになりました", body: ["腹式呼吸、4・7・8呼吸法、ボックスブリージング、数息観を追加しました。環境音の音量と完了時の操作も改善しました。"] },
+            { id: "2026-08-09-departure-board", month: "2026-08", date: "2026.08.09", category: "改善", title: "発車標の演出を更新しました", body: ["時計・りんご・駅長ペンギンの表示と、やさしく光る縁取り演出を追加しました。"] },
+            { id: "2026-08-08-galaxy-train", month: "2026-08", date: "2026.08.08", category: "改善", title: "銀河鉄道とホームの景色を更新しました", body: ["線路が見えるように景色を広げ、夜空を走る列車のデザインと演出を刷新しました。"] },
+            { id: "2026-08-06-breathing-modal", month: "2026-08", date: "2026.08.06", category: "機能追加", title: "マインドフルネス瞑想を新しくしました", body: ["呼吸ガイドを専用画面にまとめ、時間選択、一時停止、テーマ切替を追加しました。"] },
+            { id: "2026-07-31-sound-stars", month: "2026-07", date: "2026.07.31", category: "改善", title: "環境音と夜空の演出を更新しました", body: ["環境音を自然な音源へ変更し、夜空にまたたく星を追加しました。"] }
         ];
         const NEWS_SEEN_STORAGE_KEY = "kokoro_seen_news_id";
         let activeNewsMonth = APP_NEWS[0]?.month || "";
@@ -4144,13 +4147,26 @@
                 '機能追加': 'bg-blue-100 text-blue-800 border-blue-300',
                 '改善': 'bg-amber-100 text-amber-800 border-amber-300'
             };
+            const seenNewsDate = storage.getItem(NEWS_SEEN_STORAGE_KEY)?.slice(0, 10);
             const visibleNews = APP_NEWS.filter(item => item.month === activeNewsMonth);
             list.replaceChildren(...visibleNews.map(item => {
                 const article = document.createElement('article');
                 article.className = 'rounded-lg border border-rose-200 bg-white p-2.5';
 
+                const hasDetails = item.body.length > 1 || Boolean(item.note);
+                const isUnseen = !seenNewsDate || item.id.slice(0, 10) > seenNewsDate;
+                const isExpanded = hasDetails && isUnseen;
+                const detailsId = `app-news-details-${item.id}`;
+                const header = document.createElement(hasDetails ? 'button' : 'div');
+                header.className = 'mb-1 flex w-full min-w-0 items-start justify-between gap-2 text-left';
+                if (hasDetails) {
+                    header.type = 'button';
+                    header.setAttribute('aria-expanded', String(isExpanded));
+                    header.setAttribute('aria-controls', detailsId);
+                }
+
                 const meta = document.createElement('div');
-                meta.className = 'mb-1 flex flex-wrap items-center gap-1.5';
+                meta.className = 'min-w-0 flex-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5';
 
                 const date = document.createElement('time');
                 date.className = 'text-[8.5px] font-bold text-gray-500';
@@ -4162,15 +4178,59 @@
                 category.textContent = item.category;
 
                 const title = document.createElement('h5');
-                title.className = 'text-[10px] font-black text-pdNavy';
+                title.className = 'min-w-0 break-words text-[10px] font-black leading-snug text-pdNavy';
                 title.textContent = item.title;
 
-                const body = document.createElement('p');
-                body.className = 'text-[9.5px] leading-relaxed text-gray-700';
-                body.textContent = item.body;
-
                 meta.append(date, category, title);
-                article.append(meta, body);
+                header.append(meta);
+
+                if (hasDetails) {
+                    const icon = document.createElement('i');
+                    icon.className = `fa-solid fa-angle-down mt-1 shrink-0 text-gray-400 transition-transform${isExpanded ? ' rotate-180' : ''}`;
+                    icon.setAttribute('aria-hidden', 'true');
+                    header.append(icon);
+                }
+
+                const firstBodyLine = document.createElement('ul');
+                firstBodyLine.className = 'list-disc pl-4 text-[9.5px] leading-relaxed text-gray-700';
+                const firstBodyItem = document.createElement('li');
+                firstBodyItem.textContent = item.body[0];
+                firstBodyLine.append(firstBodyItem);
+
+                article.append(header, firstBodyLine);
+
+                if (hasDetails) {
+                    const details = document.createElement('div');
+                    details.id = detailsId;
+                    details.className = `${isExpanded ? '' : 'hidden '}pt-1`;
+
+                    if (item.body.length > 1) {
+                        const remainingBody = document.createElement('ul');
+                        remainingBody.className = 'list-disc space-y-0.5 pl-4 text-[9.5px] leading-relaxed text-gray-700';
+                        remainingBody.append(...item.body.slice(1).map(line => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = line;
+                            return listItem;
+                        }));
+                        details.append(remainingBody);
+                    }
+
+                    if (item.note) {
+                        const note = document.createElement('p');
+                        note.className = 'mt-1 rounded-md bg-amber-50 px-2 py-1.5 text-[9px] font-bold leading-relaxed text-amber-900';
+                        note.textContent = item.note;
+                        details.append(note);
+                    }
+
+                    header.addEventListener('click', () => {
+                        const willOpen = header.getAttribute('aria-expanded') !== 'true';
+                        header.setAttribute('aria-expanded', String(willOpen));
+                        details.classList.toggle('hidden', !willOpen);
+                        header.querySelector('.fa-angle-down')?.classList.toggle('rotate-180', willOpen);
+                    });
+
+                    article.append(details);
+                }
                 return article;
             }));
         }
@@ -4189,7 +4249,8 @@
             const badge = document.getElementById('news-new-badge');
             const latestNewsId = APP_NEWS[0]?.id || '';
             if (!badge || !latestNewsId) return;
-            badge.classList.toggle('hidden', storage.getItem(NEWS_SEEN_STORAGE_KEY) === latestNewsId);
+            const seenNewsDate = storage.getItem(NEWS_SEEN_STORAGE_KEY)?.slice(0, 10);
+            badge.classList.toggle('hidden', Boolean(seenNewsDate) && latestNewsId.slice(0, 10) <= seenNewsDate);
         }
 
         function markLatestNewsAsSeen() {
