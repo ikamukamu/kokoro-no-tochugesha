@@ -470,6 +470,50 @@
             pointer-events: none;
             z-index: 44;
         }
+        .station-news-board-button {
+            position: absolute;
+            left: 60%;
+            top: 50%;
+            width: 10%;
+            height: 18%;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            pointer-events: auto;
+            touch-action: manipulation;
+            z-index: 17;
+        }
+        .station-news-board-button:focus-visible {
+            outline: 3px solid #fbbf24;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+        .station-news-paper {
+            position: absolute;
+            left: 61.38%;
+            top: 55.13%;
+            width: 6.88%;
+            height: auto;
+            pointer-events: none;
+            z-index: 18;
+            transform-origin: 56.3% 11.8%;
+            filter: drop-shadow(1px 3px 3px rgba(0, 0, 0, 0.45));
+            animation: stationNewsPaperFade 0.8s ease-out both,
+                       stationNewsPaperSway 5s ease-in-out 2s infinite;
+        }
+        @keyframes stationNewsPaperFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes stationNewsPaperSway {
+            0% { transform: rotate(0deg); }
+            3.2% { transform: rotate(-2.4deg); }
+            9.5% { transform: rotate(1.3deg); }
+            16% { transform: rotate(-0.7deg); }
+            22.3% { transform: rotate(0.4deg); }
+            28%, 100% { transform: rotate(0deg); }
+        }
         .stationmaster-penguin {
             position: absolute;
             left: 50%;
@@ -607,6 +651,7 @@
             .mindfulness-departure-trigger { animation: none; box-shadow: none; }
             .mindfulness-departure-icon { animation: none; opacity: 0; }
             .mindfulness-departure-icon.clock { opacity: 1; }
+            .station-news-paper { animation: none; }
             .stationmaster-penguin,
             .stationmaster-penguin img {
                 animation: none !important;
@@ -640,6 +685,8 @@
         </div>
         <div class="absolute inset-0 pointer-events-none z-[3] overflow-hidden" id="starry-sky-bg"></div>
         <div class="nr-station-image-overlay">
+            <img id="station-news-paper" class="station-news-paper hidden" src="assets/images/station/station_news_paper.png" alt="" aria-hidden="true">
+            <button id="station-news-board" class="station-news-board-button" type="button" aria-label="更新情報を見る"></button>
             <button id="stationmaster-penguin-home" class="stationmaster-penguin" type="button" aria-label="駅長ペンギンにあいさつする">
                 <img id="stationmaster-penguin-img" src="assets/images/penguin/common/penguin_front_01.png" alt="駅長ペンギン">
             </button>
@@ -4120,6 +4167,15 @@
         }
 
         // --- 13. モーダル制御 ---
+        function isAppNewsUnseen(item) {
+            const seenNewsDate = storage.getItem(NEWS_SEEN_STORAGE_KEY)?.slice(0, 10);
+            return !seenNewsDate || item.id.slice(0, 10) > seenNewsDate;
+        }
+
+        function hasUnseenAppNews() {
+            return APP_NEWS.some(isAppNewsUnseen);
+        }
+
         function renderAppNews() {
             const tabs = document.getElementById('app-news-tabs');
             const list = document.getElementById('app-news-list');
@@ -4147,14 +4203,13 @@
                 '機能追加': 'bg-blue-100 text-blue-800 border-blue-300',
                 '改善': 'bg-amber-100 text-amber-800 border-amber-300'
             };
-            const seenNewsDate = storage.getItem(NEWS_SEEN_STORAGE_KEY)?.slice(0, 10);
             const visibleNews = APP_NEWS.filter(item => item.month === activeNewsMonth);
             list.replaceChildren(...visibleNews.map(item => {
                 const article = document.createElement('article');
                 article.className = 'rounded-lg border border-rose-200 bg-white p-2.5';
 
                 const hasDetails = item.body.length > 1 || Boolean(item.note);
-                const isUnseen = !seenNewsDate || item.id.slice(0, 10) > seenNewsDate;
+                const isUnseen = isAppNewsUnseen(item);
                 const isExpanded = hasDetails && isUnseen;
                 const detailsId = `app-news-details-${item.id}`;
                 const header = document.createElement(hasDetails ? 'button' : 'div');
@@ -4247,10 +4302,12 @@
 
         function updateNewsBadge() {
             const badge = document.getElementById('news-new-badge');
-            const latestNewsId = APP_NEWS[0]?.id || '';
-            if (!badge || !latestNewsId) return;
-            const seenNewsDate = storage.getItem(NEWS_SEEN_STORAGE_KEY)?.slice(0, 10);
-            badge.classList.toggle('hidden', Boolean(seenNewsDate) && latestNewsId.slice(0, 10) <= seenNewsDate);
+            if (!badge) return;
+            badge.classList.toggle('hidden', !hasUnseenAppNews());
+        }
+
+        function updateStationNewsState() {
+            document.getElementById('station-news-paper')?.classList.toggle('hidden', !hasUnseenAppNews());
         }
 
         function markLatestNewsAsSeen() {
@@ -4258,6 +4315,7 @@
             if (!latestNewsId) return;
             storage.setItem(NEWS_SEEN_STORAGE_KEY, latestNewsId);
             updateNewsBadge();
+            updateStationNewsState();
         }
 
         function openHelpModal() {
@@ -4466,6 +4524,7 @@
 
             // 設定・ご案内
             bind('btn-help-modal-open', 'click', openHelpModal);
+            bind('station-news-board', 'click', openHelpModal);
             bind('btn-help-modal-close', 'click', closeHelpModal);
             bind('btn-help-modal-close-top', 'click', closeHelpModal);
             bind('help-usage-toggle', 'click', () => toggleHelpAccordion('help-usage-toggle', 'help-usage-content'));
@@ -4634,6 +4693,7 @@
             updateApiBtnStyle();
             renderAppNews();
             updateNewsBadge();
+            updateStationNewsState();
             initDailyWord();
             renderDialogueList();
             switchLibraryCategory('pre');
