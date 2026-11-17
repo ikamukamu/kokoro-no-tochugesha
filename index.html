@@ -285,6 +285,19 @@
             --breath-muted: #b7b1a4;
         }
         .breathing-muted { color: var(--breath-muted); }
+        .breathing-stamp-slot { width: min(72vw, 300px); aspect-ratio: 1; flex: 0 0 auto; }
+        .breathing-stamp-image { width: 100%; height: 100%; object-fit: contain; opacity: 0; transform: scale(1.12); }
+        .breathing-stamp-image.is-stamped { animation: breathing-stamp-press 520ms cubic-bezier(.2,.8,.25,1) both; }
+        @keyframes breathing-stamp-press {
+            0% { opacity: 0; transform: scale(1.12); }
+            62% { opacity: 1; transform: scale(.94); }
+            82% { transform: scale(1.025); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .breathing-stamp-image.is-stamped { animation: breathing-stamp-fade 180ms ease-out both; }
+            @keyframes breathing-stamp-fade { from { opacity: 0; } to { opacity: 1; } }
+        }
         .breathing-session-scroll { min-height: 0; overflow: hidden; }
         .breathing-apple-wrap { width: min(64vw, 270px); aspect-ratio: 1; flex-shrink: 0; }
         .breathing-apple {
@@ -1598,10 +1611,10 @@
             </div>
 
             <div id="breathing-complete-view" class="hidden min-h-[390px] flex-col items-center justify-center text-center">
-                <i class="fa-solid fa-apple-whole text-7xl text-[#ef315d] mb-6"></i>
+                <div id="breathing-stamp-slot" class="breathing-stamp-slot mb-1" aria-live="polite"></div>
+                <button id="btn-breath-complete-close" type="button" class="mb-2 rounded-full border-2 border-black bg-[#ff9f0a] px-7 py-2.5 text-sm font-black text-black shadow-[3px_3px_0_#000]">ホームへ戻る</button>
                 <h3 class="text-2xl font-black">お疲れさまでした</h3>
                 <p class="breathing-muted mt-2 text-xs">ゆっくりと、いつもの時間へ戻りましょう。</p>
-                <button id="btn-breath-complete-close" type="button" class="mt-8 rounded-full border-2 border-black bg-[#ff9f0a] px-7 py-2.5 text-sm font-black text-black shadow-[3px_3px_0_#000]">ホームへ戻る</button>
             </div>
         </div>
     </div>
@@ -1942,14 +1955,16 @@
             'kokoro_local_talk_records',
             'kokoro_local_threegoods_records',
             'kokoro_local_my_coping_records',
-            'kokoro_local_coping_usage_records'
+            'kokoro_local_coping_usage_records',
+            'kokoro_local_breath_records'
         ];
         const KOKORO_RECORD_KEYS = [
             'kokoro_local_cbt_records',
             'kokoro_local_talk_records',
             'kokoro_local_threegoods_records',
             'kokoro_local_my_coping_records',
-            'kokoro_local_coping_usage_records'
+            'kokoro_local_coping_usage_records',
+            'kokoro_local_breath_records'
         ];
 
         function parseBackupRecordList(value, key) {
@@ -2082,6 +2097,9 @@
         let breathCycleTimer = null, breathStep = 0, selectedAmbienceScene = "auto", currentPlayingScene = "";
         let breathPhaseSecondsLeft = 0, breathVolumeMultiplier = 1;
         let activeBreathPhases = null, breathingModalReturnFocus = null, sessionDurationSeconds = 180;
+        const BREATH_STAMP_DELAY_MS = 900;
+        const BREATH_STAMP_IDS = ['stamp_001', 'stamp_002', 'stamp_003', 'stamp_004', 'stamp_005'];
+        let breathingStampRevealTimer = null, breathingStampRun = 0;
 
         // ISS-041から別の配列を渡せるよう、呼吸処理はこの配列の形だけに依存させる。
         const DEFAULT_BREATH_PHASES = [
@@ -2950,6 +2968,10 @@
         function openBreathingModal() {
             const modal = document.getElementById('breathing-modal');
             if (!modal) return;
+            clearTimeout(breathingStampRevealTimer);
+            breathingStampRun++;
+            const stampSlot = document.getElementById('breathing-stamp-slot');
+            if (stampSlot) stampSlot.replaceChildren();
             breathingModalReturnFocus = document.activeElement;
             resetMindfulnessTimer();
             document.getElementById('breathing-complete-view')?.classList.add('hidden');
@@ -2966,6 +2988,8 @@
         }
 
         function closeBreathingModal() {
+            clearTimeout(breathingStampRevealTimer);
+            breathingStampRun++;
             resetMindfulnessTimer();
             closeBreathingPosturePanel();
             document.getElementById('breathing-exit-confirm')?.classList.add('hidden');
@@ -2995,6 +3019,27 @@
             confirmModal?.classList.add('hidden');
             confirmModal?.classList.remove('flex');
             document.getElementById('btn-breath-close')?.focus();
+        }
+
+        function endBreathingSession() {
+            if (mindfulnessState === 'running' || mindfulnessState === 'paused') {
+                const elapsedSeconds = sessionDurationSeconds - mindfulnessTimeRemaining;
+                if (elapsedSeconds >= 1) {
+                    const record = {
+                        id: 'breath_' + crypto.randomUUID(),
+                        endedAt: new Date().toISOString(),
+                        completed: false,
+                        patternId: selectedBreathPattern,
+                        plannedSeconds: sessionDurationSeconds,
+                        elapsedSeconds,
+                        stampId: null
+                    };
+                    if (!saveLocalData('kokoro_local_breath_records', record)) {
+                        showToast('呼吸の記録を保存できませんでした。', 'error');
+                    }
+                }
+            }
+            closeBreathingModal();
         }
 
         function toggleMindfulnessTimer() {
@@ -3136,6 +3181,36 @@
             const complete = document.getElementById('breathing-complete-view');
             complete?.classList.remove('hidden');
             complete?.classList.add('flex');
+            const stampId = BREATH_STAMP_IDS[Math.floor(Math.random() * BREATH_STAMP_IDS.length)];
+            const record = {
+                id: 'breath_' + crypto.randomUUID(),
+                endedAt: new Date().toISOString(),
+                completed: true,
+                patternId: selectedBreathPattern,
+                plannedSeconds: sessionDurationSeconds,
+                elapsedSeconds: sessionDurationSeconds,
+                stampId
+            };
+            if (!saveLocalData('kokoro_local_breath_records', record)) {
+                showToast('呼吸の記録を保存できませんでした。', 'error');
+            }
+            const stampSlot = document.getElementById('breathing-stamp-slot');
+            if (stampSlot) stampSlot.replaceChildren();
+            const run = ++breathingStampRun;
+            const stampImage = new Image();
+            let delayElapsed = false;
+            const revealStamp = () => {
+                if (!delayElapsed || !stampSlot || run !== breathingStampRun || !stampImage.naturalWidth) return;
+                stampImage.className = 'breathing-stamp-image is-stamped';
+                stampImage.alt = '';
+                stampSlot.replaceChildren(stampImage);
+            };
+            stampImage.onload = revealStamp;
+            stampImage.src = `assets/stamps/${stampId}.png`;
+            breathingStampRevealTimer = setTimeout(() => {
+                delayElapsed = true;
+                revealStamp();
+            }, BREATH_STAMP_DELAY_MS);
             document.getElementById('btn-breath-complete-close')?.focus();
         }
 
@@ -4858,7 +4933,7 @@
             bind('btn-sound-toggle', 'click', toggleMuteState);
             bind('btn-breath-close', 'click', requestBreathingExit);
             bind('btn-breath-continue', 'click', continueBreathingSession);
-            bind('btn-breath-end', 'click', closeBreathingModal);
+            bind('btn-breath-end', 'click', endBreathingSession);
             bind('btn-breath-complete-close', 'click', closeBreathingModal);
             bind('btn-breath-theme', 'click', toggleBreathingTheme);
             bind('btn-breath-posture', 'click', toggleBreathingPosturePanel);
